@@ -10,13 +10,14 @@
   --primary:#4f46e5;
   --danger:#dc2626;
   --card:#fff;
+  --muted:#9ca3af;
 }
 
 body {
   font-family: system-ui, sans-serif;
   background: var(--bg);
   margin:0;
-  padding:20px;
+  padding:20px 20px 80px;
 }
 
 h1,h2 { text-align:center; }
@@ -34,14 +35,13 @@ button {
   background:var(--primary);
   color:#fff;
   border:none;
-  padding:10px 16px;
-  border-radius:8px;
+  padding:12px 18px;
+  border-radius:10px;
   cursor:pointer;
   font-weight:600;
 }
 
 button.danger { background:var(--danger); }
-button.secondary { background:#6b7280; }
 
 table {
   width:100%;
@@ -62,6 +62,17 @@ input {
   padding:6px;
   border-radius:6px;
   border:1px solid #d1d5db;
+  text-align:center;
+}
+
+input.readonly {
+  background:#f3f4f6;
+  color:#111827;
+  font-weight:600;
+}
+
+input[readonly] {
+  cursor:not-allowed;
 }
 
 .dealer {
@@ -69,8 +80,16 @@ input {
   color:var(--primary);
 }
 
-.locked {
-  background:#e5e7eb;
+#resetBar {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  box-shadow:0 -5px 20px rgba(0,0,0,.1);
+  padding:10px;
+  display:flex;
+  justify-content:center;
 }
 </style>
 </head>
@@ -89,6 +108,10 @@ input {
 <div id="names"></div>
 <div id="game"></div>
 <div id="recap"></div>
+
+<div id="resetBar" style="display:none">
+  <button class="danger" onclick="resetGame()">🔄 Réinitialiser la partie</button>
+</div>
 
 <script>
 let joueurs=[], scores=[], manches=[];
@@ -115,6 +138,7 @@ function startGame(nb){
     joueurs.push(document.getElementById("name"+i).value || "Joueur "+(i+1));
   }
   document.getElementById("names").style.display="none";
+  document.getElementById("resetBar").style.display="flex";
 
   scores=Array(nb).fill(0);
   manches=[];
@@ -143,11 +167,11 @@ function renderGame(){
       <td>${j}${i===dealerIndex?" 🃏":""}</td>
       <td>
         <input id="pari${i}" type="number" min="0" max="${manche}"
-        ${parisValides?"disabled class='locked'":""}>
+        ${parisValides?"readonly class='readonly'":""}>
       </td>
       <td>
         <input id="pli${i}" type="number" min="0" max="${manche}"
-        ${!parisValides?"disabled class='locked'":""}>
+        ${!parisValides?"readonly class='readonly'":""}>
       </td>
       <td>${scores[i]}</td>
     </tr>`;
@@ -155,11 +179,9 @@ function renderGame(){
 
   html+=`</table><br>`;
 
-  if(!parisValides){
-    html+=`<button onclick="validerParis()">Valider les paris</button>`;
-  } else {
-    html+=`<button onclick="validerManche()">Valider la manche</button>`;
-  }
+  html+= !parisValides
+    ? `<button onclick="validerParis()">Valider les paris</button>`
+    : `<button onclick="validerManche()">Valider la manche</button>`;
 
   html+=`</div>`;
   document.getElementById("game").innerHTML=html;
@@ -210,9 +232,15 @@ function validerManche(){
   renderGame();
 }
 
+function resetGame(){
+  if(confirm("Réinitialiser complètement la partie ?")){
+    location.reload();
+  }
+}
+
 function renderRecap(){
   if(!manches.length) return;
-  let html=`<div class="card"><h2>Récap</h2><table>
+  let html=`<div class="card"><h2>Récap des manches</h2><table>
     <tr><th>Manche</th>${joueurs.map(j=>`<th>${j}</th>`).join("")}</tr>`;
   manches.forEach(m=>{
     html+=`<tr><td>${m.manche}</td>${m.scores.map(s=>`<td>${s}</td>`).join("")}</tr>`;
