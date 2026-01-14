@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Ascenseur - Jeu de Cartes Amélioré</title>
+
+<style>
+:root {
+  --bg: #f6f7fb;
+  --primary: #4f46e5;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --warning: #eab308;
+  --card: #fff;
+  --shadow: 0 10px 25px rgba(0,0,0,.08);
+  --border: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  padding: 20px;
+  line-height: 1.5;
+  color: #374151;
+}
+
+@media (max-width: 768px) {
+  body { padding: 10px; }
+  .card { padding: 15px; margin: 10px auto; }
+  table { font-size: 0.9rem; }
+  input { width: 50px; font-size: 1rem; }
+}
+
+h1, h2 { text-align: center; margin: 0 0 1rem; }
+h1 { font-size: 2rem; }a
+
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 24px;
+  margin: 20px auto;
+  max-width: 1100px;
+  box-shadow: var(--shadow);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+label { font-weight: 600; }
+
+input[type="number"] {
+  width: 70px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+button.danger { background: var(--danger); }
+button.success { background: var(--success); }
+button.warning { background: var(--warning); color: #000; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+th, td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+th {
+  background: #eef2ff;
+  font-weight: 700;
+}
+
+.dealer { font-weight: 700; color: var(--primary); }
+
+.status {
+  padding: 12px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+.status.valid { background: #dcfce7; color: var(--success); }
+.status.invalid { background: #fef2f2; color: var(--danger); }
+.status.warning { background: #fefce8; color: var(--warning); }
+
+#finalResults {
+  text-align: center;
+}
+
+#finalResults table th:nth-child(2), #finalResults table td:nth-child(2) { font-size: 1.2rem; font-weight: 700; }
+.winner { color: var(--success); background: #dcfce7 !important; }
+
+.hidden { display: none; }
+
+.name-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.name-inputs p {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+}
+
+input[type="text"] {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎴 L'Ascenseur</h1>
+
+<div class="card" id="setup">
+  <h2>Nouvelle partie</h2>
+  <div class="controls">
+    <label>Nombre de joueurs :</label>
+    <input type="number" id="nbJoueurs" min="3" max="7" value="4">
+    <button onclick="setupNames()">Continuer</button>
+  </div>
+  <small>Recommandé: 4-6 joueurs [web:3]</small>
+</div>
+
+<div id="names" class="hidden"></div>
+
+<div id="game" class="hidden"></div>
+
+<div id="recap"></div>
+
+<div id="finalResults" class="hidden card"></div>
+
+<script>
+let joueurs = [], scores = [], manches = [];
+let manche = 1, sens = 1, dealerIndex = 0, nbJoueurs = 0;
+const MIN_JOUEURS = 3, MAX_JOUEURS = 7;
+
+function setupNames() {
+  nbJoueurs = +document.getElementById("nbJoueurs").value;
+  if (nbJoueurs < MIN_JOUEURS || nbJoueurs > MAX_JOUEURS) {
+    alert(`Nombre de joueurs doit être entre ${MIN_JOUEURS} et ${MAX_JOUEURS}`);
+    return;
+  }
+  let html = `<div class="card"><h2>Noms des joueurs</h2>
+    <div class="name-inputs">`;
+  for (let i = 0; i < nbJoueurs; i++) {
+    html += `<p>Joueur ${i + 1} : <input id="name${i}" placeholder="Nom du joueur ${i + 1}"></p>`;
+  }
+  html += `</div>
+    <div class="controls">
+      <button onclick="startGame()">Démarrer la partie</button>
+    </div>
+  </div>`;
+  document.getElementById("names").innerHTML = html;
+  document.getElementById("names").classList.remove("hidden");
+  document.getElementById("setup").classList.add("hidden");
+}
+
+function startGame() {
+  joueurs = [];
+  for (let i = 0; i < nbJoueurs; i++) {
+    const name = document.getElementById("name" + i).value.trim() || `Joueur ${i + 1}`;
+    joueurs.push(name);
+  }
+  scores = Array(nbJoueurs).fill(0);
+  manches = [];
+  manche = 1;
+  sens = 1;
+  dealerIndex = 0;
+  document.getElementById("names").classList.add("hidden");
+  renderGame();
+}
+
+function renderGame() {
+  // Calculer max cartes distribuables
+  const maxCartesDist = Math.floor(52 / nbJoueurs);
+  let isAscending = sens === 1;
+  let html = `<div class="card">
+    <h2>Manche ${manche} - ${isAscending ? '🆙 Montée' : '⬇️ Descente'}</h2>
+    <p>🃏 Dealer : <span class="dealer">${joueurs[dealerIndex]}</span></p>
+    <div id="status"></div>
+    <table>
+      <tr>
+        <th>Joueur</th>
+        <th>Pari</th>
+        <th>Plis</th>
+        <th>Score total</th>
+      </tr>`;
+
+  let sumPariNonDealer = 0;
+  joueurs.forEach((j, i) => {
+    html += `
+      <tr>
+        <td>${j}${i === dealerIndex ? ' 🃏' : ''}</td>
+        <td><input id="pari${i}" type="number" min="0" max="${manche}" value="0"></td>
+        <td><input id="pli${i}" type="number" min="0" max="${manche}" value="0"></td>
+        <td>${scores[i]}</td>
+      </tr>`;
+  });
+
+  html += `</table>
+    <div class="controls">
+      <button class="success" onclick="checkParis()">Vérifier Paris</button>
+      <button onclick="validateManche()" id="validateBtn" disabled>Valider Manche</button>
+      <button class="danger" onclick="resetGame()">Nouvelle Partie</button>
+    </div>
+  </div>`;
+
+  document.getElementById("game").innerHTML = html;
+  document.getElementById("game").classList.remove("hidden");
+  renderRecap();
+
+  // Focus premier input
+  document.getElementById("pari0").focus();
+}
+
+function checkParis() {
+  let sumPari = 0;
+  joueurs.forEach((_, i) => {
+    sumPari += +document.getElementById("pari" + i).value || 0;
+  });
+  const statusDiv = document.getElementById("status");
+  const btn = document.getElementById("validateBtn");
+  if (sumPari !== manche) {
+    statusDiv.textContent = `✅ Total paris: ${sumPari} ≠ ${manche} plis. Paris valides !`;
+    statusDiv.className = "status valid";
+    btn.disabled = false;
+  } else {
+    statusDiv.textContent = `❌ Total paris: ${sumPari} = ${manche} plis. Interdit ! Ajustez.`;
+    statusDiv.className = "status invalid";
+    btn.disabled = true;
+  }
+}
+
+function validateManche() {
+  let recap = { manche, scores: [] };
+
+  joueurs.forEach((_, i) => {
+    const pari = +document.getElementById("pari" + i).value || 0;
+    const pli = +document.getElementById("pli" + i).value || 0;
+    let score;
+    if (pari === pli) {
+      score = pli + 2;  // 1 par pli + 1 bonus? Attends règles standard: 2 + pli [web:3]
+    } else {
+      score = -Math.abs(pari - pli);
+    }
+    scores[i] += score;
+    recap.scores.push(score);
+  });
+
+  manches.push(recap);
+
+  // Avancer dealer
+  dealerIndex = (dealerIndex + 1) % nbJoueurs;
+
+  // Changer sens au max
+  const maxCartes = Math.floor(52 / nbJoueurs);
+  if (manche === maxCartes && sens === 1) {
+    sens = -1;
+  }
+  manche += sens;
+
+  // Fin si manche <=0
+  if (manche <= 0) {
+    endGame();
+    return;
+  }
+
+  renderGame();
+}
+
+function renderRecap() {
+  if (!manches.length) return;
+  let html = `<div class="card"><h2>📊 Récap des Manches</h2><table>
+    <tr><th>Manche</th>${joueurs.map(j => `<th>${j}</th>`).join("")}</tr>`;
+  manches.forEach(m => {
+    html += `<tr><td>${m.manche}</td>${m.scores.map(s => `<td>${s >= 0 ? '+' : ''}${s}</td>`).join("")}</tr>`;
+  });
+  html += `</table></div>`;
+  document.getElementById("recap").innerHTML = html;
+}
+
+function endGame() {
+  document.getElementById("game").classList.add("hidden");
+  const maxScore = Math.max(...scores);
+  const winners = scores.map((s, i) => ({ score: s, index: i })).filter(p => p.score === maxScore);
+  let html = `<h2>🏆 Partie Terminée !</h2>
+    <p>Manches jouées: ${manches.length}</p>
+    <table>
+      <tr><th>Joueur</th><th>Score Final</th></tr>`;
+  joueurs.forEach((j, i) => {
+    const isWinner = winners.some(w => w.index === i);
+    html += `<tr${isWinner ? ' class="winner"' : ''}>
+      <td>${j}</td><td>${scores[i] >= 0 ? '+' : ''}${scores[i]}</td>
+    </tr>`;
+  });
+  html += `</table>`;
+  if (winners.length === 1) {
+    html += `<p><strong>Vainqueur: ${joueurs[winners[0].index]} ! 🎉</strong></p>`;
+  } else {
+    html += `<p><strong>Ex æquo: ${winners.map(w => joueurs[w.index]).join(', ')} !</strong></p>`;
+  }
+  document.getElementById("finalResults").innerHTML = html;
+  document.getElementById("finalResults").classList.remove("hidden");
+}
+
+function resetGame() {
+  if (confirm("Nouvelle partie ? Données perdues.")) {
+    document.getElementById("setup").classList.remove("hidden");
+    document.getElementById("names").classList.add("hidden");
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("recap").innerHTML = "";
+    document.getElementById("finalResults").classList.add("hidden");
+    joueurs = [];
+  }
+}
+
+// Touche Entrée pour valider
+document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && document.getElementById('validateBtn') && !document.getElementById('validateBtn').disabled) {
+      validateManche();
+    }
+  });
+});
+</script>
+
+</body>
+</html>
