@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>L’Ascenseur</title>
 
 <style>
@@ -10,86 +11,126 @@
   --primary:#4f46e5;
   --danger:#dc2626;
   --card:#fff;
-  --muted:#9ca3af;
 }
 
 body {
   font-family: system-ui, sans-serif;
   background: var(--bg);
   margin:0;
-  padding:20px 20px 80px;
+  padding:16px 16px 90px;
 }
 
-h1,h2 { text-align:center; }
+h1,h2 {
+  text-align:center;
+  margin:12px 0;
+}
 
 .card {
   background:var(--card);
-  border-radius:14px;
-  padding:20px;
-  margin:20px auto;
+  border-radius:16px;
+  padding:16px;
+  margin:16px auto;
   max-width:1100px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
 }
 
 button {
   background:var(--primary);
   color:#fff;
   border:none;
-  padding:12px 18px;
-  border-radius:10px;
-  cursor:pointer;
+  padding:14px;
+  border-radius:14px;
+  font-size:16px;
   font-weight:600;
-}
-
-button.danger { background:var(--danger); }
-
-table {
+  cursor:pointer;
   width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
 }
 
-th,td {
-  padding:8px;
-  border-bottom:1px solid #e5e7eb;
-  text-align:center;
+button.danger {
+  background:var(--danger);
 }
-
-th { background:#eef2ff; }
 
 input {
-  width:70px;
-  padding:6px;
-  border-radius:6px;
+  width:100%;
+  padding:14px;
+  font-size:16px;
+  border-radius:12px;
   border:1px solid #d1d5db;
   text-align:center;
 }
 
 input.readonly {
   background:#f3f4f6;
-  color:#111827;
-  font-weight:600;
-}
-
-input[readonly] {
-  cursor:not-allowed;
+  font-weight:700;
 }
 
 .dealer {
-  font-weight:700;
   color:var(--primary);
+  font-weight:800;
 }
 
+/* ===== MOBILE PLAYER CARD ===== */
+.player-card {
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
+}
+
+.player-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.player-inputs {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.player-total {
+  margin-top:10px;
+  text-align:center;
+  font-weight:700;
+}
+
+/* ===== DESKTOP TABLE ===== */
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td {
+  padding:8px;
+  text-align:center;
+  border-bottom:1px solid #e5e7eb;
+}
+
+th {
+  background:#eef2ff;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  table { display:none; }
+}
+
+@media (min-width: 769px) {
+  .mobile { display:none; }
+}
+
+/* RESET BAR */
 #resetBar {
   position:fixed;
   bottom:0;
   left:0;
   right:0;
   background:white;
+  padding:12px;
   box-shadow:0 -5px 20px rgba(0,0,0,.1);
-  padding:10px;
-  display:flex;
-  justify-content:center;
 }
 </style>
 </head>
@@ -100,8 +141,8 @@ input[readonly] {
 
 <div class="card" id="setup">
   <h2>Nouvelle partie</h2>
-  <label>Nombre de joueurs :</label>
   <input type="number" id="nbJoueurs" min="2" max="6" value="4">
+  <br><br>
   <button onclick="setupNames()">Continuer</button>
 </div>
 
@@ -115,18 +156,18 @@ input[readonly] {
 
 <script>
 let joueurs=[], scores=[], manches=[];
+let paris=[], plis=[];
 let manche=1, sens=1, dealerIndex=0;
 let parisValides=false;
 const maxCartes=5;
 
+/* SETUP */
 function setupNames(){
   const nb=+document.getElementById("nbJoueurs").value;
   document.getElementById("setup").style.display="none";
-
   let html=`<div class="card"><h2>Noms des joueurs</h2>`;
   for(let i=0;i<nb;i++){
-    html+=`<p>Joueur ${i+1} :
-      <input id="name${i}" placeholder="Nom"></p>`;
+    html+=`<input id="name${i}" placeholder="Joueur ${i+1}"><br><br>`;
   }
   html+=`<button onclick="startGame(${nb})">Démarrer</button></div>`;
   document.getElementById("names").innerHTML=html;
@@ -138,115 +179,80 @@ function startGame(nb){
     joueurs.push(document.getElementById("name"+i).value || "Joueur "+(i+1));
   }
   document.getElementById("names").style.display="none";
-  document.getElementById("resetBar").style.display="flex";
+  document.getElementById("resetBar").style.display="block";
 
   scores=Array(nb).fill(0);
+  paris=Array(nb).fill(0);
+  plis=Array(nb).fill(0);
   manches=[];
-  manche=1;
-  sens=1;
-  dealerIndex=0;
-  parisValides=false;
+  manche=1; sens=1; dealerIndex=0; parisValides=false;
   renderGame();
 }
 
+/* GAME RENDER */
 function renderGame(){
   let html=`<div class="card">
     <h2>Manche ${manche} carte(s)</h2>
-    <p>🃏 Dealer : <span class="dealer">${joueurs[dealerIndex]}</span></p>
-    <table>
-      <tr>
-        <th>Joueur</th>
-        <th>Pari</th>
-        <th>Plis</th>
-        <th>Total</th>
-      </tr>`;
+    <p style="text-align:center">🃏 Dealer : <span class="dealer">${joueurs[dealerIndex]}</span></p>
+    <div class="mobile">`;
 
   joueurs.forEach((j,i)=>{
     html+=`
-    <tr>
-      <td>${j}${i===dealerIndex?" 🃏":""}</td>
-      <td>
-        <input id="pari${i}" type="number" min="0" max="${manche}"
-        ${parisValides?"readonly class='readonly'":""}>
-      </td>
-      <td>
-        <input id="pli${i}" type="number" min="0" max="${manche}"
-        ${!parisValides?"readonly class='readonly'":""}>
-      </td>
-      <td>${scores[i]}</td>
-    </tr>`;
+    <div class="player-card">
+      <div class="player-header">
+        <span>${j}${i===dealerIndex?" 🃏":""}</span>
+      </div>
+      <div class="player-inputs">
+        <input type="number" min="0" max="${manche}" value="${paris[i]}"
+          ${parisValides?"readonly class='readonly'":""}
+          oninput="paris[${i}]=+this.value||0" placeholder="Pari">
+        <input type="number" min="0" max="${manche}" value="${plis[i]}"
+          ${!parisValides?"readonly class='readonly'":""}
+          oninput="plis[${i}]=+this.value||0" placeholder="Plis">
+      </div>
+      <div class="player-total">Total : ${scores[i]}</div>
+    </div>`;
   });
 
-  html+=`</table><br>`;
-
+  html+=`</div><br>`;
   html+= !parisValides
     ? `<button onclick="validerParis()">Valider les paris</button>`
     : `<button onclick="validerManche()">Valider la manche</button>`;
-
   html+=`</div>`;
+
   document.getElementById("game").innerHTML=html;
-  renderRecap();
 }
 
+/* LOGIC */
 function validerParis(){
   let somme=0;
-  joueurs.forEach((_,i)=>{
-    if(i!==dealerIndex){
-      somme+=+document.getElementById("pari"+i).value||0;
-    }
-  });
-
-  let dealerPari=+document.getElementById("pari"+dealerIndex).value||0;
-
-  if(somme+dealerPari===manche){
+  joueurs.forEach((_,i)=>{ if(i!==dealerIndex) somme+=paris[i]; });
+  if(somme+paris[dealerIndex]===manche){
     alert("❌ Tu peux paaaaaaaaas !");
     return;
   }
-
   parisValides=true;
   renderGame();
 }
 
 function validerManche(){
-  let recap={manche,scores:[]};
-
   joueurs.forEach((_,i)=>{
-    let pari=+document.getElementById("pari"+i).value||0;
-    let pli=+document.getElementById("pli"+i).value||0;
-    let score= pari===pli ? 10*(pli+1) : -10*Math.abs(pari-pli);
-    scores[i]+=score;
-    recap.scores.push(score);
+    scores[i]+= paris[i]===plis[i]
+      ? 10*(plis[i]+1)
+      : -10*Math.abs(paris[i]-plis[i]);
   });
 
-  manches.push(recap);
+  paris.fill(0); plis.fill(0);
   parisValides=false;
   dealerIndex=(dealerIndex+1)%joueurs.length;
-
   if(manche===maxCartes) sens=-1;
   manche+=sens;
-
-  if(manche===0){
-    alert("🎉 Partie terminée !");
-    return;
-  }
+  if(manche===0){ alert("🎉 Partie terminée !"); return; }
   renderGame();
 }
 
 function resetGame(){
-  if(confirm("Réinitialiser complètement la partie ?")){
-    location.reload();
-  }
-}
-
-function renderRecap(){
-  if(!manches.length) return;
-  let html=`<div class="card"><h2>Récap des manches</h2><table>
-    <tr><th>Manche</th>${joueurs.map(j=>`<th>${j}</th>`).join("")}</tr>`;
-  manches.forEach(m=>{
-    html+=`<tr><td>${m.manche}</td>${m.scores.map(s=>`<td>${s}</td>`).join("")}</tr>`;
-  });
-  html+=`</table></div>`;
-  document.getElementById("recap").innerHTML=html;
+  if(confirm("Réinitialiser la partie ?")) location.reload();
 }
 </script>
 
