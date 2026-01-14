@@ -1,56 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>L'Ascenseur - Carte Référence</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Ranking">
+    <title>L'Ascenseur - Ranking</title>
     <style>
-        body { font-family: system-ui, sans-serif; background: #f6f7fb; padding: 40px; max-width: 800px; margin: auto; }
-        .row { margin: 30px 0; }
-        .label { font-weight: 700; font-size: 1.2rem; color: #4f46e5; margin-bottom: 15px; text-align: center; }
-        .cards { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .card { 
-            width: 60px; height: 90px; border-radius: 8px; 
-            background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
-            border: 2px solid #e5e7eb; transition: transform 0.2s;
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh; 
+            padding: 40px 20px 100px;
+            color: white;
+            -webkit-tap-highlight-color: transparent;
         }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
-        .atout .card { color: #dc2626; background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%); }
-        .non-atout .card { color: #1f2937; }
+        .header {
+            text-align: center; 
+            margin-bottom: 40px;
+        }
+        h1 { 
+            font-size: clamp(2rem, 10vw, 4rem); 
+            margin-bottom: 10px; 
+            text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.2); color: white; padding: 12px 20px;
+            border-radius: 25px; text-decoration: none; font-weight: 600;
+            font-size: 1rem; backdrop-filter: blur(10px); transition: all 0.2s;
+        }
+        .back-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.3); }
+        
+        .rows { display: flex; flex-direction: column; gap: 32px; max-width: 100%; }
+        .row { 
+            background: rgba(255,255,255,0.15); 
+            backdrop-filter: blur(20px); 
+            border-radius: 24px; 
+            padding: 28px; 
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .label { 
+            font-size: clamp(1.3rem, 5vw, 1.8rem); 
+            font-weight: 800; 
+            text-align: center; 
+            margin-bottom: 24px; 
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(255,255,255,0.4);
+        }
+        .cards { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 16px; 
+            justify-items: center;
+        }
+        .card { 
+            width: 70px; height: 100px; 
+            border-radius: 16px; 
+            background: rgba(255,255,255,0.95); 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 700; font-size: 14px; color: #1f2937;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: all 0.2s;
+            border: 3px solid transparent;
+        }
+        .card:active { transform: scale(0.95); }
+        .atout .card { 
+            color: #dc2626; 
+            background: linear-gradient(135deg, #fff1f2 0%, #fee2e2 100%);
+            border-color: #dc2626;
+        }
+        .non-atout .card { border-color: #6b7280; }
+        
+        @media (max-width: 480px) {
+            .cards { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+            .card { width: 65px; height: 92px; font-size: 13px; }
+        }
+        @supports (padding: max(0px)) {
+            body { padding-bottom: max(60px, env(safe-area-inset-bottom)); }
+        }
     </style>
 </head>
 <body>
-    <h1 style="text-align: center; color: #4f46e5;">L'Ascenseur - Ordre des Cartes</h1>
+    <div class="header">
+        <a href="index.html" class="back-btn">← Back</a>
+        <h1>Ranking</h1>
+    </div>
     
-    <div class="row atout">
-        <div class="label">🟥 AT OUT (Trump Suit)</div>
-        <div class="cards">
-            <div class="card">Valet</div>
-            <div class="card">9</div>
-            <div class="card">As</div>
-            <div class="card">10</div>
-            <div class="card">Roi</div>
-            <div class="card">Dame</div>
-            <div class="card">8</div>
-            <div class="card">7</div>
+    <div class="rows">
+        <div class="row atout">
+            <div class="label">🟥 AT OUT (Trump)</div>
+            <div class="cards">
+                <div class="card">Valet</div>
+                <div class="card">9</div>
+                <div class="card">As</div>
+                <div class="card">10</div>
+                <div class="card">Roi</div>
+                <div class="card">Dame</div>
+                <div class="card">8</div>
+                <div class="card">7</div>
+            </div>
+        </div>
+
+        <div class="row non-atout">
+            <div class="label">⚫ NON-ATOUT (Plain)</div>
+            <div class="cards">
+                <div class="card">As</div>
+                <div class="card">10</div>
+                <div class="card">Roi</div>
+                <div class="card">Dame</div>
+                <div class="card">Valet</div>
+                <div class="card">9</div>
+                <div class="card">8</div>
+                <div class="card">7</div>
+            </div>
         </div>
     </div>
-
-    <div class="row non-atout">
-        <div class="label">⚫ NON-ATOUT (Plain Suit)</div>
-        <div class="cards">
-            <div class="card">As</div>
-            <div class="card">10</div>
-            <div class="card">Roi</div>
-            <div class="card">Dame</div>
-            <div class="card">Valet</div>
-            <div class="card">9</div>
-            <div class="card">8</div>
-            <div class="card">7</div>
-        </div>
-    </div>
-
-    <p style="text-align: center; font-size: 0.9rem; color: #6b7280; margin-top: 40px;">
-        Save as reference.html | Hover cards for 3D effect | Perfect for L'Ascenseur scoring
-    </p>
 </body>
 </html>
