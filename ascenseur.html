@@ -6,131 +6,121 @@
 <title>L’Ascenseur</title>
 
 <style>
-:root {
-  --bg:#f6f7fb;
-  --primary:#4f46e5;
-  --danger:#dc2626;
-  --card:#fff;
+:root{
+ --bg:#f6f7fb;
+ --primary:#4f46e5;
+ --danger:#dc2626;
+ --card:#fff;
 }
 
-body {
-  font-family: system-ui, sans-serif;
-  background: var(--bg);
-  margin:0;
-  padding:16px 16px 90px;
+body{
+ margin:0;
+ font-family:system-ui,sans-serif;
+ background:var(--bg);
+ padding:16px 16px 120px;
 }
 
-h1,h2 {
-  text-align:center;
-  margin:12px 0;
+h1,h2{text-align:center}
+
+.card{
+ background:var(--card);
+ border-radius:16px;
+ padding:16px;
+ margin:16px auto;
+ max-width:900px;
+ box-shadow:0 10px 25px rgba(0,0,0,.1);
 }
 
-.card {
-  background:var(--card);
-  border-radius:16px;
-  padding:16px;
-  margin:16px auto;
-  max-width:1100px;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
+button{
+ background:var(--primary);
+ color:#fff;
+ border:none;
+ padding:12px;
+ border-radius:14px;
+ font-size:15px;
+ font-weight:700;
 }
 
-button {
-  background:var(--primary);
-  color:#fff;
-  border:none;
-  padding:14px;
-  border-radius:14px;
-  font-size:16px;
-  font-weight:600;
-  cursor:pointer;
-  width:100%;
+button.secondary{
+ background:#e5e7eb;
+ color:#111;
 }
 
-button.danger {
-  background:var(--danger);
+input{
+ width:75%;
+ padding:10px;
+ border-radius:12px;
+ border:1px solid #ccc;
+ text-align:center;
 }
 
-input {
-  width:100%;
-  padding:14px;
-  font-size:16px;
-  border-radius:12px;
-  border:1px solid #d1d5db;
-  text-align:center;
+.readonly{background:#f3f4f6;font-weight:700}
+
+.player-card{
+ border:1px solid #e5e7eb;
+ border-radius:14px;
+ padding:12px;
+ margin-bottom:12px;
 }
 
-input.readonly {
-  background:#f3f4f6;
-  font-weight:700;
+.player-header{text-align:center;font-weight:700}
+
+.player-inputs{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ justify-items:center;
 }
 
-.dealer {
-  color:var(--primary);
-  font-weight:800;
+.player-total{text-align:center;font-weight:700;margin-top:6px}
+
+#actionBar{
+ position:fixed;
+ bottom:0;left:0;right:0;
+ background:#fff;
+ padding:10px;
+ box-shadow:0 -5px 20px rgba(0,0,0,.15);
+ display:flex;
+ gap:10px;
 }
 
-/* ===== MOBILE PLAYER CARD ===== */
-.player-card {
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:12px;
+#actionBar .main{flex:1}
+
+#dealerAlert{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.6);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ z-index:99;
+ animation:fadeIn .3s;
 }
 
-.player-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:700;
-  margin-bottom:10px;
+.alert-card{
+ background:white;
+ padding:30px;
+ border-radius:20px;
+ font-size:28px;
+ font-weight:900;
+ color:var(--danger);
+ animation:shake .5s infinite;
 }
 
-.player-inputs {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+@keyframes shake{
+ 0%{transform:rotate(-2deg)}
+ 50%{transform:rotate(2deg)}
+ 100%{transform:rotate(-2deg)}
 }
 
-.player-total {
-  margin-top:10px;
-  text-align:center;
-  font-weight:700;
-}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-/* ===== DESKTOP TABLE ===== */
-table {
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td {
-  padding:8px;
-  text-align:center;
-  border-bottom:1px solid #e5e7eb;
-}
-
-th {
-  background:#eef2ff;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  table { display:none; }
-}
-
-@media (min-width: 769px) {
-  .mobile { display:none; }
-}
-
-/* RESET BAR */
-#resetBar {
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:white;
-  padding:12px;
-  box-shadow:0 -5px 20px rgba(0,0,0,.1);
+.rank{
+ display:flex;
+ justify-content:space-between;
+ padding:10px;
+ border-bottom:1px solid #eee;
+ font-weight:700;
 }
 </style>
 </head>
@@ -140,121 +130,26 @@ th {
 <h1>🎴 L’Ascenseur</h1>
 
 <div class="card" id="setup">
-  <h2>Nouvelle partie</h2>
-  <input type="number" id="nbJoueurs" min="2" max="6" value="4">
-  <br><br>
-  <button onclick="setupNames()">Continuer</button>
+ <h2>Nombre de joueurs</h2>
+ <div style="display:flex;justify-content:center;gap:16px">
+  <button onclick="chg(-1)">−</button>
+  <span id="nb" style="font-size:22px;font-weight:800">4</span>
+  <button onclick="chg(1)">+</button>
+ </div>
+ <br>
+ <button style="width:100%" onclick="names()">Continuer</button>
 </div>
 
 <div id="names"></div>
 <div id="game"></div>
-<div id="recap"></div>
+<div id="end"></div>
 
-<div id="resetBar" style="display:none">
-  <button class="danger" onclick="resetGame()">🔄 Réinitialiser la partie</button>
+<div id="actionBar" style="display:none">
+ <button class="main" id="mainBtn" onclick="action()"></button>
+ <button class="secondary" onclick="reset()">♻️</button>
 </div>
 
 <script>
-let joueurs=[], scores=[], manches=[];
-let paris=[], plis=[];
-let manche=1, sens=1, dealerIndex=0;
-let parisValides=false;
-const maxCartes=5;
-
-/* SETUP */
-function setupNames(){
-  const nb=+document.getElementById("nbJoueurs").value;
-  document.getElementById("setup").style.display="none";
-  let html=`<div class="card"><h2>Noms des joueurs</h2>`;
-  for(let i=0;i<nb;i++){
-    html+=`<input id="name${i}" placeholder="Joueur ${i+1}"><br><br>`;
-  }
-  html+=`<button onclick="startGame(${nb})">Démarrer</button></div>`;
-  document.getElementById("names").innerHTML=html;
-}
-
-function startGame(nb){
-  joueurs=[];
-  for(let i=0;i<nb;i++){
-    joueurs.push(document.getElementById("name"+i).value || "Joueur "+(i+1));
-  }
-  document.getElementById("names").style.display="none";
-  document.getElementById("resetBar").style.display="block";
-
-  scores=Array(nb).fill(0);
-  paris=Array(nb).fill(0);
-  plis=Array(nb).fill(0);
-  manches=[];
-  manche=1; sens=1; dealerIndex=0; parisValides=false;
-  renderGame();
-}
-
-/* GAME RENDER */
-function renderGame(){
-  let html=`<div class="card">
-    <h2>Manche ${manche} carte(s)</h2>
-    <p style="text-align:center">🃏 Dealer : <span class="dealer">${joueurs[dealerIndex]}</span></p>
-    <div class="mobile">`;
-
-  joueurs.forEach((j,i)=>{
-    html+=`
-    <div class="player-card">
-      <div class="player-header">
-        <span>${j}${i===dealerIndex?" 🃏":""}</span>
-      </div>
-      <div class="player-inputs">
-        <input type="number" min="0" max="${manche}" value="${paris[i]}"
-          ${parisValides?"readonly class='readonly'":""}
-          oninput="paris[${i}]=+this.value||0" placeholder="Pari">
-        <input type="number" min="0" max="${manche}" value="${plis[i]}"
-          ${!parisValides?"readonly class='readonly'":""}
-          oninput="plis[${i}]=+this.value||0" placeholder="Plis">
-      </div>
-      <div class="player-total">Total : ${scores[i]}</div>
-    </div>`;
-  });
-
-  html+=`</div><br>`;
-  html+= !parisValides
-    ? `<button onclick="validerParis()">Valider les paris</button>`
-    : `<button onclick="validerManche()">Valider la manche</button>`;
-  html+=`</div>`;
-
-  document.getElementById("game").innerHTML=html;
-}
-
-/* LOGIC */
-function validerParis(){
-  let somme=0;
-  joueurs.forEach((_,i)=>{ if(i!==dealerIndex) somme+=paris[i]; });
-  if(somme+paris[dealerIndex]===manche){
-    alert("❌ Tu peux paaaaaaaaas !");
-    return;
-  }
-  parisValides=true;
-  renderGame();
-}
-
-function validerManche(){
-  joueurs.forEach((_,i)=>{
-    scores[i]+= paris[i]===plis[i]
-      ? 10*(plis[i]+1)
-      : -10*Math.abs(paris[i]-plis[i]);
-  });
-
-  paris.fill(0); plis.fill(0);
-  parisValides=false;
-  dealerIndex=(dealerIndex+1)%joueurs.length;
-  if(manche===maxCartes) sens=-1;
-  manche+=sens;
-  if(manche===0){ alert("🎉 Partie terminée !"); return; }
-  renderGame();
-}
-
-function resetGame(){
-  if(confirm("Réinitialiser la partie ?")) location.reload();
-}
-</script>
-
-</body>
-</html>
+let nbJ=4, joueurs=[], scores=[], paris=[], plis=[];
+let totalParis=[], manche=1, sens=1, dealer=0, parisOK=false;
+const
