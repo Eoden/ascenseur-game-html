@@ -152,4 +152,87 @@ input{
 <script>
 let nbJ=4, joueurs=[], scores=[], paris=[], plis=[];
 let totalParis=[], manche=1, sens=1, dealer=0, parisOK=false;
-const
+const max=5;
+
+function chg(d){nbJ=Math.min(6,Math.max(2,nbJ+d));nb.innerText=nbJ}
+
+function names(){
+ setup.style.display="none";
+ let h=`<div class="card"><h2>Noms</h2>`;
+ for(let i=0;i<nbJ;i++)h+=`<input id="n${i}" placeholder="Joueur ${i+1}"><br><br>`;
+ h+=`<button style="width:100%" onclick="start()">Démarrer</button></div>`;
+ namesDiv.innerHTML=h;
+}
+const namesDiv=document.getElementById("names");
+
+function start(){
+ for(let i=0;i<nbJ;i++)joueurs.push(n${i}.value||`Joueur ${i+1}`);
+ scores=Array(nbJ).fill(0);
+ totalParis=Array(nbJ).fill(0);
+ paris=Array(nbJ).fill(0);
+ plis=Array(nbJ).fill(0);
+ namesDiv.style.display="none";
+ actionBar.style.display="flex";
+ draw();
+}
+
+function draw(){
+ let h=`<div class="card"><h2>Manche ${manche}</h2><p style="text-align:center">🃏 Dealer : <b>${joueurs[dealer]}</b></p>`;
+ joueurs.forEach((j,i)=>{
+ h+=`<div class="player-card">
+ <div class="player-header">${j}${i===dealer?" 🃏":""}</div>
+ <div class="player-inputs">
+  <input type="number" min="0" max="${manche}" value="${paris[i]}" ${parisOK?"readonly class='readonly'":""} oninput="paris[${i}]=+this.value||0">
+  <input type="number" min="0" max="${manche}" value="${plis[i]}" ${!parisOK?"readonly class='readonly'":""} oninput="plis[${i}]=+this.value||0">
+ </div>
+ <div class="player-total">Score : ${scores[i]}</div>
+ </div>`;
+ });
+ game.innerHTML=h+"</div>";
+ mainBtn.innerText=parisOK?"Manche suivante":"Valider les paris";
+}
+
+function action(){parisOK?next():checkParis()}
+
+function checkParis(){
+ let sum=0;
+ joueurs.forEach((_,i)=>{sum+=paris[i];totalParis[i]+=paris[i]});
+ if(sum===manche){
+  document.body.insertAdjacentHTML("beforeend",
+   `<div id="dealerAlert"><div class="alert-card">TU PEUX PAAAAAAS 😈</div></div>`);
+  setTimeout(()=>dealerAlert.remove(),1500);
+  return;
+ }
+ parisOK=true; draw();
+}
+
+function next(){
+ joueurs.forEach((_,i)=>{
+  scores[i]+=paris[i]===plis[i]?10*(plis[i]+1):-10*Math.abs(paris[i]-plis[i]);
+ });
+ paris.fill(0);plis.fill(0);parisOK=false;
+ dealer=(dealer+1)%joueurs.length;
+ if(manche===max)sens=-1;
+ manche+=sens;
+ if(manche===0)return endGame();
+ draw();
+}
+
+function endGame(){
+ actionBar.style.display="none";
+ let ranked=[...joueurs.keys()].sort((a,b)=>scores[b]-scores[a]);
+ let h=`<div class="card"><h2>🏆 Classement final</h2>`;
+ ranked.forEach((i,r)=>{
+  h+=`<div class="rank">
+   <span>${["🥇","🥈","🥉"][r]||"🎴"} ${joueurs[i]}</span>
+   <span>${scores[i]} pts | Paris : ${totalParis[i]}</span>
+  </div>`;
+ });
+ end.innerHTML=h+"</div>";
+}
+
+function reset(){if(confirm("Nouvelle partie ?"))location.reload()}
+</script>
+
+</body>
+</html>
