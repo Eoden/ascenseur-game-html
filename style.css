@@ -1,6 +1,9 @@
-/* CSS extracted from index.html */
+/* Global resets (keep global)
+   These are intentionally minimal to avoid cross-page overrides */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { 
+
+/* Styles scoped to index page */
+body.index { 
     font-family: system-ui, -apple-system, sans-serif; 
     background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
     min-height: 100vh; 
@@ -11,7 +14,7 @@ body {
     padding: 20px;
     color: white;
 }
-h1 { 
+body.index h1 { 
     font-size: clamp(2rem, 8vw, 4rem); 
     margin-bottom: 40px; 
     text-shadow: 0 4px 12px rgba(0,0,0,0.3);
@@ -21,8 +24,8 @@ h1 {
     from { text-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.3); }
     to { text-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 30px rgba(255,255,255,0.6); }
 }
-.buttons { display: flex; flex-direction: column; gap: 24px; width: 100%; max-width: 350px; }
-.btn { 
+body.index .buttons { display: flex; flex-direction: column; gap: 24px; width: 100%; max-width: 350px; }
+body.index .btn { 
     padding: 24px 32px; 
     font-size: clamp(1.2rem, 5vw, 1.8rem); 
     font-weight: 700; 
@@ -37,30 +40,19 @@ h1 {
     box-shadow: 0 12px 32px rgba(0,0,0,0.3);
     position: relative; overflow: hidden;
 }
-.btn::before {
+body.index .btn::before {
     content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; 
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
     transition: left 0.5s;
 }
-.btn:hover::before { left: 100%; }
-.btn:active { transform: scale(0.96); }
-.start { background: linear-gradient(135deg, #10b981, #059669); color: white; }
-.ranking { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
-@media (min-width: 480px) { .buttons { flex-direction: row; } .btn { flex: 1; } }
+body.index .btn:hover::before { left: 100%; }
+body.index .btn:active { transform: scale(0.96); }
+body.index .start { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+body.index .ranking { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+@media (min-width: 480px) { body.index .buttons { flex-direction: row; } body.index .btn { flex: 1; } }
 
-/* CSS extracted from ascenseur.html */
-* {
- box-sizing: border-box;
-}
-
-html, body {
- margin: 0;
- padding: 0;
- width: 100%;
- overflow-x: hidden;
- font-family: system-ui, sans-serif;
- background: var(--bg);
-}
+/* Styles scoped to ascenseur page */
+/* keep minimal global box-sizing already declared */
 
 :root {
  --bg: #f6f7fb;
@@ -69,17 +61,23 @@ html, body {
  --card: #fff;
 }
 
-body {
+body.ascenseur {
+ margin: 0;
+ padding: 0;
+ width: 100%;
+ overflow-x: hidden;
+ font-family: system-ui, sans-serif;
+ background: var(--bg);
  padding: 16px 16px 120px;
  max-width: 100vw;
 }
 
-h1, h2 {
+body.ascenseur h1, body.ascenseur h2 {
  text-align: center;
  margin: 0 0 16px 0;
 }
 
-.card {
+body.ascenseur .card {
  background: var(--card);
  border-radius: 16px;
  padding: 16px;
@@ -89,7 +87,7 @@ h1, h2 {
  width: 100%;
 }
 
-button {
+body.ascenseur button {
  background: var(--primary);
  color: #fff;
  border: none;
@@ -103,12 +101,12 @@ button {
  touch-action: manipulation;
 }
 
-button.secondary {
+body.ascenseur button.secondary {
  background: #e5e7eb;
  color: #111;
 }
 
-button.small-reset {
+body.ascenseur button.small-reset {
  width: 48px;
  height: 48px;
  padding: 0;
@@ -117,7 +115,7 @@ button.small-reset {
  flex-shrink: 0;
 }
 
-input {
+body.ascenseur input {
  width: 100%;
  padding: 12px;
  border-radius: 12px;
@@ -128,16 +126,16 @@ input {
  background: #f9fafb;
 }
 
-input.readonly {
+body.ascenseur input.readonly {
  pointer-events: none;
 }
 
-input.names-input {
+body.ascenseur input.names-input {
  background: white;
  pointer-events: auto;
 }
 
-.setup-section {
+body.ascenseur .setup-section {
  display: flex;
  justify-content: center;
  align-items: center;
@@ -146,30 +144,30 @@ input.names-input {
  margin: 16px 0;
 }
 
-.setup-group {
+body.ascenseur .setup-group {
  text-align: center;
 }
 
-.setup-group label {
+body.ascenseur .setup-group label {
  display: block;
  font-weight: 700;
  margin-bottom: 8px;
  font-size: 14px;
 }
 
-.setup-group span {
+body.ascenseur .setup-group span {
  font-size: 24px;
  font-weight: 800;
  display: block;
  margin: 8px 0;
 }
 
-.setup-buttons {
+body.ascenseur .setup-buttons {
  display: flex;
  gap: 8px;
 }
 
-.setup-buttons button {
+body.ascenseur .setup-buttons button {
  width: 48px;
  height: 48px;
  padding: 0;
@@ -177,7 +175,7 @@ input.names-input {
  min-height: 44px;
 }
 
-.stepper {
+body.ascenseur .stepper {
  display: flex;
  align-items: center;
  justify-content: center;
@@ -186,7 +184,7 @@ input.names-input {
  width: 100%;
 }
 
-.stepper-btn {
+body.ascenseur .stepper-btn {
  width: 48px;
  height: 48px;
  border-radius: 12px;
@@ -200,17 +198,17 @@ input.names-input {
  flex-shrink: 0;
 }
 
-.stepper-btn.secondary {
+body.ascenseur .stepper-btn.secondary {
  background: #e5e7eb;
  color: #111;
 }
 
-.stepper-btn:disabled {
+body.ascenseur .stepper-btn:disabled {
  opacity: 0.5;
  cursor: not-allowed;
 }
 
-.player-card {
+body.ascenseur .player-card {
  border: 1px solid #e5e7eb;
  border-radius: 14px;
  padding: 16px;
@@ -218,14 +216,14 @@ input.names-input {
  width: 100%;
 }
 
-.player-header {
+body.ascenseur .player-header {
  text-align: center;
  font-weight: 700;
  font-size: 16px;
  margin-bottom: 12px;
 }
 
-.player-inputs {
+body.ascenseur .player-inputs {
  display: grid;
  grid-template-columns: 1fr 1fr;
  gap: 12px;
@@ -233,12 +231,12 @@ input.names-input {
  width: 100%;
 }
 
-.player-input-group {
+body.ascenseur .player-input-group {
  width: 100%;
  text-align: center;
 }
 
-.player-total {
+body.ascenseur .player-total {
  text-align: center;
  font-weight: 700;
  margin-top: 12px;
@@ -246,7 +244,7 @@ input.names-input {
  color: var(--primary);
 }
 
-#actionBar {
+body.ascenseur #actionBar {
  position: fixed;
  bottom: 0;
  left: 0;
@@ -261,11 +259,11 @@ input.names-input {
  box-sizing: border-box;
 }
 
-#actionBar .main {
+body.ascenseur #actionBar .main {
  flex: 1;
 }
 
-#dealerAlert {
+body.ascenseur #dealerAlert {
  position: fixed;
  inset: 0;
  background: rgba(0,0,0,.6);
@@ -277,7 +275,7 @@ input.names-input {
  width: 100vw;
 }
 
-.alert-card {
+body.ascenseur .alert-card {
  background: white;
  padding: 30px;
  border-radius: 20px;
@@ -301,7 +299,7 @@ input.names-input {
  to { opacity: 1 }
 }
 
-.rank {
+body.ascenseur .rank {
  display: flex;
  justify-content: space-between;
  padding: 10px;
@@ -310,7 +308,7 @@ input.names-input {
  width: 100%;
 }
 
-small {
+body.ascenseur small {
  display: block;
  opacity: 0.7;
  font-size: 12px;
@@ -318,23 +316,23 @@ small {
 }
 
 @media (max-width: 480px) {
- .player-inputs {
-   grid-template-columns: 1fr;
-   gap: 16px;
+ body.ascenseur .player-inputs {
+     grid-template-columns: 1fr;
+     gap: 16px;
  }
- .card {
-   margin: 8px 4px;
-   padding: 12px;
+ body.ascenseur .card {
+     margin: 8px 4px;
+     padding: 12px;
  }
- .setup-section {
-   flex-direction: column;
-   gap: 20px;
+ body.ascenseur .setup-section {
+     flex-direction: column;
+     gap: 20px;
  }
 }
 
-/* CSS extracted from ranking.html */
-* { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
-body { 
+/* Styles scoped to ranking page */
+body.ranking * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+body.ranking { 
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
     min-height: 100vh; 
@@ -342,25 +340,25 @@ body {
     color: white;
     -webkit-tap-highlight-color: transparent;
 }
-.header {
+body.ranking .header {
     text-align: center; 
     margin-bottom: 40px;
 }
-h1 { 
+body.ranking h1 { 
     font-size: clamp(2rem, 10vw, 4rem); 
     margin-bottom: 10px; 
     text-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
-.back-btn {
+body.ranking .back-btn {
     display: inline-flex; align-items: center; gap: 8px;
     background: rgba(255,255,255,0.2); color: white; padding: 12px 20px;
     border-radius: 25px; text-decoration: none; font-weight: 600;
     font-size: 1rem; backdrop-filter: blur(10px); transition: all 0.2s;
 }
-.back-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.3); }
+body.ranking .back-btn:active { transform: scale(0.98); background: rgba(255,255,255,0.3); }
 
-.rows { display: flex; flex-direction: column; gap: 32px; max-width: 100%; }
-.row { 
+body.ranking .rows { display: flex; flex-direction: column; gap: 32px; max-width: 100%; }
+body.ranking .row { 
     background: rgba(255,255,255,0.15); 
     backdrop-filter: blur(20px); 
     border-radius: 24px; 
@@ -368,7 +366,7 @@ h1 {
     border: 1px solid rgba(255,255,255,0.2);
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 }
-.label { 
+body.ranking .label { 
     font-size: clamp(1.3rem, 5vw, 1.8rem); 
     font-weight: 800; 
     text-align: center; 
@@ -376,13 +374,13 @@ h1 {
     padding-bottom: 12px;
     border-bottom: 2px solid rgba(255,255,255,0.4);
 }
-.cards { 
+body.ranking .cards { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
     gap: 16px; 
     justify-items: center;
 }
-.card { 
+body.ranking .card { 
     width: 70px; height: 100px; 
     border-radius: 16px; 
     background: rgba(255,255,255,0.95); 
@@ -391,13 +389,21 @@ h1 {
     box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: all 0.2s;
     border: 3px solid transparent;
 }
-.card:active { transform: scale(0.95); }
-.atout .card { 
+body.ranking .card:active { transform: scale(0.95); }
+body.ranking .atout .card { 
     color: #dc2626; 
     background: linear-gradient(135deg, #fff1f2 0%, #fee2e2 100%);
     border-color: #dc2626;
 }
-.non-atout .card { border-color: #6b7280; }
+body.ranking .non-atout .card { border-color: #6b7280; }
+
+@media (max-width: 480px) {
+    body.ranking .cards { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    body.ranking .card { width: 65px; height: 92px; font-size: 13px; }
+}
+@supports (padding: max(0px)) {
+    body.ranking { padding-bottom: max(60px, env(safe-area-inset-bottom)); }
+}
 
 @media (max-width: 480px) {
     .cards { grid-template-columns: repeat(4, 1fr); gap: 12px; }
