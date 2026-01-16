@@ -65,6 +65,15 @@ button.secondary {
  color: #111;
 }
 
+button.small-reset {
+ width: 48px;
+ height: 48px;
+ padding: 0;
+ min-height: 48px;
+ font-size: 20px;
+ flex-shrink: 0;
+}
+
 input {
  width: 100%;
  padding: 12px;
@@ -83,6 +92,46 @@ input.readonly {
 input.names-input {
  background: white;
  pointer-events: auto;
+}
+
+.setup-section {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ gap: 16px;
+ flex-wrap: wrap;
+ margin: 16px 0;
+}
+
+.setup-group {
+ text-align: center;
+}
+
+.setup-group label {
+ display: block;
+ font-weight: 700;
+ margin-bottom: 8px;
+ font-size: 14px;
+}
+
+.setup-group span {
+ font-size: 24px;
+ font-weight: 800;
+ display: block;
+ margin: 8px 0;
+}
+
+.setup-buttons {
+ display: flex;
+ gap: 8px;
+}
+
+.setup-buttons button {
+ width: 48px;
+ height: 48px;
+ padding: 0;
+ font-size: 20px;
+ min-height: 44px;
 }
 
 .stepper {
@@ -225,7 +274,6 @@ small {
  margin-top: 4px;
 }
 
-/* Ensure no overflow on small screens */
 @media (max-width: 480px) {
  .player-inputs {
    grid-template-columns: 1fr;
@@ -234,6 +282,10 @@ small {
  .card {
    margin: 8px 4px;
    padding: 12px;
+ }
+ .setup-section {
+   flex-direction: column;
+   gap: 20px;
  }
 }
 </style>
@@ -244,12 +296,28 @@ small {
 <h1>🎴 L'Ascenseur</h1>
 
 <div class="card" id="setup">
- <h2>Nombre de joueurs</h2>
- <div style="display:flex;justify-content:center;gap:16px;align-items:center">
-  <button onclick="chg(-1)">−</button>
-  <span id="nb" style="font-size:22px;font-weight:800">4</span>
-  <button onclick="chg(1)">+</button>
+ <h2>Configuration</h2>
+ 
+ <div class="setup-section">
+  <div class="setup-group">
+   <label>Nombre de joueurs</label>
+   <div class="setup-buttons">
+    <button onclick="chgPlayers(-1)">−</button>
+    <span id="nbPlayers" style="width:60px">4</span>
+    <button onclick="chgPlayers(1)">+</button>
+   </div>
+  </div>
+  
+  <div class="setup-group">
+   <label>Manches maximales</label>
+   <div class="setup-buttons">
+    <button onclick="chgManches(-1)">−</button>
+    <span id="nbManches" style="width:60px">5</span>
+    <button onclick="chgManches(1)">+</button>
+   </div>
+  </div>
  </div>
+ 
  <br>
  <button onclick="names()">Continuer</button>
 </div>
@@ -260,32 +328,37 @@ small {
 
 <div id="actionBar" style="display:none">
  <button class="main" id="mainBtn" onclick="action()"></button>
- <button class="secondary" onclick="reset()">♻️</button>
+ <button class="secondary small-reset" onclick="reset()">♻️</button>
 </div>
 
 <script>
-let nbJ = 4, joueurs = [], scores = [], paris = [], plis = [];
+let nbPlayers = 4, maxManches = 5, joueurs = [], scores = [], paris = [], plis = [];
 let totalParis = [], manche = 1, sens = 1, dealer = 0, parisOK = false;
-const max = 5;
 
 // cache DOM elements
-const nbSpan     = document.getElementById("nb");
-const setupDiv   = document.getElementById("setup");
-const namesDiv   = document.getElementById("names");
-const gameDiv    = document.getElementById("game");
-const endDiv     = document.getElementById("end");
-const actionBar  = document.getElementById("actionBar");
-const mainBtn    = document.getElementById("mainBtn");
+const nbPlayersSpan  = document.getElementById("nbPlayers");
+const nbManchesSpan  = document.getElementById("nbManches");
+const setupDiv       = document.getElementById("setup");
+const namesDiv       = document.getElementById("names");
+const gameDiv        = document.getElementById("game");
+const endDiv         = document.getElementById("end");
+const actionBar      = document.getElementById("actionBar");
+const mainBtn        = document.getElementById("mainBtn");
 
-function chg(d){
-  nbJ = Math.min(6, Math.max(2, nbJ + d));
-  nbSpan.innerText = nbJ;
+function chgPlayers(d){
+ nbPlayers = Math.min(20, Math.max(2, nbPlayers + d));
+ nbPlayersSpan.innerText = nbPlayers;
+}
+
+function chgManches(d){
+ maxManches = Math.min(15, Math.max(3, maxManches + d));
+ nbManchesSpan.innerText = maxManches;
 }
 
 function names(){
  setupDiv.style.display = "none";
- let h = `<div class="card"><h2>Noms</h2>`;
- for(let i=0;i<nbJ;i++){
+ let h = `<div class="card"><h2>Noms des joueurs</h2>`;
+ for(let i=0;i<nbPlayers;i++){
    h += `<input id="n${i}" class="names-input" placeholder="Joueur ${i+1}"><br><br>`;
  }
  h += `<button onclick="start()">Démarrer</button></div>`;
@@ -294,17 +367,21 @@ function names(){
 
 function start(){
  joueurs = [];
- for(let i=0;i<nbJ;i++){
+ for(let i=0;i<nbPlayers;i++){
    const input = document.getElementById(`n${i}`);
    joueurs.push((input && input.value.trim()) || `Joueur ${i+1}`);
  }
- scores     = Array(nbJ).fill(0);
- totalParis = Array(nbJ).fill(0);
- paris      = Array(nbJ).fill(0);
- plis       = Array(nbJ).fill(0);
+ scores     = Array(nbPlayers).fill(0);
+ totalParis = Array(nbPlayers).fill(0);
+ paris      = Array(nbPlayers).fill(0);
+ plis       = Array(nbPlayers).fill(0);
 
  namesDiv.style.display = "none";
  actionBar.style.display = "flex";
+ manche = 1;
+ sens = 1;
+ dealer = 0;
+ parisOK = false;
  draw();
 }
 
@@ -349,7 +426,7 @@ function draw(){
    </div>`;
  });
  gameDiv.innerHTML = h + "</div>";
- mainBtn.innerText = parisOK ? "Manche suivante" : "Valider les paris";
+ mainBtn.innerText = parisOK ? "Terminer la manche" : "Valider les paris";
 }
 
 function action(){
@@ -382,7 +459,7 @@ function next(){
  plis.fill(0);
  parisOK = false;
  dealer = (dealer + 1) % joueurs.length;
- if(manche === max) sens = -1;
+ if(manche === maxManches) sens = -1;
  manche += sens;
  if(manche === 0) return endGame();
  draw();
