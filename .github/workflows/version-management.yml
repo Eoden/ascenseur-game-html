@@ -1,0 +1,125 @@
+name: Version Management and Change Approval
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version increment type'
+        required: false
+        default: 'minor'
+        type: choice
+        options:
+          - minor
+          - major
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  summarize-and-version:
+    runs-on: ubuntu-latest
+    name: Summarize Changes and Manage Version
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get current version
+        id: get-version
+        run: |
+          chmod +x .github/scripts/manage-version.sh
+          CURRENT_VERSION=$(.github/scripts/manage-version.sh get)
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "📌 Current Version: $CURRENT_VERSION"
+
+      - name: Summarize changes
+        id: summarize
+        run: |
+          echo "## 📋 Change Summary" > summary.md
+          echo "" >> summary.md
+          echo "**Current Version:** \`${{ steps.get-version.outputs.current_version }}\`" >> summary.md
+          echo "" >> summary.md
+
+          # Get changed files in PR
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "### Changed Files:" >> summary.md
+            git diff --name-status origin/${{ github.base_ref }}...HEAD >> summary.md
+            echo "" >> summary.md
+
+            echo "### File Statistics:" >> summary.md
+            git diff --stat origin/${{ github.base_ref }}...HEAD >> summary.md
+            echo "" >> summary.md
+          fi
+
+          # Output summary
+          cat summary.md
+
+      - name: Increment version (minor by default)
+        id: increment-version
+        run: |
+          chmod +x .github/scripts/manage-version.sh
+
+          # Determine version type
+          VERSION_TYPE="${{ github.event.inputs.version_type }}"
+          if [ -z "$VERSION_TYPE" ]; then
+            VERSION_TYPE="minor"
+          fi
+
+          # Increment version
+          if [ "$VERSION_TYPE" == "major" ]; then
+            .github/scripts/manage-version.sh increment-major
+          else
+            .github/scripts/manage-version.sh increment-minor
+          fi
+
+          NEW_VERSION=$(.github/scripts/manage-version.sh get)
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "✅ Version incremented to: $NEW_VERSION"
+
+      - name: Add version info to summary
+        run: |
+          echo "" >> summary.md
+          echo "### 🔖 Version Information:" >> summary.md
+          echo "- **Previous Version:** \`${{ steps.get-version.outputs.current_version }}\`" >> summary.md
+          echo "- **New Version:** \`${{ steps.increment-version.outputs.new_version }}\`" >> summary.md
+          echo "- **Increment Type:** \`${{ github.event.inputs.version_type || 'minor' }}\`" >> summary.md
+          echo "" >> summary.md
+          echo "---" >> summary.md
+          echo "⚠️ **Action Required:** Please review the changes above and approve before merging." >> summary.md
+
+          cat summary.md
+
+      - name: Comment PR with summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('summary.md', 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+
+      - name: Commit version change
+        if: github.event_name == 'pull_request'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add VERSION
+          git commit -m "chore: bump version to ${{ steps.increment-version.outputs.new_version }}" || echo "No changes to commit"
+
+      - name: Push changes
+        if: github.event_name == 'pull_request'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.head_ref }}
