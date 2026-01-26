@@ -23,10 +23,12 @@ increment_minor() {
     local version_without_v="${current_version#V}"
     local major=$(echo "$version_without_v" | cut -d'.' -f1)
     local minor=$(echo "$version_without_v" | cut -d'.' -f2)
-    
+
     # Increment minor version
+    # Note: 10# prefix forces base-10 interpretation to prevent
+    # octal interpretation of zero-padded numbers (e.g., 0008)
     minor=$((10#$minor + 1))
-    
+
     # Format minor with leading zeros (4 digits)
     minor=$(printf "%04d" $minor)
     
@@ -42,10 +44,12 @@ increment_major() {
     # Extract major part
     local version_without_v="${current_version#V}"
     local major=$(echo "$version_without_v" | cut -d'.' -f1)
-    
+
     # Increment major version
+    # Note: 10# prefix forces base-10 interpretation to prevent
+    # octal interpretation of zero-padded numbers (e.g., 08)
     major=$((10#$major + 1))
-    
+
     # Format major with leading zeros (2 digits)
     major=$(printf "%02d" $major)
     
