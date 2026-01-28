@@ -1,51 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chinese Chess (Xiangqi)</title>
+    <title>Xiangqi - Jeu d'échecs chinois</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        canvas { background-color: #f0f0f0; display: block; margin: auto; }
-        #info { cursor: pointer; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; }
-        #popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1; }
+        body { display: flex; flex-direction: column; align-items: center; background-color: #f0f0f0; }
+        canvas { border: 1px solid #000; }
+        #rulesModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); justify-content: center; align-items: center; }
+        #rulesContent { background: white; padding: 20px; border-radius: 5px; }
+        button { margin: 5px; padding: 10px; }
     </style>
 </head>
 <body>
-    <h1>Chinese Chess (Xiangqi)</h1>
-    <button id="info">Rules</button>
-    <div id="popup">
-        <h2>Game Rules</h2>
-        <p>Xiangqi is a strategy board game for two players. The objective is to put the opponent's king into checkmate. Players take turns moving their pieces according to specific rules.</p>
-        <button onclick="hidePopup()">Close</button>
+    <h1>Xiangqi - Jeu d'échecs chinois</h1>
+    <canvas id="gameCanvas" width="600" height="600"></canvas>
+    <button id="rulesButton">Règles</button>
+    <button id="resetButton">Réinitialiser</button>
+    <button id="homeButton">Retour à l'accueil</button>
+
+    <div id="rulesModal">
+        <div id="rulesContent">
+            <h2>Règles du jeu</h2>
+            <p>[Insérer les règles complètes ici]</p>
+            <button id="closeRulesButton">Fermer</button>
+        </div>
     </div>
-    <canvas id="gameCanvas"></canvas>
+
     <script>
+        // Variables and constants
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        // Initialize the canvas and game logic here
+        const rulesModal = document.getElementById('rulesModal');
+        const pieces = {}; // Initialize piece object
 
-        document.getElementById('info').addEventListener('click', showPopup);
-
-        function showPopup() {
-            document.getElementById('popup').style.display = 'block';
+        // Game setup and drawing
+        function setupGame() {
+            // Draw board and pieces
+            drawBoard();
+            drawPieces();
         }
 
-        function hidePopup() {
-            document.getElementById('popup').style.display = 'none';
+        function drawBoard() {
+            // Logic to draw the board
         }
 
-        // Handle touch events for mobile controls
-        canvas.addEventListener('touchstart', handleTouchStart);
-        canvas.addEventListener('touchmove', handleTouchMove);
-
-        function handleTouchStart(e) {
-            // Implement touch start logic here
+        function drawPieces() {
+            // Logic to draw pieces
         }
 
-        function handleTouchMove(e) {
-            // Implement touch move logic here
+        // Touch events for piece movement
+        canvas.addEventListener('touchstart', onTouchStart);
+        canvas.addEventListener('touchmove', onTouchMove);
+        canvas.addEventListener('touchend', onTouchEnd);
+
+        function onTouchStart(event) {
+            // Handle touch start
         }
+
+        function onTouchMove(event) {
+            // Handle touch move
+        }
+
+        function onTouchEnd(event) {
+            // Handle touch end and movement validation
+        }
+
+        // Button handlers
+        document.getElementById('rulesButton').addEventListener('click', () => {
+            rulesModal.style.display = 'flex';
+        });
+
+        document.getElementById('closeRulesButton').addEventListener('click', () => {
+            rulesModal.style.display = 'none';
+        });
+
+        document.getElementById('resetButton').addEventListener('click', setupGame);
+        document.getElementById('homeButton').addEventListener('click', () => {
+            window.location.href = '/';
+        });
+
+        // Initialize game
+        setupGame();
     </script>
 </body>
 </html>
