@@ -49,6 +49,7 @@ body.index .btn:hover::before { left: 100%; }
 body.index .btn:active { transform: scale(0.96); }
 body.index .start { background: linear-gradient(135deg, #10b981, #059669); color: white; }
 body.index .ranking { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+body.index .sandbox { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
 @media (min-width: 480px) { body.index .buttons { flex-direction: row; } body.index .btn { flex: 1; } }
 
 /* Styles scoped to ascenseur page */
