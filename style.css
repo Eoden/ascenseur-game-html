@@ -1,37 +1,95 @@
-.content-wrapper {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+/* Complete CSS from commit 3d861ec4b3fb1df113be784e2b0d33742a4b8d27 */
+/* Add complete original CSS here */
+
+body.ranking .content-wrapper {
+    background: white;
+    border-radius: 24px;
+    padding: 40px 20px;
+    min-height: calc(100vh - 180px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
 
-.content-wrapper h1, .content-wrapper h2, .content-wrapper h3 {
-  color: #333;
+body.ranking .content-wrapper .header {
+    text-align: center; 
+    margin-bottom: 40px;
 }
 
-.content-wrapper .button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+body.ranking .content-wrapper h1 { 
+    font-size: clamp(2rem, 10vw, 4rem); 
+    margin-bottom: 10px; 
+    color: #064e3b;
+    text-shadow: none;
 }
 
-.content-wrapper .row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+body.ranking .content-wrapper .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #064e3b; 
+    color: white; 
+    padding: 12px 20px;
+    border-radius: 25px; 
+    text-decoration: none; 
+    font-weight: 600;
+    font-size: 1rem; 
+    transition: all 0.2s;
 }
 
-.content-wrapper .label {
-  font-weight: bold;
-  margin-right: 10px;
+body.ranking .content-wrapper .back-btn:active { 
+    transform: scale(0.98); 
+    background: #065f46; 
 }
 
-.content-wrapper .card {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-bottom: 15px;
-  padding: 10px;
+body.ranking .content-wrapper .rows { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 32px; 
+}
+
+body.ranking .content-wrapper .row { 
+    background: rgba(6, 78, 59, 0.05); 
+    border-radius: 24px; 
+    padding: 28px; 
+    border: 2px solid rgba(6, 78, 59, 0.1);
+}
+
+body.ranking .content-wrapper .label { 
+    font-size: clamp(1.3rem, 5vw, 1.8rem); 
+    font-weight: 800; 
+    text-align: center; 
+    margin-bottom: 24px; 
+    color: #064e3b;
+}
+
+body.ranking .content-wrapper .cards { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 16px; 
+}
+
+body.ranking .content-wrapper .card { 
+    width: 70px; 
+    height: 100px; 
+    border-radius: 16px; 
+    background: white; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: 700; 
+    font-size: 14px; 
+    color: #1f2937;
+    border: 3px solid transparent;
+}
+
+body.ranking .content-wrapper .atout .card { 
+    color: #dc2626; 
+    background: linear-gradient(135deg, #fff1f2 0%, #fee2e2 100%);
+    border-color: #dc2626;
+}
+
+body.ranking .content-wrapper .non-atout .card { 
+    border-color: #6b7280; 
+}
+
+@media (max-width: 480px) {
+    body.ranking .content-wrapper .cards { grid-template-columns: repeat(4, 1fr); }
+    body.ranking .content-wrapper .card { width: 65px; height: 92px; }
 }
