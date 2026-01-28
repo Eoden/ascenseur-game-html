@@ -1,47 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Ranking">
-    <title>L'Ascenseur - Ranking</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
-<body class="ranking">
-    <div class="header">
-        <a href="index.html" class="back-btn">← Back</a>
+<body>
+    <div class="container">
+        <!-- Existing content goes here -->
         <h1>Ranking</h1>
+        <p>Your content here...</p>
+        <!-- Move the back button below the content -->
     </div>
-    
-    <div class="rows">
-        <div class="row atout">
-            <div class="label">🟥 AT OUT (Trump)</div>
-            <div class="cards">
-                <div class="card">Valet</div>
-                <div class="card">9</div>
-                <div class="card">As</div>
-                <div class="card">10</div>
-                <div class="card">Roi</div>
-                <div class="card">Dame</div>
-                <div class="card">8</div>
-                <div class="card">7</div>
-            </div>
-        </div>
-
-        <div class="row non-atout">
-            <div class="label">⚫ NON-ATOUT (Plain)</div>
-            <div class="cards">
-                <div class="card">As</div>
-                <div class="card">10</div>
-                <div class="card">Roi</div>
-                <div class="card">Dame</div>
-                <div class="card">Valet</div>
-                <div class="card">9</div>
-                <div class="card">8</div>
-                <div class="card">7</div>
-            </div>
-        </div>
-    </div>
+    <button onclick="goBack()">Back</button>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </body>
 </html>
