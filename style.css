@@ -1,19 +1,37 @@
 .content-wrapper {
-  background: white;
-  border-radius: 24px;
-  padding: 40px 20px;
-  min-height: calc(100vh - 180px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.content-wrapper h1 {
-  color: #064e3b;
-  text-shadow: none;
+.content-wrapper h1, .content-wrapper h2, .content-wrapper h3 {
+  color: #333;
 }
 
-.content-wrapper .back-btn {
-  background: #064e3b;
-  color: white;
+.content-wrapper .button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-/* Existing styles for index page, ascenseur page, and ranking page would remain intact below this line */
+.content-wrapper .row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.content-wrapper .label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.content-wrapper .card {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 10px;
+}
