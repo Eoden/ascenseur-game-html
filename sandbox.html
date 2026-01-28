@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -128,7 +128,7 @@
         <canvas id="pongCanvas" class="game-canvas" width="800" height="500"></canvas>
 
         <div class="controls">
-            <div class="controls-row">⌨️ <strong>Joueur 1 (Gauche):</strong> W/S ou ↑/↓</div>
+            <div class="controls-row">⌨️ <strong>Joueur 1 (Gauche):</strong> W/S</div>
             <div class="controls-row">⌨️ <strong>Joueur 2 (Droite):</strong> ↑/↓</div>
             <div class="controls-row">🎯 Premier à 5 points gagne!</div>
         </div>
@@ -158,7 +158,6 @@
             y: canvas.height / 2 - paddleHeight / 2,
             width: paddleWidth,
             height: paddleHeight,
-            dy: 0,
             score: 0
         };
 
@@ -168,7 +167,6 @@
             y: canvas.height / 2 - paddleHeight / 2,
             width: paddleWidth,
             height: paddleHeight,
-            dy: 0,
             score: 0
         };
 
@@ -229,11 +227,11 @@
 
         // Update paddle positions
         function updatePaddles() {
-            // Player 1 controls (W/S or Arrow Up/Down)
-            if ((keys['w'] || keys['W'] || keys['ArrowUp']) && player1.y > 0) {
+            // Player 1 controls (W/S only)
+            if ((keys['w'] || keys['W']) && player1.y > 0) {
                 player1.y -= paddleSpeed;
             }
-            if ((keys['s'] || keys['S'] || keys['ArrowDown']) && player1.y < canvas.height - player1.height) {
+            if ((keys['s'] || keys['S']) && player1.y < canvas.height - player1.height) {
                 player1.y += paddleSpeed;
             }
 
