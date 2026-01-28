@@ -1,28 +1,33 @@
-body.ranking .content-wrapper {
-    background: white;
-    min-height: calc(100vh - 80px);
-    border-radius: 24px 24px 0 0;
-    padding: 40px 20px;
-    margin-top: 20px;
+.content-wrapper {
+  background: white;
+  border-radius: 24px;
+  padding: 40px 20px;
+  min-height: calc(100vh - 180px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-body.ranking .content-wrapper .header {
-    margin-bottom: 40px;
+.content-wrapper h1 {
+  color: #064e3b;
+  text-shadow: none;
 }
 
-body.ranking .content-wrapper h1 {
-    color: #064e3b;
-    text-shadow: none;
+.content-wrapper .back-btn {
+  background: #064e3b;
+  color: white;
 }
 
-body.ranking .content-wrapper .back-btn {
-    background: #064e3b;
-    color: white;
+.content-wrapper .row {
+  /* Add your updated styles here for .row under .content-wrapper */
 }
 
-/* Existing CSS here */
-/* The existing lines are currently being removed for the update */
+.content-wrapper .label {
+  /* Add your updated styles here for .label under .content-wrapper */
+}
 
-/* Overwriting lines 339-346 */
-/* New lines go here, without modifying the original whites */
-/* an example of lines 339-346 that needs modification */
+.content-wrapper .cards {
+  /* Add your updated styles here for .cards under .content-wrapper */
+}
+
+.content-wrapper .card {
+  /* Add your updated styles here for .card under .content-wrapper */
+}
