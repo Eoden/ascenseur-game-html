@@ -3,10 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css?v=20260128">
-    <title>Index</title>
+    <title>Ascenseur Game</title>
 </head>
 <body>
     <h1>Welcome to the Game</h1>
+    <footer id="version"></footer>
+    <script>
+        fetch('VERSION')
+            .then(response => response.text())
+            .then(version => {
+                document.getElementById('version').innerText = `Version: ${version}`;
+            })
+            .catch(error => {
+                console.error('Error loading version:', error);
+            });
+    </script>
 </body>
 </html>
