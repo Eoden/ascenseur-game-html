@@ -3,46 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xiangqi Game</title>
+    <title>Xiangqi - Jeu d'échecs chinois</title>
     <style>
-        /* Add your CSS styles here */
-        body { font-family: Arial, sans-serif; }
-        .board { display: grid; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(10, 1fr); }
-        .cell { width: 50px; height: 50px; border: 1px solid black; }
-        .red { background-color: red; }
-        .black { background-color: black; }
-        /* Add more styles for river, palaces, etc. */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0e7d1;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        canvas {
+            background-color: #d8c69c;
+            border: 2px solid #8b5a2b;
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #8b5a2b;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h1>Xiangqi (Chinese Chess)</h1>
-    <div class="board" id="board"></div>
-    <button id="resetButton">Reset Game</button>
-    <div id="turnIndicator">Current Turn: Red</div>
+    <h1>Bienvenue dans le jeu d'échecs chinois - Xiangqi</h1>
+    <canvas id="gameCanvas"></canvas>
+    <button class="button" id="resetButton">Réinitialiser le jeu</button>
+    <button class="button" id="rulesButton">Règles du jeu</button>
+    <a href="index.html" class="button">Retour à index</a>
+
+    <div id="rulesModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Règles de Xiangqi</h2>
+            <p>Les règles complètes du jeu Xiangqi seront ici...</p>
+        </div>
+    </div>
+
     <script>
-        // Initialize the game board
-        const board = document.getElementById('board');
-        const turnIndicator = document.getElementById('turnIndicator');
-        let currentTurn = 'red'; // using 'red' and 'black' to indicate current turn
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gridSize = 60;
+        const gridWidth = 9;
+        const gridHeight = 10;
+        const riverLine = 5;
+        let currentPlayer = 'R'; // 'R' for Red, 'B' for Black
 
-        function initializeBoard() {
-            // Drawing the full board with river and palaces
-            // Full logic to draw and initialize game pieces
+        // Draw gride, river and palaces
+        function drawBoard() {
+            for (let i = 0; i <= gridHeight; i++) {
+                ctx.moveTo(0, i * gridSize);
+                ctx.lineTo(gridWidth * gridSize, i * gridSize);
+                ctx.stroke();
+            }
+            for (let i = 0; i <= gridWidth; i++) {
+                ctx.moveTo(i * gridSize, 0);
+                ctx.lineTo(i * gridSize, gridHeight * gridSize);
+                ctx.stroke();
+            }
+            ctx.closePath();
+            ctx.moveTo(0, riverLine * gridSize);
+            ctx.lineTo(gridWidth * gridSize, riverLine * gridSize);
+            ctx.stroke();
         }
 
-        function movePiece(piece, target) {
-            // Movements according to each piece type with correct rules
-            // Movement logic for General, Guards, Elephants, Horses, Chariots, Cannons, Soldiers here.
+        // Implement all pieces and their movements
+        const pieces = { 
+            'R_GENERAL': {name: '将', validMoves: []},
+            'B_GENERAL': {name: '帅', validMoves: []},
+            // Other pieces need to be added here...
+        };
+
+        function validateMove(piece, from, to) {
+            // Implement the movement validation logic here based on the rules of Xiangqi
+            return true; // Placeholder
         }
 
-        function switchTurn() {
-            currentTurn = currentTurn === 'red' ? 'black' : 'red';
-            turnIndicator.innerText = 'Current Turn: ' + currentTurn.charAt(0).toUpperCase() + currentTurn.slice(1);
+        function setupEventListeners() {
+            canvas.addEventListener('click', (event) => {
+                // Implement touch/click control logic for mobile
+            });
+
+            document.getElementById('resetButton').addEventListener('click', () => {
+                // Reset game logic
+                alert('Le jeu a été réinitialisé!');
+            });
+
+            document.getElementById('rulesButton').addEventListener('click', () => {
+                document.getElementById('rulesModal').style.display = 'block';
+            });
+
+            document.querySelector('.close').addEventListener('click', () => {
+                document.getElementById('rulesModal').style.display = 'none';
+            });
         }
 
-        document.getElementById('resetButton').addEventListener('click', initializeBoard);
-
-        initializeBoard();
+        drawBoard();
+        setupEventListeners();
     </script>
 </body>
 </html>
