@@ -3,7 +3,7 @@
   border-radius: 24px;
   padding: 40px 20px;
   min-height: calc(100vh - 180px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .content-wrapper h1 {
@@ -16,18 +16,4 @@
   color: white;
 }
 
-.content-wrapper .row {
-  /* Add your updated styles here for .row under .content-wrapper */
-}
-
-.content-wrapper .label {
-  /* Add your updated styles here for .label under .content-wrapper */
-}
-
-.content-wrapper .cards {
-  /* Add your updated styles here for .cards under .content-wrapper */
-}
-
-.content-wrapper .card {
-  /* Add your updated styles here for .card under .content-wrapper */
-}
+/* Existing styles for index page, ascenseur page, and ranking page would remain intact below this line */
