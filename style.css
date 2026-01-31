@@ -15,84 +15,114 @@ body.index {
     color: white;
 }
 
-body.index h1 { 
-    font-size: clamp(2rem, 8vw, 4rem); 
-    margin-bottom: 40px; 
-    text-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    animation: glow 2s ease-in-out infinite alternate;
+body.index h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 48px;
+    background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
 }
 
-@keyframes glow {
-    from { text-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.3); }
-    to { text-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 30px rgba(255,255,255,0.6); }
-}
+
 
 body.index .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
-    width: 100%;
     max-width: 800px;
-    margin-bottom: 20px;
+    width: 100%;
+    padding: 0 20px;
 }
 
 body.index .game-card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 24px;
-    padding: 32px 24px;
-    text-decoration: none;
-    color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    justify-content: center;
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-decoration: none;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
-    position: relative;
-    overflow: hidden;
+    cursor: pointer;
 }
 
-body.index .game-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
+body.index .game-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
 }
-
-body.index .game-card:hover::before { left: 100%; }
 
 body.index .game-card:active {
-    transform: scale(0.96);
+    transform: translateY(-2px) scale(0.98);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 body.index .game-icon {
-    font-size: clamp(3rem, 12vw, 5rem);
-    display: block;
+    font-size: 64px;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
 body.index .game-card h2 {
-    font-size: clamp(1.3rem, 5vw, 1.8rem);
-    font-weight: 700;
-    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #fff;
+    letter-spacing: -0.5px;
 }
 
 body.index .game-card p {
-    font-size: clamp(0.9rem, 3vw, 1.1rem);
-    opacity: 0.9;
-    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
     text-align: center;
+    font-weight: 400;
 }
 
-@media (max-width: 640px) {
+/* Couleurs spécifiques par carte */
+body.index .game-card.ascenseur {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(99, 102, 241, 0.2));
+    border: 1px solid rgba(139, 92, 246, 0.4);
+}
+
+body.index .game-card.ascenseur:hover {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(99, 102, 241, 0.3));
+    border: 1px solid rgba(139, 92, 246, 0.6);
+}
+
+body.index .game-card.echecs {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.2));
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+body.index .game-card.echecs:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(5, 150, 105, 0.3));
+    border: 1px solid rgba(16, 185, 129, 0.6);
+}
+
+@media (max-width: 768px) {
+    body.index h1 {
+        font-size: 36px;
+        margin-bottom: 32px;
+    }
+    
     body.index .games-grid {
         grid-template-columns: 1fr;
-        max-width: 350px;
+        gap: 16px;
+    }
+    
+    body.index .game-card {
+        padding: 32px 24px;
+    }
+    
+    body.index .game-icon {
+        font-size: 48px;
     }
 }
 
