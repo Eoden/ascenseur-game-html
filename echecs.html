@@ -3,14 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Échecs Chinois</title>
+    <title>Échecs Chinois - Xiangqi</title>
     <link rel="stylesheet" href="echecs.css">
 </head>
 <body class="echecs">
     <h1>♟️ Échecs Chinois</h1>
-    <div class="placeholder">
-        <p>🚧 Jeu en cours de développement...</p>
+    
+    <div class="game-container">
+        <!-- Info panel -->
+        <div class="game-info">
+            <div class="turn-indicator">
+                <span class="current-player">Tour : Rouge 🔴</span>
+            </div>
+            <div class="captures">
+                <div class="captures-red">
+                    <span>Capturés (Rouge):</span>
+                    <div class="captured-pieces"></div>
+                </div>
+                <div class="captures-black">
+                    <span>Capturés (Noir):</span>
+                    <div class="captured-pieces"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game board -->
+        <div class="board-wrapper">
+            <canvas id="xiangqi-board" width="600" height="700"></canvas>
+        </div>
+
+        <!-- Controls -->
+        <div class="game-controls">
+            <button class="btn-reset">🔄 Nouvelle Partie</button>
+            <a href="index.html" class="back-btn">← Retour</a>
+        </div>
     </div>
-    <a href="index.html" class="back-btn">← Retour</a>
+
+    <script src="echecs.js"></script>
 </body>
 </html>
