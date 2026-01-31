@@ -1,3 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>L'Ascenseur</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="ascenseur">
+
 <h1>🎴 L'Ascenseur</h1>
-<button class="back-btn" onclick="location.href='index.html'">← Retour</button>
-<!-- Existing content of ascenseur.html continues here -->
+<a href="index.html" class="back-btn">← Retour</a>
+
+<div class="card" id="setup">
+ <h2>Configuration</h2>
+ 
+ <div class="setup-section">
+  <div class="setup-group">
+   <label>Nombre de joueurs</label>
+   <div class="setup-buttons">
+    <button onclick="chgPlayers(-1)">−</button>
+    <span id="nbPlayers" style="width:60px">4</span>
+    <button onclick="chgPlayers(1)">+</button>
+   </div>
+  </div>
+  
+  <div class="setup-group">
+   <label>Manches maximales</label>
+   <div class="setup-buttons">
+    <button onclick="chgManches(-1)">−</button>
+    <span id="nbManches" style="width:60px">5</span>
+    <button onclick="chgManches(1)">+</button>
+   </div>
+  </div>
+ </div>
+ 
+ <br>
+ <button onclick="names()">Continuer</button>
+</div>
+
+<div id="names"></div>
+<div id="game"></div>
+<div id="end"></div>
+
+<div id="actionBar" style="display:none">
+ <button class="main" id="mainBtn" onclick="action()"></button>
+ <button class="secondary small-reset" onclick="reset()">♻️</button>
+</div>
+
+<script>
+let nbPlayers = 4, maxManches = 5, joueurs = [], scores = [], paris = [], plis = [];
+let totalParis = [], manche = 1, sens = 1, dealer = 0, parisOK = false;
+
+// cache DOM elements
+const nbPlayersSpan  = document.getElementById("nbPlayers");
+const nbManchesSpan  = document.getElementById("nbManches");
+const setupDiv       = document.getElementById("setup");
+const namesDiv       = document.getElementById("names");
+const gameDiv        = document.getElementById("game");
+const endDiv         = document.getElementById("end");
+const actionBar      = document.getElementById("actionBar");
+const mainBtn        = document.getElementById("mainBtn");
+
+function chgPlayers(d){
+ nbPlayers = Math.min(20, Math.max(2, nbPlayers + d));
+ nbPlayersSpan.innerText = nbPlayers;
+}
+
+function chgManches(d){
+ maxManches = Math.min(15, Math.max(3, maxManches + d));
+ nbManchesSpan.innerText = maxManches;
+}
+
+function names(){
+ setupDiv.style.display = "none";
+ let h = `<div class=\"card\"> <h2>Noms des joueurs</h2>`;
+ for(let i=0;i<nbPlayers;i++){
+   h += `<input id=\"n${i}\" class=\"names-input\" placeholder=\"Joueur ${i+1}\"><br><br>`;
+ }
+ h += `<button onclick=\"start()\">Démarrer</button></div>`;
+ namesDiv.innerHTML = h;
+}
+
+function start(){
+ joueurs = [];
+ for(let i=0;i<nbPlayers;i++){
+   const input = document.getElementById(`n${i}`);
+   joueurs.push((input && input.value.trim()) || `Joueur ${i+1}`);
+ }
+ scores     = Array(nbPlayers).fill(0);
+ totalParis = Array(nbPlayers).fill(0);
+ paris      = Array(nbPlayers).fill(0);
+ plis       = Array(nbPlayers).fill(0);
+
+ namesDiv.style.display = "none";
+ actionBar.style.display = "flex";
+ manche = 1;
+ sens = 1;
+ dealer = 0;
+ parisOK = false;
+ draw();
+}
+
+function updateValue(idx, type, delta){
+ const val = type === 'pari' ? paris[idx] : plis[idx];
+ const maxVal = manche;
+ const newVal = Math.max(0, Math.min(maxVal, val + delta));
+ if(type === 'pari') paris[idx] = newVal;
+ else plis[idx] = newVal;
+ draw();
+}
+
+function draw(){
+ let h = `<div class=\"card\"><h2>Manche ${manche}</h2>
+          <p style=\"text-align:center\">🃏 Dealer : <b>${joueurs[dealer]}</b></p>`;
+ joueurs.forEach((j,i)=>{
+   const pariVal = paris[i];
+   const plisVal = plis[i];
+   const pariRead = parisOK ? 'readonly' : '';
+   const plisRead = !parisOK ? 'readonly' : '';
+   h += `<div class=\"player-card\">\n     <div class=\"player-header\">${j}${i===dealer?" 🃏":""}</div>\n     <div class=\"player-inputs\">\n       <div class=\"player-input-group\">\n         <div class=\"stepper\">\n           <button class=\"stepper-btn secondary\" onclick=\"updateValue(${i},'pari',-1)\" ${pariVal<=0||pariRead ? 'disabled' : ''}>−</button>\n           <input type=\"number\" readonly value=\"${pariVal}\" class=\"readonly ${pariRead}\">\n           <button class=\"stepper-btn secondary\" onclick=\"updateValue(${i},'pari',1)\" ${pariVal>=manche||pariRead ? 'disabled' : ''}>+</button>\n         </div>\n         <small>Paris</small>\n       </div>\n       <div class=\"player-input-group\">\n         <div class=\"stepper\">\n           <button class=\"stepper-btn secondary\" onclick=\"updateValue(${i},'plis',-1)\" ${plisVal<=0||plisRead ? 'disabled' : ''}>−</button>\n           <input type=\"number\" readonly value=\"${plisVal}\" class=\"readonly ${plisRead}\">\n           <button class=\"stepper-btn secondary\" onclick=\"updateValue(${i},'plis',1)\" ${plisVal>=manche||plisRead ? 'disabled' : ''}>+</button>\n         </div>\n         <small>Plis</small>\n       </div>\n     </div>\n     <div class=\"player-total\">Score : ${scores[i]}</div>\n   </div>`;
+ });
+ gameDiv.innerHTML = h + "</div>";
+ mainBtn.innerText = parisOK ? "Terminer la manche" : "Valider les paris";
+}
+
+function action(){
+ parisOK ? next() : checkParis();
+}
+
+function checkParis(){
+ let sum = 0;
+ joueurs.forEach((_,i)=>{ sum += paris[i]; totalParis[i] += paris[i]; });
+ if(sum === manche){
+  document.body.insertAdjacentHTML("beforeend",
+   `<div id=\"dealerAlert\"><div class=\"alert-card\">TU PEUX PAAAAAAS 😈</div></div>`);
+  setTimeout(()=>{
+    const da = document.getElementById("dealerAlert");
+    if (da) da.remove();
+  },1500);
+  return;
+ }
+ parisOK = true;
+ draw();
+}
+
+function next(){
+ joueurs.forEach((_,i)=>{
+  scores[i] += (paris[i] === plis[i])
+    ? 10 * (plis[i] + 1)
+    : -10 * Math.abs(paris[i] - plis[i]);
+ });
+ paris.fill(0);
+ plis.fill(0);
+ parisOK = false;
+ dealer = (dealer + 1) % joueurs.length;
+ if(manche === maxManches) sens = -1;
+ manche += sens;
+ if(manche === 0) return endGame();
+ draw();
+}
+
+function endGame(){
+ actionBar.style.display = "none";
+ let ranked = [...joueurs.keys()].sort((a,b)=>scores[b]-scores[a]);
+ let h = `<div class=\"card\"><h2>🏆 Classement final</h2>`;
+ ranked.forEach((i,r)=>{
+  h += `<div class=\"rank\">
+   <span>${["🥇","🥈","🥉"][r]||"🎴"} ${joueurs[i]}</span>
+   <span>${scores[i]} pts | Paris : ${totalParis[i]}</span>
+  </div>`;
+ });
+ endDiv.innerHTML = h + "</div>";
+}
+
+function reset(){
+ if(confirm("Nouvelle partie ?")) location.reload();
+}
+</script>
+
+</body>
+</html>
