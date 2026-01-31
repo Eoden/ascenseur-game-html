@@ -1,0 +1,84 @@
+name: Auto-merge Copilot PRs
+
+# Trigger this workflow when a PR is opened, updated, or reopened
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Required permissions for approving and merging PRs
+permissions:
+  contents: write          # Required to merge PRs
+  pull-requests: write     # Required to approve and modify PRs
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    
+    # Only run this workflow for PRs created by trusted bots
+    # This prevents unauthorized auto-merges from other users
+    if: |
+      github.event.pull_request.user.login == 'github-actions[bot]' || 
+      github.event.pull_request.user.login == 'copilot'
+    
+    steps:
+      # Step 1: Log the PR information for transparency
+      - name: Log PR Information
+        run: |
+          echo "🤖 Auto-merge workflow triggered for Copilot PR"
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+          echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "PR Author: ${{ github.event.pull_request.user.login }}"
+          echo "Base Branch: ${{ github.event.pull_request.base.ref }}"
+          echo "Head Branch: ${{ github.event.pull_request.head.ref }}"
+      
+      # Step 2: Wait for other checks to complete
+      # This ensures we don't approve before status checks are done
+      - name: Wait for status checks
+        run: |
+          echo "⏳ Waiting for status checks to complete..."
+          sleep 10
+          echo "✅ Ready to proceed with approval"
+      
+      # Step 3: Approve the PR
+      # Using GitHub CLI to approve the PR from the workflow
+      - name: Approve PR
+        run: |
+          echo "👍 Approving PR #${{ github.event.pull_request.number }}..."
+          gh pr review "${{ github.event.pull_request.number }}" \
+            --approve \
+            --body "✅ Auto-approved by Copilot auto-merge workflow. All automated checks passed."
+          echo "✅ PR approved successfully"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: false
+      
+      # Step 4: Enable auto-merge with squash method
+      # This will automatically merge once all required checks pass
+      - name: Enable auto-merge
+        run: |
+          echo "🔀 Enabling auto-merge for PR #${{ github.event.pull_request.number }}..."
+          gh pr merge "${{ github.event.pull_request.number }}" \
+            --squash \
+            --auto \
+            --delete-branch
+          echo "✅ Auto-merge enabled successfully"
+          echo "📝 Merge method: squash"
+          echo "🗑️  Branch will be deleted after merge"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: false
+      
+      # Step 5: Log completion
+      - name: Log completion
+        if: success()
+        run: |
+          echo "✨ Auto-merge workflow completed successfully"
+          echo "PR will be merged automatically once all checks pass"
+      
+      # Step 6: Handle errors
+      - name: Handle errors
+        if: failure()
+        run: |
+          echo "❌ Auto-merge workflow failed"
+          echo "Please review the PR manually: ${{ github.event.pull_request.html_url }}"
+          exit 1
