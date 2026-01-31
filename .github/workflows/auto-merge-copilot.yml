@@ -52,13 +52,13 @@ jobs:
       - name: Enable auto-merge
         run: |
           echo "🔀 Enabling auto-merge for PR #${{ github.event.pull_request.number }}..."
-          # Enable auto-merge with squash method and branch deletion
-          # Using --delete-branch inline, but it will only delete if merge is successful
+          # Enable auto-merge with squash method and automatic branch deletion
+          # Branch will be deleted automatically after the PR is merged (when checks pass)
           gh pr merge "${{ github.event.pull_request.number }}" \
             --squash \
             --auto \
             --delete-branch || {
-            # If --delete-branch fails (fork or permissions), try without it
+            # If --delete-branch fails (e.g., repository settings or permissions), retry without it
             echo "ℹ️  Retrying without branch deletion..."
             gh pr merge "${{ github.event.pull_request.number }}" \
               --squash \
