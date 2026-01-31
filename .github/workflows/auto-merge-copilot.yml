@@ -1,8 +1,10 @@
 name: Auto-merge Copilot PRs
 
-# Trigger this workflow when a PR is opened, updated, or reopened
+# Trigger this workflow when a PR is opened, updated, reopened, or marked ready for review
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_target:
     types: [opened, synchronize, reopened]
 
 # Required permissions for approving and merging PRs
@@ -11,15 +13,70 @@ permissions:
   pull-requests: write     # Required to approve and modify PRs
 
 jobs:
+  # Job 1: Convert draft PRs to ready for review
+  convert-draft:
+    runs-on: ubuntu-latest
+    
+    # Only run for draft PRs from trusted bots
+    if: |
+      github.event.pull_request.draft == true && 
+      (github.event.pull_request.user.login == 'copilot-swe-agent[bot]' || 
+       github.event.pull_request.user.login == 'github-actions[bot]') &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    
+    permissions:
+      pull-requests: write
+      contents: read
+    
+    steps:
+      # Log information about the draft PR
+      - name: Log Draft PR Information
+        run: |
+          echo "📝 Draft PR detected from bot"
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+          echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "PR Author: ${{ github.event.pull_request.user.login }}"
+          echo "Draft Status: ${{ github.event.pull_request.draft }}"
+      
+      # Wait for the agent to finish its work
+      - name: Wait for checks to complete
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            
+            console.log('PR is in draft mode, waiting 30 seconds for agent to finish...');
+            await new Promise(resolve => setTimeout(resolve, 30000));
+      
+      # Convert the draft PR to ready for review
+      - name: Convert draft to ready for review
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              draft: false
+            });
+            console.log('✅ Draft PR converted to ready for review');
+  
+  # Job 2: Auto-merge the PR
   auto-merge:
     runs-on: ubuntu-latest
     
-    # Only run this workflow for PRs created by trusted bots
-    # This prevents unauthorized auto-merges from other users
-    # GitHub Copilot Workspace uses 'github-actions[bot]' as the actor
-    # Also ensure this is not running on a fork (security measure)
+    # Run after convert-draft job (if it ran), and only for non-draft PRs from trusted bots
+    needs: [convert-draft]
     if: |
-      github.event.pull_request.user.login == 'github-actions[bot]' &&
+      always() && 
+      !github.event.pull_request.draft &&
+      (github.event.pull_request.user.login == 'copilot-swe-agent[bot]' || 
+       github.event.pull_request.user.login == 'github-actions[bot]') &&
       github.event.pull_request.head.repo.full_name == github.repository
     
     steps:
