@@ -1,0 +1,91 @@
+name: Auto-merge Copilot PRs
+
+# Trigger this workflow when a PR is opened, updated, or reopened
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Required permissions for approving and merging PRs
+permissions:
+  contents: write          # Required to merge PRs
+  pull-requests: write     # Required to approve and modify PRs
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    
+    # Only run this workflow for PRs created by trusted bots
+    # This prevents unauthorized auto-merges from other users
+    # GitHub Copilot Workspace uses 'github-actions[bot]' as the actor
+    # Also ensure this is not running on a fork (security measure)
+    if: |
+      github.event.pull_request.user.login == 'github-actions[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    
+    steps:
+      # Step 1: Log the PR information for transparency
+      - name: Log PR Information
+        run: |
+          echo "🤖 Auto-merge workflow triggered for Copilot PR"
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+          echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "PR Author: ${{ github.event.pull_request.user.login }}"
+          echo "Base Branch: ${{ github.event.pull_request.base.ref }}"
+          echo "Head Branch: ${{ github.event.pull_request.head.ref }}"
+      
+      # Step 2: Approve the PR
+      # Using GitHub CLI to approve the PR from the workflow
+      # Only approve on initial open to avoid re-approval errors
+      - name: Approve PR
+        if: github.event.action == 'opened'
+        run: |
+          echo "👍 Approving PR #${{ github.event.pull_request.number }}..."
+          gh pr review "${{ github.event.pull_request.number }}" \
+            --approve \
+            --body "✅ Auto-approved by Copilot auto-merge workflow. This PR was created by a trusted bot."
+          echo "✅ PR approved successfully"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: false
+      
+      # Step 3: Enable auto-merge with squash method
+      # The --auto flag enables auto-merge, which will merge the PR later when all checks pass
+      # This step completes immediately after enabling auto-merge
+      - name: Enable auto-merge
+        run: |
+          echo "🔀 Enabling auto-merge for PR #${{ github.event.pull_request.number }}..."
+          # Try to enable auto-merge with branch deletion
+          if gh pr merge "${{ github.event.pull_request.number }}" --squash --auto --delete-branch 2>&1; then
+            echo "✅ Auto-merge enabled successfully with branch deletion"
+          else
+            # If the command failed, check if it's because auto-merge is already enabled
+            echo "ℹ️  First attempt failed, checking status..."
+            AUTO_MERGE_STATE=$(gh pr view "${{ github.event.pull_request.number }}" --json autoMergeRequest -q '.autoMergeRequest')
+            if [ "$AUTO_MERGE_STATE" != "null" ]; then
+              echo "✅ Auto-merge was already enabled"
+            else
+              # Retry without branch deletion (may be blocked by branch protection or permissions)
+              echo "ℹ️  Retrying without branch deletion (may be blocked by branch protection)..."
+              gh pr merge "${{ github.event.pull_request.number }}" --squash --auto
+              echo "✅ Auto-merge enabled successfully (without branch deletion)"
+            fi
+          fi
+          echo "📝 Merge method: squash"
+          echo "⏳ PR will merge automatically once all required checks pass"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: false
+      
+      # Step 4: Log completion
+      - name: Log completion
+        if: success()
+        run: |
+          echo "✨ Auto-merge workflow completed successfully"
+          echo "⏳ PR will be merged automatically once all required checks pass"
+      
+      # Step 5: Handle errors
+      - name: Handle errors
+        if: failure()
+        run: |
+          echo "❌ Auto-merge workflow failed"
+          echo "Please review the PR manually: ${{ github.event.pull_request.html_url }}"
