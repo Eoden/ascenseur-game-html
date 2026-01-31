@@ -35,7 +35,6 @@ jobs:
       
       # Step 2: Approve the PR
       # Using GitHub CLI to approve the PR from the workflow
-      # The --auto flag in the merge step will wait for all required checks
       - name: Approve PR
         run: |
           echo "👍 Approving PR #${{ github.event.pull_request.number }}..."
@@ -48,23 +47,26 @@ jobs:
         continue-on-error: false
       
       # Step 3: Enable auto-merge with squash method
-      # This will automatically merge once all required checks pass
-      # The --auto flag ensures the PR waits for all required status checks
+      # The --auto flag enables auto-merge, which will merge the PR later when all checks pass
+      # This step completes immediately after enabling auto-merge
       - name: Enable auto-merge
         run: |
           echo "🔀 Enabling auto-merge for PR #${{ github.event.pull_request.number }}..."
-          # Enable auto-merge with squash method
+          # Enable auto-merge with squash method and branch deletion
+          # Using --delete-branch inline, but it will only delete if merge is successful
           gh pr merge "${{ github.event.pull_request.number }}" \
             --squash \
-            --auto
+            --auto \
+            --delete-branch || {
+            # If --delete-branch fails (fork or permissions), try without it
+            echo "ℹ️  Retrying without branch deletion..."
+            gh pr merge "${{ github.event.pull_request.number }}" \
+              --squash \
+              --auto
+          }
           echo "✅ Auto-merge enabled successfully"
           echo "📝 Merge method: squash"
           echo "⏳ PR will merge automatically once all required checks pass"
-          
-          # Try to delete the branch, but don't fail if it's not possible
-          # (e.g., fork PRs or permission issues)
-          gh pr merge "${{ github.event.pull_request.number }}" --delete-branch 2>/dev/null || \
-            echo "ℹ️  Branch will not be auto-deleted (may be from fork or permissions issue)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: false
