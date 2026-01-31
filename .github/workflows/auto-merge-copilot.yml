@@ -35,7 +35,9 @@ jobs:
       
       # Step 2: Approve the PR
       # Using GitHub CLI to approve the PR from the workflow
+      # Only approve on initial open to avoid re-approval errors
       - name: Approve PR
+        if: github.event.action == 'opened'
         run: |
           echo "👍 Approving PR #${{ github.event.pull_request.number }}..."
           gh pr review "${{ github.event.pull_request.number }}" \
@@ -52,19 +54,22 @@ jobs:
       - name: Enable auto-merge
         run: |
           echo "🔀 Enabling auto-merge for PR #${{ github.event.pull_request.number }}..."
-          # Enable auto-merge with squash method and automatic branch deletion
-          # Branch will be deleted automatically after the PR is merged (when checks pass)
-          gh pr merge "${{ github.event.pull_request.number }}" \
-            --squash \
-            --auto \
-            --delete-branch || {
-            # If --delete-branch fails (e.g., repository settings or permissions), retry without it
-            echo "ℹ️  Retrying without branch deletion..."
-            gh pr merge "${{ github.event.pull_request.number }}" \
-              --squash \
-              --auto
-          }
-          echo "✅ Auto-merge enabled successfully"
+          # Try to enable auto-merge with branch deletion
+          if gh pr merge "${{ github.event.pull_request.number }}" --squash --auto --delete-branch; then
+            echo "✅ Auto-merge enabled successfully with branch deletion"
+          else
+            # If the command failed, check if it's because auto-merge is already enabled
+            echo "ℹ️  First attempt failed, checking status..."
+            PR_STATE=$(gh pr view "${{ github.event.pull_request.number }}" --json autoMergeRequest -q '.autoMergeRequest')
+            if [ "$PR_STATE" != "null" ]; then
+              echo "✅ Auto-merge was already enabled"
+            else
+              # Retry without branch deletion
+              echo "ℹ️  Retrying without branch deletion..."
+              gh pr merge "${{ github.event.pull_request.number }}" --squash --auto
+              echo "✅ Auto-merge enabled successfully (without branch deletion)"
+            fi
+          fi
           echo "📝 Merge method: squash"
           echo "⏳ PR will merge automatically once all required checks pass"
         env:
