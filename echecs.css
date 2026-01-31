@@ -1,0 +1,70 @@
+/* Global resets for echecs page */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* Styles for echecs page */
+body.echecs {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #064e3b 0%, #059669 50%, #10b981 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: white;
+}
+
+body.echecs h1 {
+    font-size: clamp(2.5rem, 10vw, 5rem);
+    margin-bottom: 60px;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.3); }
+    to { text-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 30px rgba(255,255,255,0.6); }
+}
+
+body.echecs .placeholder {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 40px 60px;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    margin-bottom: 40px;
+}
+
+body.echecs .placeholder p {
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    font-weight: 600;
+    text-align: center;
+}
+
+body.echecs .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+body.echecs .back-btn:active {
+    transform: scale(0.98);
+    background: rgba(255,255,255,0.3);
+}
+
+@media (max-width: 480px) {
+    body.echecs .placeholder {
+        padding: 30px 40px;
+    }
+}
