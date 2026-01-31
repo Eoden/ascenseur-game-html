@@ -1,11 +1,22 @@
 name: Auto-merge Copilot PRs
 
-# Trigger this workflow when a PR is opened, updated, reopened, or marked ready for review
+# Trigger this workflow when a PR is opened, updated, reopened, edited, or marked ready for review
+# The 'edited' and 'converted_to_draft' types are crucial for detecting draft PR status changes
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: 
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - edited              # Detects changes to draft status
+      - converted_to_draft  # Detects conversion to draft
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: 
+      - opened
+      - synchronize
+      - reopened
+      - edited              # Detects changes to draft status
 
 # Required permissions for approving and merging PRs
 permissions:
@@ -13,136 +24,126 @@ permissions:
   pull-requests: write     # Required to approve and modify PRs
 
 jobs:
-  # Job 1: Convert draft PRs to ready for review
-  convert-draft:
+  # Single unified job to handle draft conversion and auto-merge
+  auto-merge-copilot:
     runs-on: ubuntu-latest
     
-    # Only run for draft PRs from trusted bots
+    # Only run for PRs from Copilot or GitHub Actions bots in the same repository
+    # Using contains() instead of exact match for flexible bot name detection
     if: |
-      github.event.pull_request.draft == true && 
-      (github.event.pull_request.user.login == 'copilot-swe-agent[bot]' || 
-       github.event.pull_request.user.login == 'github-actions[bot]') &&
+      (
+        contains(github.event.pull_request.user.login, 'copilot') || 
+        contains(github.event.pull_request.user.login, 'github-actions')
+      ) &&
       github.event.pull_request.head.repo.full_name == github.repository
     
-    permissions:
-      pull-requests: write
-      contents: read
-    
     steps:
-      # Log information about the draft PR
-      - name: Log Draft PR Information
+      # Debug step: Log detailed event information for troubleshooting
+      - name: Debug Event Information
         run: |
-          echo "📝 Draft PR detected from bot"
+          echo "🔍 ========== Workflow Debug Information =========="
+          echo "Event Name: ${{ github.event_name }}"
+          echo "Event Action: ${{ github.event.action }}"
           echo "PR Number: ${{ github.event.pull_request.number }}"
           echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "PR Draft Status: ${{ github.event.pull_request.draft }}"
           echo "PR Author: ${{ github.event.pull_request.user.login }}"
-          echo "Draft Status: ${{ github.event.pull_request.draft }}"
+          echo "Base Branch: ${{ github.event.pull_request.base.ref }}"
+          echo "Head Branch: ${{ github.event.pull_request.head.ref }}"
+          echo "Repository: ${{ github.event.pull_request.head.repo.full_name }}"
+          echo "=================================================="
       
-      # Wait for the agent to finish its work
-      - name: Wait for checks to complete
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { data: pr } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            });
-            
-            console.log('PR is in draft mode, waiting 30 seconds for agent to finish...');
-            await new Promise(resolve => setTimeout(resolve, 30000));
-      
-      # Convert the draft PR to ready for review
+      # Convert draft PR to ready for review if needed
       - name: Convert draft to ready for review
+        if: github.event.pull_request.draft == true
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-              draft: false
-            });
-            console.log('✅ Draft PR converted to ready for review');
-  
-  # Job 2: Auto-merge the PR
-  auto-merge:
-    runs-on: ubuntu-latest
-    
-    # Run after convert-draft job (if it ran), and only for non-draft PRs from trusted bots
-    needs: [convert-draft]
-    if: |
-      always() && 
-      !github.event.pull_request.draft &&
-      (github.event.pull_request.user.login == 'copilot-swe-agent[bot]' || 
-       github.event.pull_request.user.login == 'github-actions[bot]') &&
-      github.event.pull_request.head.repo.full_name == github.repository
-    
-    steps:
-      # Step 1: Log the PR information for transparency
-      - name: Log PR Information
-        run: |
-          echo "🤖 Auto-merge workflow triggered for Copilot PR"
-          echo "PR Number: ${{ github.event.pull_request.number }}"
-          echo "PR Title: ${{ github.event.pull_request.title }}"
-          echo "PR Author: ${{ github.event.pull_request.user.login }}"
-          echo "Base Branch: ${{ github.event.pull_request.base.ref }}"
-          echo "Head Branch: ${{ github.event.pull_request.head.ref }}"
+            console.log('📝 Draft PR detected from bot');
+            console.log('⏳ Waiting 30 seconds for agent to finish work...');
+            await new Promise(resolve => setTimeout(resolve, 30000));
+            
+            console.log('🔄 Converting draft PR to ready for review...');
+            try {
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                draft: false
+              });
+              console.log('✅ Draft PR successfully converted to ready for review');
+            } catch (error) {
+              console.error('❌ Failed to convert draft PR:', error.message);
+              throw error;
+            }
       
-      # Step 2: Approve the PR
-      # Using GitHub CLI to approve the PR from the workflow
-      # Only approve on initial open to avoid re-approval errors
-      - name: Approve PR
-        if: github.event.action == 'opened'
+      # Wait a moment for the PR state to update after conversion
+      - name: Wait for PR state update
+        if: github.event.pull_request.draft == true
         run: |
-          echo "👍 Approving PR #${{ github.event.pull_request.number }}..."
-          gh pr review "${{ github.event.pull_request.number }}" \
-            --approve \
-            --body "✅ Auto-approved by Copilot auto-merge workflow. This PR was created by a trusted bot."
-          echo "✅ PR approved successfully"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: false
+          echo "⏳ Waiting 5 seconds for PR state to update..."
+          sleep 5
       
-      # Step 3: Enable auto-merge with squash method
-      # The --auto flag enables auto-merge, which will merge the PR later when all checks pass
-      # This step completes immediately after enabling auto-merge
-      - name: Enable auto-merge
-        run: |
-          echo "🔀 Enabling auto-merge for PR #${{ github.event.pull_request.number }}..."
-          # Try to enable auto-merge with branch deletion
-          if gh pr merge "${{ github.event.pull_request.number }}" --squash --auto --delete-branch 2>&1; then
-            echo "✅ Auto-merge enabled successfully with branch deletion"
-          else
-            # If the command failed, check if it's because auto-merge is already enabled
-            echo "ℹ️  First attempt failed, checking status..."
-            AUTO_MERGE_STATE=$(gh pr view "${{ github.event.pull_request.number }}" --json autoMergeRequest -q '.autoMergeRequest')
-            if [ "$AUTO_MERGE_STATE" != "null" ]; then
-              echo "✅ Auto-merge was already enabled"
-            else
-              # Retry without branch deletion (may be blocked by branch protection or permissions)
-              echo "ℹ️  Retrying without branch deletion (may be blocked by branch protection)..."
-              gh pr merge "${{ github.event.pull_request.number }}" --squash --auto
-              echo "✅ Auto-merge enabled successfully (without branch deletion)"
-            fi
-          fi
-          echo "📝 Merge method: squash"
-          echo "⏳ PR will merge automatically once all required checks pass"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: false
+      # Approve and merge the PR
+      - name: Approve and merge PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.issue.number;
+            
+            console.log('🤖 Processing auto-merge for Copilot PR #' + prNumber);
+            
+            // Step 1: Approve the PR
+            try {
+              await github.rest.pulls.createReview({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                event: 'APPROVE',
+                body: '✅ Auto-approved by Copilot auto-merge workflow. This PR was created by a trusted bot.'
+              });
+              console.log('✅ PR approved successfully');
+            } catch (error) {
+              // Approval might fail if already approved or if we're the PR author
+              console.log('ℹ️  Approval skipped (may already be approved):', error.message);
+            }
+            
+            // Step 2: Wait a moment before merging
+            console.log('⏳ Waiting 2 seconds before merge...');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Step 3: Merge the PR using squash method
+            try {
+              await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                merge_method: 'squash'
+              });
+              console.log('✅ PR merged successfully using squash method');
+            } catch (error) {
+              console.error('❌ Merge failed:', error.message);
+              console.error('Full error:', error);
+              throw error;
+            }
       
-      # Step 4: Log completion
+      # Log completion
       - name: Log completion
         if: success()
         run: |
+          echo "✨ =========================================="
           echo "✨ Auto-merge workflow completed successfully"
-          echo "⏳ PR will be merged automatically once all required checks pass"
+          echo "✨ PR #${{ github.event.pull_request.number }} has been merged"
+          echo "✨ =========================================="
       
-      # Step 5: Handle errors
+      # Handle errors
       - name: Handle errors
         if: failure()
         run: |
+          echo "❌ =========================================="
           echo "❌ Auto-merge workflow failed"
-          echo "Please review the PR manually: ${{ github.event.pull_request.html_url }}"
+          echo "❌ Please review the PR manually:"
+          echo "❌ ${{ github.event.pull_request.html_url }}"
+          echo "❌ =========================================="
