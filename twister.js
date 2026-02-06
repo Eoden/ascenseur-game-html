@@ -17,7 +17,7 @@ const MEMBERS = [
   { key: 'PG', label: 'Pied gauche', icon: '🦶' }
 ];
 
-// Build sectors: color x member (stable order)
+// Build sectors in a stable order (color × member)
 const sectors = [];
 COLORS.forEach(color => MEMBERS.forEach(member => sectors.push({ color, member })));
 
@@ -27,16 +27,16 @@ const sectorAngle = (2 * Math.PI) / total;
 const cx = canvas.width / 2;
 const cy = canvas.height / 2;
 const radius = canvas.width / 2 - 10;
-const iconRadius = radius * 0.94; // closer to edge for readability
+const iconRadius = radius * 0.94;
 
-let rotation = 0; // radians, wheel rotation
+let rotation = 0; // radians
 let spinning = false;
 
 function drawWheel() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   sectors.forEach((s, i) => {
-    // Draw sectors with 12h reference (-PI/2)
+    // Draw with 12h reference
     const start = i * sectorAngle + rotation - Math.PI / 2;
     const end = start + sectorAngle;
 
@@ -47,7 +47,6 @@ function drawWheel() {
     ctx.fillStyle = s.color.value;
     ctx.fill();
 
-    // Icon position at sector center
     const mid = (start + end) / 2;
     const x = cx + Math.cos(mid) * iconRadius;
     const y = cy + Math.sin(mid) * iconRadius;
@@ -61,10 +60,10 @@ function drawWheel() {
 }
 
 function getSelectedSectorIndex() {
-  // Pointer is fixed at 12h => angle = -PI/2 in canvas coordinates
-  // We project wheel rotation under the pointer without snapping
-  const angleAtPointer = ((3 * Math.PI / 2) - rotation + 2 * Math.PI) % (2 * Math.PI);
-  return Math.floor(angleAtPointer / sectorAngle) % total;
+  // Pointer is fixed at 12h => -PI/2
+  // Use the exact same angular reference as drawWheel
+  const pointerAngle = (-Math.PI / 2 - rotation + 2 * Math.PI) % (2 * Math.PI);
+  return Math.floor((pointerAngle + sectorAngle / 2) / sectorAngle) % total;
 }
 
 function spin() {
@@ -73,23 +72,25 @@ function spin() {
   resultDiv.classList.add('hidden');
 
   let speed = 0.6; // fast start
-  const friction = 0.985; // smooth deceleration
+  const friction = 0.985;
 
   function animate() {
-    rotation += speed; // always clockwise
+    rotation += speed; // clockwise
     speed *= friction;
     drawWheel();
 
     if (speed > 0.003) {
       requestAnimationFrame(animate);
     } else {
-      // Stop without modifying rotation (wheel decides)
-      const index = getSelectedSectorIndex();
-      const sel = sectors[index];
+      try {
+        const index = getSelectedSectorIndex();
+        const sel = sectors[index];
 
-      resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${sel.color.value}">${sel.color.name.toUpperCase()}</span>`;
-      resultDiv.classList.remove('hidden');
-      spinning = false;
+        resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${sel.color.value}\">${sel.color.name.toUpperCase()}</span>`;
+        resultDiv.classList.remove('hidden');
+      } finally {
+        spinning = false;
+      }
     }
   }
 
