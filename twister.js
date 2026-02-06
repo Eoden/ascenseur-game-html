@@ -72,9 +72,9 @@ function spin() {
   const fullTurns = 5;
   const currentNormalized = ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
 
-  const sectorCenterAngle = selectedIndex * sectorAngle + sectorAngle / 2;
+  // IMPORTANT: sector center aligned to 12h pointer (-PI/2)
+  const sectorCenterAngle = selectedIndex * sectorAngle + sectorAngle / 2 - Math.PI / 2;
 
-  // Pointer is at -PI/2, so we align sector center there
   const targetRotation =
     rotation +
     fullTurns * 2 * Math.PI +
@@ -101,7 +101,7 @@ function spin() {
     if (t < 1) {
       requestAnimationFrame(animate);
     } else {
-      // 3. Reveal result (no calculation here)
+      // 3. Reveal result (deterministic, no calculation)
       const res = sectors[selectedIndex];
       resultDiv.innerHTML = `${res.member.icon} ${res.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${res.color.value}">${res.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove("hidden");
