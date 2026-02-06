@@ -30,14 +30,17 @@ function buildWheel() {
     .map((s, i) => `${s.color.value} ${i * sectorAngle}deg ${(i + 1) * sectorAngle}deg`)
     .join(',');
 
-  // Align 0deg with pointer (top)
+  // Align visual 0deg with pointer (top)
   wheel.style.background = `conic-gradient(from -90deg, ${gradient})`;
+
+  const rect = wheel.getBoundingClientRect();
+  const radius = rect.width / 2 - 36; // px, reliable geometry
 
   sectors.forEach((s, i) => {
     const angle = i * sectorAngle + sectorAngle / 2;
     const label = document.createElement('div');
     label.className = 'sector-label';
-    label.style.transform = `rotate(${angle}deg) translateY(calc(-1 * var(--radius))) rotate(${-angle}deg)`;
+    label.style.transform = `rotate(${angle}deg) translateY(${-radius}px) rotate(${-angle}deg)`;
     label.innerHTML = `${s.member.icon} ${s.member.key}`;
     wheel.appendChild(label);
   });
@@ -57,7 +60,9 @@ spinBtn.onclick = () => {
 
   setTimeout(() => {
     const normalized = ((currentRotation % 360) + 360) % 360;
-    const selectedIndex = Math.floor(normalized / sectorAngle) % totalSectors;
+    const visualOffset = 90; // compensate conic-gradient from -90deg
+    const corrected = (normalized + visualOffset + sectorAngle / 2) % 360;
+    const selectedIndex = Math.floor(corrected / sectorAngle) % totalSectors;
     const selected = sectors[selectedIndex];
     resultDiv.innerHTML = `${selected.member.icon} ${selected.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${selected.color.value}\">${selected.color.name.toUpperCase()}</span>`;
     resultDiv.classList.remove('hidden');
