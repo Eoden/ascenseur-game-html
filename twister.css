@@ -6,9 +6,7 @@ body {
   text-align: center;
 }
 
-header {
-  padding: 1rem;
-}
+header { padding: 1rem; }
 
 .container {
   display: flex;
@@ -25,41 +23,37 @@ header {
 }
 
 .wheel {
+  position: relative;
   width: 100%;
   height: 100%;
   border-radius: 50%;
   border: 8px solid rgba(255,255,255,0.6);
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
   transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-  position: relative;
-}
-
-.wheel::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    repeating-conic-gradient(
-      rgba(255,255,255,0.8) 0deg,
-      rgba(255,255,255,0.8) 1deg,
-      transparent 1deg,
-      transparent 22.5deg
-    );
-  pointer-events: none;
 }
 
 .pointer {
   position: absolute;
-  top: -14px;
+  bottom: -16px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
   border-left: 14px solid transparent;
   border-right: 14px solid transparent;
-  border-bottom: 28px solid white;
+  border-top: 28px solid white;
   z-index: 10;
+}
+
+.sector-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 4px rgba(0,0,0,0.8);
 }
 
 button {
@@ -72,18 +66,14 @@ button {
   backdrop-filter: blur(12px);
 }
 
-button:active {
-  transform: scale(0.96);
-}
+button:active { transform: scale(0.96); }
 
 .result {
   font-size: 1.8rem;
   font-weight: bold;
 }
 
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
 .back {
   margin-top: 1rem;
