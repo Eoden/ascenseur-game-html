@@ -1,0 +1,78 @@
+name: Auto-merge for Copilot PR events
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - reopened
+      - ready_for_review
+      - converted_to_draft
+      - synchronize
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  convert-and-approve:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request != null
+    steps:
+      - name: Debug event info
+        run: |
+          echo "event: ${{ github.event_name }}"
+          echo "action: ${{ github.event.action }}"
+          echo "PR number: ${{ github.event.pull_request.number }}"
+          echo "PR draft: ${{ github.event.pull_request.draft }}"
+          echo "PR author: ${{ github.event.pull_request.user.login }}"
+          echo "PR head repo: ${{ github.event.pull_request.head.repo.full_name }}"
+
+      - name: Convert draft -> ready (if Copilot & same repo)
+        if: |
+          github.event.pull_request.draft == true && (
+            contains(github.event.pull_request.user.login, 'copilot') ||
+            contains(github.event.pull_request.user.login, 'github-actions')
+          )
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) throw new Error('No PR in context');
+            if (pr.head.repo.full_name !== `${context.repo.owner}/${context.repo.repo}`) {
+              console.log('Skipping: PR head repo is not the same as base repo:', pr.head.repo.full_name);
+              return;
+            }
+            console.log(`Converting PR #${pr.number} from draft -> ready`);
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              draft: false
+            });
+            console.log('Converted to ready_for_review');
+
+      - name: Approve PR (best-effort)
+        if: |
+          (contains(github.event.pull_request.user.login, 'copilot') ||
+           contains(github.event.pull_request.user.login, 'github-actions'))
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            try {
+              console.log(`Creating an approval review for PR #${pr.number}`);
+              await github.rest.pulls.createReview({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                event: 'APPROVE',
+                body: '✅ Auto-approval by auto-merge workflow'
+              });
+              console.log('Approval created (or already exists).');
+            } catch (err) {
+              console.log('Approval step skipped/failed:', err.message);
+            }
