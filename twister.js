@@ -17,7 +17,7 @@ const MEMBERS = [
   { key: 'PG', label: 'Pied gauche', icon: '🦶' }
 ];
 
-// Build sectors in a stable order (color × member)
+// Build sectors (color × member)
 const sectors = [];
 COLORS.forEach(color => MEMBERS.forEach(member => sectors.push({ color, member })));
 
@@ -29,14 +29,13 @@ const cy = canvas.height / 2;
 const radius = canvas.width / 2 - 10;
 const iconRadius = radius * 0.94;
 
-let rotation = 0; // current wheel rotation (radians)
+let rotation = 0; // radians
 let spinning = false;
 
 function drawWheel() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   sectors.forEach((s, i) => {
-    // Draw sectors with 12h reference (-PI/2)
     const start = i * sectorAngle + rotation - Math.PI / 2;
     const end = start + sectorAngle;
 
@@ -64,42 +63,37 @@ function spin() {
   spinning = true;
   resultDiv.classList.add('hidden');
 
-  // 1) Decide result first (single source of truth)
+  // Decide result first
   const selectedIndex = Math.floor(Math.random() * total);
 
-  // 2) Compute target rotation so the CENTER of the selected sector lands at 12h
-  const fullTurns = 5 + Math.floor(Math.random() * 2); // 5–6 fast turns
-  const targetRotation =
+  // Target angle: center of selected sector under 12h pointer
+  const fullTurns = 6; // fixed for consistent UX
+  const targetAngle =
     fullTurns * 2 * Math.PI +
+    (-Math.PI / 2) +
     selectedIndex * sectorAngle +
     sectorAngle / 2;
 
-  const startRotation = rotation;
-  const delta = targetRotation - startRotation;
-  const duration = 3000; // ms
-  const startTime = performance.now();
+  let speed = 0.6; // initial clockwise speed
+  const friction = 0.985;
 
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
+  function animate() {
+    rotation += speed;
+    speed *= friction;
 
-  function animate(time) {
-    const elapsed = time - startTime;
-    const t = Math.min(elapsed / duration, 1);
-    const eased = easeOutCubic(t);
+    if (rotation >= targetAngle) {
+      rotation = targetAngle;
+      drawWheel();
 
-    rotation = startRotation + delta * eased;
-    drawWheel();
-
-    if (t < 1) {
-      requestAnimationFrame(animate);
-    } else {
-      // 3) Reveal result (no computation from angle)
       const sel = sectors[selectedIndex];
       resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${sel.color.value}">${sel.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove('hidden');
       spinning = false;
+      return;
     }
+
+    drawWheel();
+    requestAnimationFrame(animate);
   }
 
   requestAnimationFrame(animate);
