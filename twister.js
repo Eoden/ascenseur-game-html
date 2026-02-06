@@ -29,7 +29,8 @@ const sectorAngle = (2 * Math.PI) / total;
 const cx = canvas.width / 2;
 const cy = canvas.height / 2;
 const radius = canvas.width / 2 - 10;
-const iconRadius = radius * 0.92;
+// Icons slightly closer to the center for better readability
+const iconRadius = radius * 0.85;
 
 let rotation = 0; // current rotation (radians)
 let spinning = false;
