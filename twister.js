@@ -1,4 +1,4 @@
-// Stable base v01.0014 – robust result computation (no animation changes)
+// Twister V2 – deterministic spin (result decided before animation)
 
 const canvas = document.getElementById("twisterCanvas");
 const ctx = canvas.getContext("2d");
@@ -19,6 +19,7 @@ const MEMBERS = [
   { key: "PG", label: "Pied gauche", icon: "🦶" }
 ];
 
+// Build sectors (color × member)
 const sectors = [];
 COLORS.forEach(c => MEMBERS.forEach(m => sectors.push({ color: c, member: m })));
 
@@ -30,7 +31,7 @@ const cy = canvas.height / 2;
 const radius = canvas.width / 2 - 10;
 const iconRadius = radius * 0.92;
 
-let rotation = 0;
+let rotation = 0; // current rotation (radians)
 let spinning = false;
 
 function drawWheel() {
@@ -59,43 +60,52 @@ function drawWheel() {
   });
 }
 
-function computeResultFromRotation() {
-  // normalize rotation to [0, 2π[
-  const normalizedRotation = ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-
-  // angle under 12h pointer (inverse of wheel rotation)
-  const angleUnderPointer = (2 * Math.PI - normalizedRotation) % (2 * Math.PI);
-
-  let index = Math.floor(angleUnderPointer / sectorAngle);
-
-  // absolute safety clamp
-  if (index < 0) index = 0;
-  if (index >= total) index = total - 1;
-
-  return sectors[index];
-}
-
 function spin() {
   if (spinning) return;
   spinning = true;
   resultDiv.classList.add("hidden");
 
-  let speed = 0.6;
-  const friction = 0.985;
+  // 1. Decide result FIRST
+  const selectedIndex = Math.floor(Math.random() * total);
 
-  function animate() {
-    rotation += speed;
-    speed *= friction;
+  // 2. Compute target rotation (5 full turns + exact sector center)
+  const fullTurns = 5;
+  const currentNormalized = ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
 
+  const sectorCenterAngle = selectedIndex * sectorAngle + sectorAngle / 2;
+
+  // Pointer is at -PI/2, so we align sector center there
+  const targetRotation =
+    rotation +
+    fullTurns * 2 * Math.PI +
+    (2 * Math.PI - currentNormalized) +
+    sectorCenterAngle;
+
+  const startRotation = rotation;
+  const delta = targetRotation - startRotation;
+  const duration = 1800; // ms
+  const startTime = performance.now();
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function animate(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const eased = easeOutCubic(t);
+
+    rotation = startRotation + delta * eased;
     drawWheel();
 
-    if (speed > 0.002) {
+    if (t < 1) {
       requestAnimationFrame(animate);
     } else {
-      spinning = false;
-      const res = computeResultFromRotation();
-      resultDiv.innerHTML = `${res.member.icon} ${res.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${res.color.value}\">${res.color.name.toUpperCase()}</span>`;
+      // 3. Reveal result (no calculation here)
+      const res = sectors[selectedIndex];
+      resultDiv.innerHTML = `${res.member.icon} ${res.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${res.color.value}">${res.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove("hidden");
+      spinning = false;
     }
   }
 
