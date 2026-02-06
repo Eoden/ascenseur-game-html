@@ -1,4 +1,4 @@
-// NOTE: base stable v01.0014 – only result calculation corrected
+// Stable base v01.0014 – robust result computation (no animation changes)
 
 const canvas = document.getElementById("twisterCanvas");
 const ctx = canvas.getContext("2d");
@@ -60,9 +60,18 @@ function drawWheel() {
 }
 
 function computeResultFromRotation() {
-  // angle under 12h pointer, same reference as drawing
-  const angle = (-rotation - Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI);
-  const index = Math.floor(angle / sectorAngle) % total;
+  // normalize rotation to [0, 2π[
+  const normalizedRotation = ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+  // angle under 12h pointer (inverse of wheel rotation)
+  const angleUnderPointer = (2 * Math.PI - normalizedRotation) % (2 * Math.PI);
+
+  let index = Math.floor(angleUnderPointer / sectorAngle);
+
+  // absolute safety clamp
+  if (index < 0) index = 0;
+  if (index >= total) index = total - 1;
+
   return sectors[index];
 }
 
@@ -85,7 +94,7 @@ function spin() {
     } else {
       spinning = false;
       const res = computeResultFromRotation();
-      resultDiv.innerHTML = `${res.member.icon} ${res.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${res.color.value}">${res.color.name.toUpperCase()}</span>`;
+      resultDiv.innerHTML = `${res.member.icon} ${res.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${res.color.value}\">${res.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove("hidden");
     }
   }
