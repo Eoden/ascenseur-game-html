@@ -17,7 +17,6 @@ const MEMBERS = [
   { key: 'PG', label: 'Pied gauche', icon: '🦶' }
 ];
 
-// Build sectors (color × member)
 const sectors = [];
 COLORS.forEach(color => MEMBERS.forEach(member => sectors.push({ color, member })));
 
@@ -27,16 +26,16 @@ const sectorAngle = (2 * Math.PI) / total;
 const cx = canvas.width / 2;
 const cy = canvas.height / 2;
 const radius = canvas.width / 2 - 10;
-const iconRadius = radius * 0.94;
+const iconRadius = radius * 0.88;
 
-let rotation = 0; // radians
+let rotation = 0; // radians, 0 = pointer (12h)
 let spinning = false;
 
 function drawWheel() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   sectors.forEach((s, i) => {
-    const start = i * sectorAngle + rotation - Math.PI / 2;
+    const start = i * sectorAngle - Math.PI / 2 + rotation;
     const end = start + sectorAngle;
 
     ctx.beginPath();
@@ -63,37 +62,22 @@ function spin() {
   spinning = true;
   resultDiv.classList.add('hidden');
 
-  // Decide result first
-  const selectedIndex = Math.floor(Math.random() * total);
-
-  // Compute how much angle we still need to travel (relative)
-  const fullTurns = 6;
-  const targetDelta =
-    fullTurns * 2 * Math.PI +
-    selectedIndex * sectorAngle +
-    sectorAngle / 2 -
-    ((rotation + Math.PI / 2) % (2 * Math.PI));
-
-  let remaining = targetDelta;
-  let speed = 0.6; // initial clockwise speed
+  let speed = 0.45 + Math.random() * 0.2;
   const friction = 0.985;
 
   function animate() {
-    const step = Math.min(speed, remaining);
-    rotation += step;
-    remaining -= step;
+    rotation += speed;
     speed *= friction;
-
     drawWheel();
 
-    if (remaining > 0.001) {
+    if (speed > 0.002) {
       requestAnimationFrame(animate);
     } else {
-      // Final correction
-      rotation += remaining;
-      drawWheel();
+      // determine result from FINAL visual angle (no snap, no teleport)
+      const normalized = (rotation + Math.PI / 2) % (2 * Math.PI);
+      const index = Math.floor(normalized / sectorAngle) % total;
+      const sel = sectors[index];
 
-      const sel = sectors[selectedIndex];
       resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${sel.color.value}\">${sel.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove('hidden');
       spinning = false;
