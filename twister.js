@@ -30,7 +30,6 @@ const iconRadius = radius * 0.88;
 
 let rotation = 0; // radians, 0 = pointer (12h)
 let spinning = false;
-let targetIndex = 0;
 
 function drawWheel() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -63,9 +62,7 @@ function spin() {
   spinning = true;
   resultDiv.classList.add('hidden');
 
-  targetIndex = Math.floor(Math.random() * total);
-
-  let speed = 0.45 + Math.random() * 0.2; // initial speed
+  let speed = 0.45 + Math.random() * 0.2;
   const friction = 0.985;
 
   function animate() {
@@ -76,12 +73,11 @@ function spin() {
     if (speed > 0.002) {
       requestAnimationFrame(animate);
     } else {
-      // snap to center of target sector
-      const targetAngle = targetIndex * sectorAngle + sectorAngle / 2;
-      rotation = targetAngle;
-      drawWheel();
+      // determine result from FINAL visual angle (no snap, no teleport)
+      const normalized = (rotation + Math.PI / 2) % (2 * Math.PI);
+      const index = Math.floor(normalized / sectorAngle) % total;
+      const sel = sectors[index];
 
-      const sel = sectors[targetIndex];
       resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${sel.color.value}\">${sel.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove('hidden');
       spinning = false;
