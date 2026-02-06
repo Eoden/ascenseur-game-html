@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fléchettes – Compteur</title>
+  <link rel="stylesheet" href="flechettes.css" />
+</head>
+<body>
+  <header>
+    <h1>🎯 Fléchettes</h1>
+  </header>
+
+  <main class="container">
+    <!-- Mode selection -->
+    <section id="mode" class="card">
+      <h2>Choisis le mode</h2>
+      <div class="modes">
+        <button data-start="301">301</button>
+        <button data-start="501">501</button>
+      </div>
+      <p class="hint">D’autres modes arrivent (Cricket, etc.)</p>
+    </section>
+
+    <!-- Game -->
+    <section id="game" class="hidden">
+      <div class="score">
+        <span>Score restant</span>
+        <strong id="remaining">301</strong>
+      </div>
+
+      <div class="turn">
+        <h3>Tour en cours</h3>
+        <ul id="throws"></ul>
+        <div class="turn-actions">
+          <button id="undo">Annuler</button>
+          <button id="nextTurn">Nouveau tour</button>
+        </div>
+      </div>
+
+      <div class="selector">
+        <div class="mult">
+          <button data-m="1" class="active">Simple</button>
+          <button data-m="2">Double</button>
+          <button data-m="3">Triple</button>
+        </div>
+        <div class="nums" id="nums"></div>
+        <div class="bulls">
+          <button data-bull="25">25</button>
+          <button data-bull="50">50</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="toast" class="toast hidden">😅 Oh dommage ! Bust.</div>
+
+    <a href="index.html" class="back">⬅ Retour au menu</a>
+  </main>
+
+  <script src="flechettes.js"></script>
+</body>
+</html>
