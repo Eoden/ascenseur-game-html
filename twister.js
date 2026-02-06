@@ -35,7 +35,7 @@ function buildWheel() {
     const label = document.createElement('div');
     label.className = 'sector-label';
     label.style.setProperty('--angle', `${angle}deg`);
-    label.style.transform = `rotate(${angle}deg) translate(var(--radius)) rotate(${-angle}deg)`;
+    label.style.transform = `rotate(${angle}deg) translateX(var(--radius)) rotate(${-angle}deg)`;
     label.innerHTML = `${s.member.icon} ${s.member.key}`;
     wheel.appendChild(label);
   });
@@ -55,7 +55,7 @@ spinBtn.onclick = () => {
     const normalized = (360 - (currentRotation % 360)) % 360;
     const selectedIndex = Math.floor(normalized / sectorAngle) % totalSectors;
     const selected = sectors[selectedIndex];
-    resultDiv.innerHTML = `${selected.member.icon} ${selected.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${selected.color.value}">${selected.color.name.toUpperCase()}</span>`;
+    resultDiv.innerHTML = `${selected.member.icon} ${selected.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${selected.color.value}\">${selected.color.name.toUpperCase()}</span>`;
     resultDiv.classList.remove('hidden');
   }, 3000);
 };
