@@ -66,34 +66,38 @@ function spin() {
   // Decide result first
   const selectedIndex = Math.floor(Math.random() * total);
 
-  // Target angle: center of selected sector under 12h pointer
-  const fullTurns = 6; // fixed for consistent UX
-  const targetAngle =
+  // Compute how much angle we still need to travel (relative)
+  const fullTurns = 6;
+  const targetDelta =
     fullTurns * 2 * Math.PI +
-    (-Math.PI / 2) +
     selectedIndex * sectorAngle +
-    sectorAngle / 2;
+    sectorAngle / 2 -
+    ((rotation + Math.PI / 2) % (2 * Math.PI));
 
+  let remaining = targetDelta;
   let speed = 0.6; // initial clockwise speed
   const friction = 0.985;
 
   function animate() {
-    rotation += speed;
+    const step = Math.min(speed, remaining);
+    rotation += step;
+    remaining -= step;
     speed *= friction;
 
-    if (rotation >= targetAngle) {
-      rotation = targetAngle;
+    drawWheel();
+
+    if (remaining > 0.001) {
+      requestAnimationFrame(animate);
+    } else {
+      // Final correction
+      rotation += remaining;
       drawWheel();
 
       const sel = sectors[selectedIndex];
-      resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${sel.color.value}">${sel.color.name.toUpperCase()}</span>`;
+      resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${sel.color.value}\">${sel.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove('hidden');
       spinning = false;
-      return;
     }
-
-    drawWheel();
-    requestAnimationFrame(animate);
   }
 
   requestAnimationFrame(animate);
