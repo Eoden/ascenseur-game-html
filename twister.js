@@ -26,17 +26,17 @@ const sectorAngle = (2 * Math.PI) / total;
 const cx = canvas.width / 2;
 const cy = canvas.height / 2;
 const radius = canvas.width / 2 - 10;
-const iconRadius = radius * 0.75;
+const iconRadius = radius * 0.88;
 
-let rotation = 0;
+let rotation = 0; // radians, 0 = pointer (12h)
 let spinning = false;
 let targetIndex = 0;
 
-function drawWheel(angleOffset = 0) {
+function drawWheel() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   sectors.forEach((s, i) => {
-    const start = i * sectorAngle + angleOffset;
+    const start = i * sectorAngle - Math.PI / 2 + rotation;
     const end = start + sectorAngle;
 
     ctx.beginPath();
@@ -58,37 +58,33 @@ function drawWheel(angleOffset = 0) {
   });
 }
 
-function easeOutCubic(t) {
-  return 1 - Math.pow(1 - t, 3);
-}
-
 function spin() {
   if (spinning) return;
   spinning = true;
   resultDiv.classList.add('hidden');
 
   targetIndex = Math.floor(Math.random() * total);
-  const spins = Math.floor(Math.random() * 3) + 4;
 
-  const targetAngle = spins * 2 * Math.PI + (targetIndex * sectorAngle + sectorAngle / 2);
-  const start = rotation;
-  const duration = 3000;
-  const startTime = performance.now();
+  let speed = 0.45 + Math.random() * 0.2; // initial speed
+  const friction = 0.985;
 
-  function animate(time) {
-    const elapsed = time - startTime;
-    const t = Math.min(elapsed / duration, 1);
-    const eased = easeOutCubic(t);
-    rotation = start + (targetAngle - start) * eased;
-    drawWheel(-rotation);
+  function animate() {
+    rotation += speed;
+    speed *= friction;
+    drawWheel();
 
-    if (t < 1) {
+    if (speed > 0.002) {
       requestAnimationFrame(animate);
     } else {
-      spinning = false;
+      // snap to center of target sector
+      const targetAngle = targetIndex * sectorAngle + sectorAngle / 2;
+      rotation = targetAngle;
+      drawWheel();
+
       const sel = sectors[targetIndex];
-      resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${sel.color.value}">${sel.color.name.toUpperCase()}</span>`;
+      resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${sel.color.value}\">${sel.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove('hidden');
+      spinning = false;
     }
   }
 
