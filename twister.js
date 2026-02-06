@@ -28,7 +28,7 @@ const cy = canvas.height / 2;
 const radius = canvas.width / 2 - 10;
 const iconRadius = radius * 0.88;
 
-let rotation = 0; // radians, 0 = pointer (12h)
+let rotation = 0; // always normalized [0, 2π)
 let spinning = false;
 
 function drawWheel() {
@@ -62,18 +62,18 @@ function spin() {
   spinning = true;
   resultDiv.classList.add('hidden');
 
-  let speed = 0.45 + Math.random() * 0.2;
-  const friction = 0.985;
+  let speed = 0.35 + Math.random() * 0.15; // slightly lower initial speed
+  const friction = 0.97; // faster deceleration
 
   function animate() {
-    rotation += speed;
+    rotation = (rotation + speed) % (2 * Math.PI); // continuous normalization
     speed *= friction;
     drawWheel();
 
-    if (speed > 0.002) {
+    if (speed > 0.003) {
       requestAnimationFrame(animate);
     } else {
-      // determine result from FINAL visual angle (no snap, no teleport)
+      // derive result strictly from final visual angle
       const normalized = (rotation + Math.PI / 2) % (2 * Math.PI);
       const index = Math.floor(normalized / sectorAngle) % total;
       const sel = sectors[index];
