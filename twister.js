@@ -30,6 +30,7 @@ const iconRadius = radius * 0.75;
 
 let rotation = 0;
 let spinning = false;
+let targetIndex = 0;
 
 function drawWheel(angleOffset = 0) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -66,10 +67,10 @@ function spin() {
   spinning = true;
   resultDiv.classList.add('hidden');
 
+  targetIndex = Math.floor(Math.random() * total);
   const spins = Math.floor(Math.random() * 3) + 4;
-  const targetIndex = Math.floor(Math.random() * total);
-  const targetRotation = spins * 2 * Math.PI + targetIndex * sectorAngle;
 
+  const targetAngle = spins * 2 * Math.PI + (targetIndex * sectorAngle + sectorAngle / 2);
   const start = rotation;
   const duration = 3000;
   const startTime = performance.now();
@@ -78,16 +79,14 @@ function spin() {
     const elapsed = time - startTime;
     const t = Math.min(elapsed / duration, 1);
     const eased = easeOutCubic(t);
-    rotation = start + (targetRotation - start) * eased;
+    rotation = start + (targetAngle - start) * eased;
     drawWheel(-rotation);
 
     if (t < 1) {
       requestAnimationFrame(animate);
     } else {
       spinning = false;
-      const normalized = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-      const index = Math.floor(normalized / sectorAngle) % total;
-      const sel = sectors[index];
+      const sel = sectors[targetIndex];
       resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${sel.color.value}">${sel.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove('hidden');
     }
