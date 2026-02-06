@@ -29,14 +29,14 @@ const cy = canvas.height / 2;
 const radius = canvas.width / 2 - 10;
 const iconRadius = radius * 0.94;
 
-let rotation = 0; // radians
+let rotation = 0; // current wheel rotation (radians)
 let spinning = false;
 
 function drawWheel() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   sectors.forEach((s, i) => {
-    // Draw with 12h reference
+    // Draw sectors with 12h reference (-PI/2)
     const start = i * sectorAngle + rotation - Math.PI / 2;
     const end = start + sectorAngle;
 
@@ -59,38 +59,46 @@ function drawWheel() {
   });
 }
 
-function getSelectedSectorIndex() {
-  // Pointer is fixed at 12h => -PI/2
-  // Use the exact same angular reference as drawWheel
-  const pointerAngle = (-Math.PI / 2 - rotation + 2 * Math.PI) % (2 * Math.PI);
-  return Math.floor((pointerAngle + sectorAngle / 2) / sectorAngle) % total;
-}
-
 function spin() {
   if (spinning) return;
   spinning = true;
   resultDiv.classList.add('hidden');
 
-  let speed = 0.6; // fast start
-  const friction = 0.985;
+  // 1) Decide result first (single source of truth)
+  const selectedIndex = Math.floor(Math.random() * total);
 
-  function animate() {
-    rotation += speed; // clockwise
-    speed *= friction;
+  // 2) Compute target rotation so the CENTER of the selected sector lands at 12h
+  const fullTurns = 5 + Math.floor(Math.random() * 2); // 5–6 fast turns
+  const targetRotation =
+    fullTurns * 2 * Math.PI +
+    selectedIndex * sectorAngle +
+    sectorAngle / 2;
+
+  const startRotation = rotation;
+  const delta = targetRotation - startRotation;
+  const duration = 3000; // ms
+  const startTime = performance.now();
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function animate(time) {
+    const elapsed = time - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const eased = easeOutCubic(t);
+
+    rotation = startRotation + delta * eased;
     drawWheel();
 
-    if (speed > 0.003) {
+    if (t < 1) {
       requestAnimationFrame(animate);
     } else {
-      try {
-        const index = getSelectedSectorIndex();
-        const sel = sectors[index];
-
-        resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${sel.color.value}\">${sel.color.name.toUpperCase()}</span>`;
-        resultDiv.classList.remove('hidden');
-      } finally {
-        spinning = false;
-      }
+      // 3) Reveal result (no computation from angle)
+      const sel = sectors[selectedIndex];
+      resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${sel.color.value}">${sel.color.name.toUpperCase()}</span>`;
+      resultDiv.classList.remove('hidden');
+      spinning = false;
     }
   }
 
