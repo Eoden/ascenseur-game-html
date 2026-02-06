@@ -1,9 +1,84 @@
-/* Twister wheel fixes: alignment, pointer top-down */
-.wheel-container{position:relative;width:80vw;max-width:420px;aspect-ratio:1/1}
-.wheel{position:relative;width:100%;height:100%;border-radius:50%;border:8px solid rgba(255,255,255,.6);box-shadow:0 20px 40px rgba(0,0,0,.5);transition:transform 3s cubic-bezier(.17,.67,.12,.99)}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #111, #222);
+  color: white;
+  text-align: center;
+}
 
-/* Pointer back on top, pointing down */
-.pointer{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:28px solid white;z-index:10}
+header { padding: 1rem; }
 
-/* Labels perfectly aligned on wheel radius */
-.sector-label{position:absolute;top:50%;left:50%;transform-origin:0 0;font-size:.9rem;font-weight:bold;color:white;text-shadow:0 0 4px rgba(0,0,0,.8)}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.wheel-container {
+  position: relative;
+  width: 80vw;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
+}
+
+.wheel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  --radius: calc(50% - 18px);
+  border: 8px solid rgba(255,255,255,0.6);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+
+.pointer {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 28px solid white;
+  z-index: 10;
+}
+
+.sector-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 4px rgba(0,0,0,0.8);
+}
+
+button {
+  padding: 1rem 2.5rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  color: white;
+  backdrop-filter: blur(12px);
+}
+
+button:active { transform: scale(0.96); }
+
+.result {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.hidden { display: none; }
+
+.back {
+  margin-top: 1rem;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
