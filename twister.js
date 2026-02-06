@@ -1,72 +1,101 @@
-const wheel = document.getElementById('wheel');
+const canvas = document.getElementById('twisterCanvas');
+const ctx = canvas.getContext('2d');
 const spinBtn = document.getElementById('spinBtn');
 const resultDiv = document.getElementById('result');
 
-const members = [
-  { key: 'MD', label: 'Main droite', icon: '🖐️' },
-  { key: 'MG', label: 'Main gauche', icon: '🖐️' },
-  { key: 'PD', label: 'Pied droit', icon: '🦶' },
-  { key: 'PG', label: 'Pied gauche', icon: '🦶' }
-];
-
-const colors = [
+const COLORS = [
   { name: 'Jaune', value: '#f1c40f' },
   { name: 'Rouge', value: '#e74c3c' },
   { name: 'Bleu', value: '#3498db' },
   { name: 'Vert', value: '#2ecc71' }
 ];
 
-// Build sectors starting from top (12h), clockwise
+const MEMBERS = [
+  { key: 'MD', label: 'Main droite', icon: '🖐️' },
+  { key: 'MG', label: 'Main gauche', icon: '🖐️' },
+  { key: 'PD', label: 'Pied droit', icon: '🦶' },
+  { key: 'PG', label: 'Pied gauche', icon: '🦶' }
+];
+
 const sectors = [];
-colors.forEach(color => members.forEach(member => sectors.push({ color, member })));
+COLORS.forEach(color => MEMBERS.forEach(member => sectors.push({ color, member })));
 
-const totalSectors = sectors.length;
-const sectorAngle = 360 / totalSectors;
+const total = sectors.length;
+const sectorAngle = (2 * Math.PI) / total;
 
-function buildWheel() {
-  wheel.innerHTML = '';
+const cx = canvas.width / 2;
+const cy = canvas.height / 2;
+const radius = canvas.width / 2 - 10;
+const iconRadius = radius * 0.75;
 
-  const gradient = sectors
-    .map((s, i) => `${s.color.value} ${i * sectorAngle}deg ${(i + 1) * sectorAngle}deg`)
-    .join(',');
+let rotation = 0;
+let spinning = false;
 
-  // Align visual 0deg with pointer (top)
-  wheel.style.background = `conic-gradient(from -90deg, ${gradient})`;
-
-  const rect = wheel.getBoundingClientRect();
-  const radius = rect.width / 2 - 36; // px, reliable geometry
+function drawWheel(angleOffset = 0) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   sectors.forEach((s, i) => {
-    const angle = i * sectorAngle + sectorAngle / 2;
-    const label = document.createElement('div');
-    label.className = 'sector-label';
-    label.style.transform = `rotate(${angle}deg) translateY(${-radius}px) rotate(${-angle}deg)`;
-    label.innerHTML = `${s.member.icon} ${s.member.key}`;
-    wheel.appendChild(label);
+    const start = i * sectorAngle + angleOffset;
+    const end = start + sectorAngle;
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, end);
+    ctx.closePath();
+    ctx.fillStyle = s.color.value;
+    ctx.fill();
+
+    const mid = (start + end) / 2;
+    const x = cx + Math.cos(mid) * iconRadius;
+    const y = cy + Math.sin(mid) * iconRadius;
+
+    ctx.font = '18px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(`${s.member.icon} ${s.member.key}`, x, y);
   });
 }
 
-let currentRotation = 0;
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
 
-spinBtn.onclick = () => {
+function spin() {
+  if (spinning) return;
+  spinning = true;
   resultDiv.classList.add('hidden');
+
   const spins = Math.floor(Math.random() * 3) + 4;
-  const index = Math.floor(Math.random() * totalSectors);
+  const targetIndex = Math.floor(Math.random() * total);
+  const targetRotation = spins * 2 * Math.PI + targetIndex * sectorAngle;
 
-  // target angle relative to pointer (0deg = top)
-  const target = 360 * spins + index * sectorAngle;
-  currentRotation += target;
-  wheel.style.transform = `rotate(${currentRotation}deg)`;
+  const start = rotation;
+  const duration = 3000;
+  const startTime = performance.now();
 
-  setTimeout(() => {
-    const normalized = ((currentRotation % 360) + 360) % 360;
-    const visualOffset = 90; // compensate conic-gradient from -90deg
-    const corrected = (normalized + visualOffset + sectorAngle / 2) % 360;
-    const selectedIndex = Math.floor(corrected / sectorAngle) % totalSectors;
-    const selected = sectors[selectedIndex];
-    resultDiv.innerHTML = `${selected.member.icon} ${selected.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${selected.color.value}\">${selected.color.name.toUpperCase()}</span>`;
-    resultDiv.classList.remove('hidden');
-  }, 3000);
-};
+  function animate(time) {
+    const elapsed = time - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const eased = easeOutCubic(t);
+    rotation = start + (targetRotation - start) * eased;
+    drawWheel(-rotation);
 
-buildWheel();
+    if (t < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      spinning = false;
+      const normalized = (rotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+      const index = Math.floor(normalized / sectorAngle) % total;
+      const sel = sectors[index];
+      resultDiv.innerHTML = `${sel.member.icon} ${sel.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${sel.color.value}">${sel.color.name.toUpperCase()}</span>`;
+      resultDiv.classList.remove('hidden');
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+spinBtn.addEventListener('click', spin);
+
+drawWheel();

@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: linear-gradient(180deg, #111, #222);
+  background: radial-gradient(circle at top, #222, #000);
   color: white;
   text-align: center;
 }
@@ -15,27 +15,21 @@ header { padding: 1rem; }
   gap: 1.5rem;
 }
 
-.wheel-container {
+.canvas-wrapper {
   position: relative;
   width: 80vw;
-  max-width: 420px;
-  aspect-ratio: 1 / 1;
+  max-width: 360px;
 }
 
-.wheel {
-  position: relative;
+canvas {
   width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  --radius: calc(50% - 28px);
-  border: 8px solid rgba(255,255,255,0.6);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-  transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+  height: auto;
+  display: block;
 }
 
 .pointer {
   position: absolute;
-  top: -18px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
@@ -44,16 +38,6 @@ header { padding: 1rem; }
   border-right: 14px solid transparent;
   border-top: 28px solid white;
   z-index: 10;
-}
-
-.sector-label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: white;
-  text-shadow: 0 0 4px rgba(0,0,0,0.8);
 }
 
 button {
