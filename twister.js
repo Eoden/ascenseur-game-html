@@ -1,4 +1,4 @@
-// Twister V2 – deterministic spin (result decided before animation)
+// Twister – Canvas-driven truth model (visual source of truth)
 
 const canvas = document.getElementById("twisterCanvas");
 const ctx = canvas.getContext("2d");
@@ -34,12 +34,27 @@ const iconRadius = radius * 0.92;
 let rotation = 0; // current rotation (radians)
 let spinning = false;
 
+// This will store the REAL angles used for drawing (source of truth)
+let visibleSectors = [];
+
+function normalize(angle) {
+  return (angle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+}
+
 function drawWheel() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  visibleSectors = [];
 
   sectors.forEach((s, i) => {
     const start = i * sectorAngle + rotation - Math.PI / 2;
     const end = start + sectorAngle;
+
+    // store real drawn angles
+    visibleSectors.push({
+      index: i,
+      start,
+      end
+    });
 
     ctx.beginPath();
     ctx.moveTo(cx, cy);
@@ -60,29 +75,35 @@ function drawWheel() {
   });
 }
 
+function getSectorUnderPointer() {
+  const pointerAngle = normalize(-Math.PI / 2);
+
+  for (const s of visibleSectors) {
+    const start = normalize(s.start);
+    const end = normalize(s.end);
+
+    if (start < end) {
+      if (pointerAngle >= start && pointerAngle < end) return s.index;
+    } else {
+      // sector crosses 0 radians
+      if (pointerAngle >= start || pointerAngle < end) return s.index;
+    }
+  }
+
+  // absolute fallback (should never happen)
+  return 0;
+}
+
 function spin() {
   if (spinning) return;
   spinning = true;
   resultDiv.classList.add("hidden");
 
-  // 1. Decide result FIRST
-  const selectedIndex = Math.floor(Math.random() * total);
-
-  // 2. Compute target rotation (5 full turns + exact sector center)
   const fullTurns = 5;
-  const currentNormalized = ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-
-  // IMPORTANT: sector center aligned to 12h pointer (-PI/2)
-  const sectorCenterAngle = selectedIndex * sectorAngle + sectorAngle / 2 - Math.PI / 2;
-
-  const targetRotation =
-    rotation +
-    fullTurns * 2 * Math.PI +
-    (2 * Math.PI - currentNormalized) +
-    sectorCenterAngle;
-
   const startRotation = rotation;
+  const targetRotation = rotation + fullTurns * 2 * Math.PI + Math.random() * 2 * Math.PI;
   const delta = targetRotation - startRotation;
+
   const duration = 1800; // ms
   const startTime = performance.now();
 
@@ -101,8 +122,8 @@ function spin() {
     if (t < 1) {
       requestAnimationFrame(animate);
     } else {
-      // 3. Reveal result (deterministic, no calculation)
-      const res = sectors[selectedIndex];
+      const index = getSectorUnderPointer();
+      const res = sectors[index];
       resultDiv.innerHTML = `${res.member.icon} ${res.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${res.color.value}">${res.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove("hidden");
       spinning = false;
