@@ -5,42 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes Jeux</title>
     <link rel="apple-touch-icon" href="IMG_7173.png">
-    <link rel="stylesheet" href="style.css?v=20260128">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="index">
     <h1>🎮 Mes Jeux</h1>
     <div class="games-grid">
-        <a href="ascenseur-menu.html" class="game-card ascenseur">
-            <span class="game-icon">🎴</span>
-            <h2>L'Ascenseur</h2>
-            <p>Outil de comptage et ranking</p>
-        </a>
-        <a href="echecs.html" class="game-card echecs">
-            <span class="game-icon">♟️</span>
-            <h2>Échecs Chinois</h2>
-            <p>Xiangqi - Version simplifiée</p>
-        </a>
-        <a href="twister.html" class="game-card twister">
-            <span class="game-icon">🎡</span>
-            <h2>Twister</h2>
-            <p>Roue interactive – membres & couleurs</p>
-        </a>
-        <a href="flechettes.html" class="game-card flechettes">
-            <span class="game-icon">🎯</span>
-            <h2>Fléchettes</h2>
-            <p>Compteur de score 301 / 501</p>
-        </a>
-        <a href="solitaire.html" class="game-card solitaire">
-            <span class="game-icon">🃏</span>
-            <h2>Solitaire</h2>
-            <p>Klondike classique – 1 carte</p>
-        </a>
+        <a href="ascenseur-menu.html" class="game-card ascenseur">🎴 L'Ascenseur</a>
+        <a href="echecs.html" class="game-card echecs">♟️ Échecs Chinois</a>
+        <a href="twister.html" class="game-card twister">🎡 Twister</a>
+        <a href="flechettes.html" class="game-card flechettes">🎯 Fléchettes</a>
+        <a href="solitaire.html" class="game-card solitaire">🃏 Solitaire</a>
+        <a href="blackjack.html" class="game-card blackjack">🂡 Blackjack</a>
     </div>
-    <footer id="version" style="text-align:center; margin-top:20px; opacity:0.7;"></footer>
+    <footer id="version"></footer>
     <script>
-        fetch('VERSION')
-            .then(r=>r.text())
-            .then(v=>document.getElementById('version').innerText=v.trim());
+      fetch('VERSION').then(r=>r.text()).then(v=>version.innerText=v.trim());
     </script>
 </body>
 </html>

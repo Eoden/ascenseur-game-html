@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blackjack</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hand { display:flex; gap:8px; margin:12px 0; justify-content:center; }
+    .card { width:48px; height:72px; border-radius:6px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:bold; }
+    .red { color:#e74c3c; }
+    .controls { display:flex; gap:12px; justify-content:center; margin-top:20px; }
+    button { padding:12px 20px; font-size:16px; border-radius:8px; }
+  </style>
+</head>
+<body class="game blackjack" style="padding:20px;">
+  <a href="index.html" class="btn-return">← Retour</a>
+  <h1>Blackjack</h1>
+  <div id="status"></div>
+
+  <h2>Dealer</h2>
+  <div id="dealer" class="hand"></div>
+
+  <h2>Player</h2>
+  <div id="player" class="hand"></div>
+
+  <div class="controls">
+    <button id="hit">Hit</button>
+    <button id="stand">Stand</button>
+  </div>
+
+  <script src="blackjack.js"></script>
+</body>
+</html>
