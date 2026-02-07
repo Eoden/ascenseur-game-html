@@ -5,15 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Solitaire</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .solitaire-board { display:flex; flex-direction:column; gap:16px; }
+    .top-row { display:flex; justify-content:space-between; gap:12px; }
+    .pile { width:60px; height:90px; border-radius:8px; background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; }
+    .card { width:60px; height:90px; border-radius:8px; background:#fff; color:#000; display:flex; align-items:center; justify-content:center; font-weight:700; }
+    .red { color:#e74c3c; }
+    .tableau { display:flex; gap:8px; }
+    .column { display:flex; flex-direction:column; gap:6px; }
+  </style>
 </head>
 <body class="game solitaire" style="padding:20px;">
   <a href="index.html" class="btn-return">← Retour</a>
   <h1>Solitaire</h1>
   <p style="opacity:0.8;">Klondike classique – tirage 1 carte</p>
 
-  <div id="game" style="margin-top:20px; text-align:center; opacity:0.6;">
-    <p>🃏 Le jeu arrive…</p>
-    <p>Base Klondike prête pour implémentation.</p>
+  <div class="solitaire-board">
+    <div class="top-row">
+      <div id="stock" class="pile">🂠</div>
+      <div id="waste" class="pile"></div>
+      <div style="display:flex; gap:8px;">
+        <div class="pile foundation" data-suit="♠"></div>
+        <div class="pile foundation" data-suit="♥"></div>
+        <div class="pile foundation" data-suit="♦"></div>
+        <div class="pile foundation" data-suit="♣"></div>
+      </div>
+    </div>
+
+    <div class="tableau" id="tableau"></div>
   </div>
+
+  <script src="solitaire.js"></script>
 </body>
 </html>
