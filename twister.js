@@ -29,17 +29,25 @@ const sectorAngle = (2 * Math.PI) / total;
 const cx = canvas.width / 2;
 const cy = canvas.height / 2;
 const radius = canvas.width / 2 - 10;
-// Icons slightly closer to the center for better readability
 const iconRadius = radius * 0.85;
 
-let rotation = 0; // current rotation (radians)
+let rotation = 0;
 let spinning = false;
-
-// This will store the REAL angles used for drawing (source of truth)
 let visibleSectors = [];
 
 function normalize(angle) {
   return (angle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+}
+
+function drawPointer() {
+  const size = 14;
+  ctx.beginPath();
+  ctx.moveTo(cx - size / 2, cy - radius - 6);
+  ctx.lineTo(cx + size / 2, cy - radius - 6);
+  ctx.lineTo(cx, cy - radius + size - 6);
+  ctx.closePath();
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
 }
 
 function drawWheel() {
@@ -50,12 +58,7 @@ function drawWheel() {
     const start = i * sectorAngle + rotation - Math.PI / 2;
     const end = start + sectorAngle;
 
-    // store real drawn angles
-    visibleSectors.push({
-      index: i,
-      start,
-      end
-    });
+    visibleSectors.push({ index: i, start, end });
 
     ctx.beginPath();
     ctx.moveTo(cx, cy);
@@ -74,6 +77,8 @@ function drawWheel() {
     ctx.fillStyle = "#fff";
     ctx.fillText(`${s.member.icon} ${s.member.key}`, x, y);
   });
+
+  drawPointer();
 }
 
 function getSectorUnderPointer() {
@@ -86,12 +91,9 @@ function getSectorUnderPointer() {
     if (start < end) {
       if (pointerAngle >= start && pointerAngle < end) return s.index;
     } else {
-      // sector crosses 0 radians
       if (pointerAngle >= start || pointerAngle < end) return s.index;
     }
   }
-
-  // absolute fallback (should never happen)
   return 0;
 }
 
@@ -105,7 +107,7 @@ function spin() {
   const targetRotation = rotation + fullTurns * 2 * Math.PI + Math.random() * 2 * Math.PI;
   const delta = targetRotation - startRotation;
 
-  const duration = 1800; // ms
+  const duration = 1800;
   const startTime = performance.now();
 
   function easeOutCubic(t) {
@@ -125,7 +127,7 @@ function spin() {
     } else {
       const index = getSectorUnderPointer();
       const res = sectors[index];
-      resultDiv.innerHTML = `${res.member.icon} ${res.member.label.toUpperCase()}<br/>SUR<br/><span style="color:${res.color.value}">${res.color.name.toUpperCase()}</span>`;
+      resultDiv.innerHTML = `${res.member.icon} ${res.member.label.toUpperCase()}<br/>SUR<br/><span style=\"color:${res.color.value}\">${res.color.name.toUpperCase()}</span>`;
       resultDiv.classList.remove("hidden");
       spinning = false;
     }
