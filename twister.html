@@ -4,25 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Twister</title>
+  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="twister.css" />
 </head>
-<body>
-  <header>
-    <h1>🎡 Twister</h1>
-  </header>
+<body class="game twister">
 
-  <main class="container">
-    <div class="canvas-wrapper">
-      <canvas id="twisterCanvas" width="360" height="360"></canvas>
-      <div class="pointer"></div>
-    </div>
+  <a href="index.html" class="btn-return">← Retour</a>
 
-    <button id="spinBtn">TOURNER</button>
+  <h1>Twister</h1>
 
-    <div id="result" class="result hidden"></div>
+  <canvas id="twisterCanvas" width="320" height="320"></canvas>
 
-    <a href="index.html" class="back">← Retour au menu</a>
-  </main>
+  <button id="spinBtn">Lancer la roue</button>
+
+  <div id="result" class="result hidden"></div>
 
   <script src="twister.js"></script>
 </body>
