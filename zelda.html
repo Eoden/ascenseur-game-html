@@ -2,15 +2,42 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Zelda-like</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    canvas { width:100%; max-width:420px; aspect-ratio:1/1; background:#7ec850; border-radius:12px; }
-    .controls { display:flex; justify-content:space-between; margin-top:16px; }
-    .dpad { display:grid; grid-template-columns:40px 40px 40px; grid-template-rows:40px 40px 40px; gap:4px; }
-    .dpad button, .actions button { width:40px; height:40px; font-size:16px; border-radius:8px; }
-    .actions { display:flex; gap:12px; align-items:flex-end; }
+    body, canvas, button {
+      touch-action: manipulation;
+    }
+    canvas {
+      width:100%;
+      max-width:420px;
+      aspect-ratio:1/1;
+      background:#7ec850;
+      border-radius:12px;
+    }
+    .controls {
+      display:flex;
+      justify-content:space-between;
+      margin-top:16px;
+    }
+    .dpad {
+      display:grid;
+      grid-template-columns:40px 40px 40px;
+      grid-template-rows:40px 40px 40px;
+      gap:4px;
+    }
+    .dpad button, .actions button {
+      width:40px;
+      height:40px;
+      font-size:16px;
+      border-radius:8px;
+    }
+    .actions {
+      display:flex;
+      gap:12px;
+      align-items:flex-end;
+    }
   </style>
 </head>
 <body class="game zelda" style="padding:20px; text-align:center;">
