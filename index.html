@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mes Jeux</title>
     <link rel="apple-touch-icon" href="IMG_7173.png">
     <link rel="stylesheet" href="style.css">
@@ -20,6 +20,7 @@
         <a href="zelda.html" class="game-card zelda">🗡️ Zelda-like</a>
     </div>
     <footer id="version"></footer>
+    <script src="mobile-safe.js"></script>
     <script>
       fetch('VERSION').then(r=>r.text()).then(v=>version.innerText=v.trim());
     </script>
