@@ -1,0 +1,1 @@
+export function bind(id, fn){ const el=document.getElementById(id); el.addEventListener('touchstart',e=>{e.preventDefault();fn();},{passive:false}); }
