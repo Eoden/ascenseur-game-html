@@ -12,8 +12,12 @@ bind('left', () => game.move(-1, 0));
 bind('right', () => game.move(1, 0));
 bind('btnA', () => game.attack());
 
-function loop() {
+let last = performance.now();
+function loop(now) {
+  const dt = now - last;
+  last = now;
+  game.tick(dt);
   draw(ctx, game);
   requestAnimationFrame(loop);
 }
-loop();
+requestAnimationFrame(loop);

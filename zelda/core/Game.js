@@ -14,41 +14,63 @@ export class Game {
     return rooms[this.roomIndex];
   }
 
+  tick(dt) {
+    const p = this.player;
+    if (p.attackCooldown > 0) {
+      p.attackCooldown -= dt;
+      if (p.attackCooldown <= 0) {
+        p.state = 'idle';
+      }
+    }
+  }
+
   move(dx, dy) {
     if (this.victory) return;
-    const nx = this.player.x + dx;
-    const ny = this.player.y + dy;
+    const p = this.player;
+    if (p.attackCooldown > 0) return;
+
+    const nx = p.x + dx;
+    const ny = p.y + dy;
     if (nx < 0 || ny < 0 || nx >= 10 || ny >= 10) return;
 
-    this.player.x = nx;
-    this.player.y = ny;
+    p.x = nx;
+    p.y = ny;
+    p.state = 'walk';
+    if (dx === 1) p.dir = 'right';
+    if (dx === -1) p.dir = 'left';
+    if (dy === 1) p.dir = 'down';
+    if (dy === -1) p.dir = 'up';
 
-    // switch activation
     if (this.room.switch && nx === this.room.switch.x && ny === this.room.switch.y) {
       this.room.switch.active = true;
       this.room.exitTop = true;
     }
 
-    // item pickup
     if (this.room.item && !this.room.item.collected && nx === this.room.item.x && ny === this.room.item.y) {
       this.room.item.collected = true;
       this.inventory[this.room.item.type] = true;
       this.victory = true;
     }
 
-    // room transition
     if (this.room.exitTop && ny === 0) {
       this.roomIndex = Math.min(this.roomIndex + 1, rooms.length - 1);
-      this.player.x = 5;
-      this.player.y = 8;
+      p.x = 5;
+      p.y = 8;
+      p.state = 'idle';
     }
   }
 
   attack() {
     if (this.victory) return;
+    const p = this.player;
+    if (p.attackCooldown > 0) return;
+
+    p.state = 'attack';
+    p.attackCooldown = 250;
+
     const e = this.room.enemy;
     if (!e || !e.alive) return;
-    const dist = Math.abs(e.x - this.player.x) + Math.abs(e.y - this.player.y);
+    const dist = Math.abs(e.x - p.x) + Math.abs(e.y - p.y);
     if (dist === 1) {
       e.hp -= 1;
       if (e.hp <= 0) e.alive = false;
