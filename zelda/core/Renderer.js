@@ -1,14 +1,24 @@
 import { TILE, CANVAS_SIZE } from '../constants.js';
 
-function drawEntity(ctx, e, color) {
-  const bob = e.state === 'walk' ? Math.sin(e.frame * 0.5) * 2 : 0;
-  ctx.fillStyle = 'rgba(0,0,0,0.2)';
-  ctx.beginPath();
-  ctx.ellipse(e.x * TILE + TILE / 2, e.y * TILE + TILE - 6, 12, 4, 0, 0, Math.PI * 2);
-  ctx.fill();
+const sprites = {};
+function loadSprite(key, src) {
+  const img = new Image();
+  img.src = src;
+  sprites[key] = img;
+}
 
-  ctx.fillStyle = color;
-  ctx.fillRect(e.x * TILE + 8, e.y * TILE + 10 + bob, 24, 20);
+loadSprite('player', './assets/sprites/player.png');
+loadSprite('enemy', './assets/sprites/enemy_slime.png');
+
+function drawEntity(ctx, e, key) {
+  const img = sprites[key];
+  const bob = e.state === 'walk' ? Math.sin(e.frame * 0.5) * 2 : 0;
+  if (img && img.complete) {
+    ctx.drawImage(img, e.x * TILE, e.y * TILE + bob, TILE, TILE);
+  } else {
+    ctx.fillStyle = key === 'player' ? '#4caf50' : '#b33';
+    ctx.fillRect(e.x * TILE + 8, e.y * TILE + 10 + bob, 24, 20);
+  }
 }
 
 export function draw(ctx, game) {
@@ -37,10 +47,10 @@ export function draw(ctx, game) {
   }
 
   if (room.enemy && room.enemy.alive) {
-    drawEntity(ctx, room.enemy, '#b33');
+    drawEntity(ctx, room.enemy, 'enemy');
   }
 
-  drawEntity(ctx, game.player, '#4caf50');
+  drawEntity(ctx, game.player, 'player');
 
   if (game.player.state === 'attack') {
     ctx.strokeStyle = '#fff';
