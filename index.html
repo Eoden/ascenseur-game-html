@@ -1,21 +1,28 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Menu Jeux</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mes Jeux</title>
+    <link rel="apple-touch-icon" href="IMG_7173.png">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <main class="menu">
-    <h1>🎮 Menu des Jeux</h1>
-    <div class="buttons">
-      <a href="flechettes.html?v=010024" class="btn">🎯 Fléchettes</a>
-      <a href="blackjack.html" class="btn">🃏 Blackjack</a>
-      <a href="echecs.html" class="btn">♟️ Échecs</a>
-      <a href="solitaire.html" class="btn">🂡 Solitaire</a>
-      <a href="twister.html" class="btn">🌀 Twister</a>
+<body class="index">
+    <h1>🎮 Mes Jeux</h1>
+    <div class="games-grid">
+        <a href="ascenseur-menu.html" class="game-card ascenseur">🎴 L'Ascenseur</a>
+        <a href="echecs.html" class="game-card echecs">♟️ Échecs Chinois</a>
+        <a href="twister.html" class="game-card twister">🎡 Twister</a>
+        <a href="flechettes.html" class="game-card flechettes">🎯 Fléchettes</a>
+        <a href="solitaire.html" class="game-card solitaire">🃏 Solitaire</a>
+        <a href="blackjack.html" class="game-card blackjack">🂡 Blackjack</a>
+        <a href="test-animation.html" class="game-card test-animation">✨ Test Animation</a>
+        <a href="zelda/index.html" class="game-card zelda">🗡️ Zelda-like</a>
     </div>
-  </main>
+    <footer id="version"></footer>
+    <script src="mobile-safe.js"></script>
+    <script>
+      fetch('VERSION').then(r=>r.text()).then(v=>version.innerText=v.trim());
+    </script>
 </body>
 </html>
