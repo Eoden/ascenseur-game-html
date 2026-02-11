@@ -1,4 +1,4 @@
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(180deg,#111,#222);color:#fff;text-align:center}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(180deg,#111,#222);color:#fff;text-align:center;overflow-x:hidden}
 header{padding:1rem}
 .container{display:flex;flex-direction:column;align-items:center;gap:1rem}
 .card{background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border-radius:16px;padding:1rem;width:92vw;max-width:420px}
@@ -7,10 +7,14 @@ button.active{background:#fff;color:#111}
 .hidden{display:none}
 .score strong{font-size:3rem}
 .score.sticky{position:sticky;top:0;background:#111;padding:1rem;border-radius:12px;z-index:10;transition:all .3s ease}
-.score.sticky.player-color{border:3px solid currentColor;box-shadow:0 0 20px currentColor}
+.score.sticky.player-color{border:3px solid currentColor;box-shadow:0 0 25px currentColor}
+.score.flash{animation:flash 0.4s ease}
+@keyframes flash{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
 .turn ul{list-style:none;padding:0;margin:.5rem 0}
 .turn li{font-weight:bold;animation:fadeIn .3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.confetti-piece{position:fixed;width:8px;height:14px;opacity:.9;animation:fall 1s linear forwards}
+@keyframes fall{to{transform:translateY(100vh) rotate(720deg);opacity:0}}
 .turn-actions{display:flex;gap:.5rem;justify-content:center}
 .selector{width:92vw;max-width:420px}
 .mult{display:flex;gap:.5rem;justify-content:center;margin:.5rem 0}
