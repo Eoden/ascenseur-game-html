@@ -7,6 +7,7 @@ button.active{background:#fff;color:#111}
 .hidden{display:none}
 .score strong{font-size:3rem}
 .score.sticky{position:sticky;top:0;background:#111;padding:1rem;border-radius:12px;z-index:10}
+.score.sticky.player-color{border:3px solid currentColor}
 .turn ul{list-style:none;padding:0;margin:.5rem 0}
 .turn-actions{display:flex;gap:.5rem;justify-content:center}
 .selector{width:92vw;max-width:420px}

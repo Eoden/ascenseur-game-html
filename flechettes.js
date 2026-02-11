@@ -7,16 +7,18 @@ const toast=document.getElementById('toast');
 const suggestionEl=document.getElementById('suggestion');
 const currentPlayerEl=document.getElementById('currentPlayer');
 const endScreen=document.getElementById('endScreen');
+const scoreBox=document.querySelector('.score');
 
 let players=[];
 let scores=[];
+let colors=[];
 let current=0;
 let startScore=301;
 let mult=1;
 let turn=[];
-let prevRemaining=301;
 
-// Sound (triple)
+const palette=['#ff6b6b','#4ecdc4','#ffe66d','#a29bfe','#f78fb3','#70a1ff'];
+
 function playTripleSound(){
   const ctx=new (window.AudioContext||window.webkitAudioContext)();
   const osc=ctx.createOscillator();
@@ -31,7 +33,6 @@ function playTripleSound(){
   osc.stop(ctx.currentTime+0.3);
 }
 
-// Player count
 let playerCount=1;
 const playerCountEl=document.getElementById('playerCount');
 const namesEl=document.getElementById('playerNames');
@@ -57,10 +58,12 @@ modeEl.querySelectorAll('button[data-start]').forEach(b=>b.onclick=()=>startGame
 function startGame(v){
   players=[];
   scores=[];
+  colors=[];
   for(let i=0;i<playerCount;i++){
     const name=document.getElementById('player'+i).value.trim()||('Joueur '+(i+1));
     players.push(name);
     scores.push(v);
+    colors.push(palette[i%palette.length]);
   }
   startScore=v;
   current=0;
@@ -86,7 +89,6 @@ document.querySelectorAll('[data-bull]').forEach(b=>b.onclick=()=>addThrow(+b.da
 
 function addThrow(n,isBull=false){
   const val=isBull?n:n*mult;
-  prevRemaining=scores[current];
   const next=scores[current]-val;
 
   if(next<0){showToast('😅 Bust !');return;}
@@ -111,6 +113,8 @@ function addThrow(n,isBull=false){
 function updateUI(){
   remainingEl.textContent=scores[current];
   currentPlayerEl.textContent='Au tour de : '+players[current];
+  scoreBox.style.color=colors[current];
+  scoreBox.classList.add('player-color');
   render();
   updateSuggestion();
 }
@@ -156,7 +160,7 @@ function showVictory(){
   const ranking=[...players.keys()].sort((a,b)=>scores[a]-scores[b]);
   let html='<h2>🏆 Classement final</h2><ul>';
   ranking.forEach((i,pos)=>{
-    html+='<li>'+(pos+1)+'. '+players[i]+' ('+scores[i]+')</li>';
+    html+='<li style="color:'+colors[i]+'">'+(pos+1)+'. '+players[i]+' ('+scores[i]+')</li>';
   });
   html+='</ul><button onclick="location.reload()">Nouvelle partie</button>';
   endScreen.innerHTML=html;
