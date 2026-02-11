@@ -17,7 +17,7 @@ let startScore=301;
 let mult=1;
 let turn=[];
 
-const palette=['#ff6b6b','#4ecdc4','#ffe66d','#a29bfe','#f78fb3','#70a1ff'];
+const defaultPalette=['#ff6b6b','#4ecdc4','#ffe66d','#a29bfe','#f78fb3','#70a1ff'];
 
 function playTripleSound(){
   const ctx=new (window.AudioContext||window.webkitAudioContext)();
@@ -44,10 +44,22 @@ function updatePlayersUI(){
   playerCountEl.textContent=playerCount;
   namesEl.innerHTML='';
   for(let i=0;i<playerCount;i++){
-    const input=document.createElement('input');
-    input.placeholder='Joueur '+(i+1);
-    input.id='player'+i;
-    namesEl.appendChild(input);
+    const wrapper=document.createElement('div');
+    wrapper.className='player-config';
+
+    const nameInput=document.createElement('input');
+    nameInput.type='text';
+    nameInput.placeholder='Joueur '+(i+1);
+    nameInput.id='player'+i;
+
+    const colorInput=document.createElement('input');
+    colorInput.type='color';
+    colorInput.value=defaultPalette[i%defaultPalette.length];
+    colorInput.id='color'+i;
+
+    wrapper.appendChild(nameInput);
+    wrapper.appendChild(colorInput);
+    namesEl.appendChild(wrapper);
   }
 }
 updatePlayersUI();
@@ -61,9 +73,10 @@ function startGame(v){
   colors=[];
   for(let i=0;i<playerCount;i++){
     const name=document.getElementById('player'+i).value.trim()||('Joueur '+(i+1));
+    const color=document.getElementById('color'+i).value;
     players.push(name);
     scores.push(v);
-    colors.push(palette[i%palette.length]);
+    colors.push(color);
   }
   startScore=v;
   current=0;
@@ -102,10 +115,7 @@ function addThrow(n,isBull=false){
   }
   if(isBull&&n===50)showToast('🎯 Plein centre !!!');
 
-  if(next===0){
-    showVictory();
-    return;
-  }
+  if(next===0){showVictory();return;}
 
   updateUI();
 }
@@ -124,6 +134,7 @@ function render(){
   turn.forEach(v=>{
     const li=document.createElement('li');
     li.textContent='🎯 -'+v;
+    li.style.color=colors[current];
     throwsEl.appendChild(li);
   });
 }
@@ -147,6 +158,8 @@ document.getElementById('undo').onclick=()=>{
 document.getElementById('nextTurn').onclick=()=>{
   turn=[];
   current=(current+1)%players.length;
+  scoreBox.style.transform='scale(1.05)';
+  setTimeout(()=>scoreBox.style.transform='scale(1)',200);
   updateUI();
 };
 
