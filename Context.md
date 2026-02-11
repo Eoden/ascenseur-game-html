@@ -40,3 +40,16 @@ Les sprites actuels sont des placeholders et doivent être remplacés par des ve
 - Utiliser commit atomiques
 - Proposer les changements AVANT de les pousser
 - Après validation → exécuter `/command`
+
+---
+
+# Spécificité PNG
+
+L’agent est autorisé à générer des fichiers PNG placeholders contenant :
+- une grille de pixels arbitraires
+- des couleurs simples
+- des patterns générés textuellement
+
+Même si le PNG exact ne provient pas d’un moteur graphique, l’agent a le droit d’en produire un tant qu’il est valide au format PNG.
+
+L’objectif est d’avoir des assets temporaires, non définitifs.
