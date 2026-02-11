@@ -2,7 +2,6 @@ body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background
 header{padding:1rem}
 .container{display:flex;flex-direction:column;align-items:center;gap:1rem}
 .card{background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border-radius:16px;padding:1rem;width:92vw;max-width:420px}
-.modes{display:flex;gap:1rem;justify-content:center}
 button{padding:.8rem 1.2rem;border-radius:999px;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:1rem}
 button.active{background:#fff;color:#111}
 .hidden{display:none}
@@ -13,6 +12,10 @@ button.active{background:#fff;color:#111}
 .mult{display:flex;gap:.5rem;justify-content:center;margin:.5rem 0}
 .nums{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
 .bulls{display:flex;gap:.5rem;justify-content:center;margin:.5rem 0}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#ff7675;color:#111;padding:.8rem 1.2rem;border-radius:999px;font-weight:bold;animation:pop .6s ease}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;color:#111;padding:.8rem 1.2rem;border-radius:999px;font-weight:bold;animation:pop .6s ease}
 @keyframes pop{0%{transform:translateX(-50%) scale(.8)}100%{transform:translateX(-50%) scale(1)}}
 .back{color:#ccc;text-decoration:none;font-size:.9rem;margin-top:.5rem}
+.player-count{display:flex;gap:1rem;justify-content:center;align-items:center;margin:.5rem 0}
+.player-count span{font-size:1.5rem;font-weight:bold}
+input{margin:.3rem 0;padding:.5rem;border-radius:8px;border:none;width:80%}
+.suggestion{margin-top:.5rem;font-size:.9rem;opacity:.8}

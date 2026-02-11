@@ -12,21 +12,35 @@
   </header>
 
   <main class="container">
+
+    <!-- Setup -->
+    <section id="setup" class="card">
+      <h2>Configuration</h2>
+      <label>Nombre de joueurs</label>
+      <div class="player-count">
+        <button id="minus">−</button>
+        <span id="playerCount">1</span>
+        <button id="plus">+</button>
+      </div>
+      <div id="playerNames"></div>
+    </section>
+
     <!-- Mode selection -->
-    <section id="mode" class="card">
+    <section id="mode" class="card hidden">
       <h2>Choisis le mode</h2>
       <div class="modes">
         <button data-start="301">301</button>
         <button data-start="501">501</button>
       </div>
-      <p class="hint">D’autres modes arrivent (Cricket, etc.)</p>
     </section>
 
     <!-- Game -->
     <section id="game" class="hidden">
       <div class="score">
+        <span id="currentPlayer"></span>
         <span>Score restant</span>
         <strong id="remaining">301</strong>
+        <div id="suggestion" class="suggestion"></div>
       </div>
 
       <div class="turn">
@@ -34,7 +48,7 @@
         <ul id="throws"></ul>
         <div class="turn-actions">
           <button id="undo">Annuler</button>
-          <button id="nextTurn">Nouveau tour</button>
+          <button id="nextTurn">Tour suivant</button>
         </div>
       </div>
 
@@ -52,7 +66,7 @@
       </div>
     </section>
 
-    <div id="toast" class="toast hidden">😅 Oh dommage ! Bust.</div>
+    <div id="toast" class="toast hidden"></div>
 
     <a href="index.html" class="back">⬅ Retour au menu</a>
   </main>
