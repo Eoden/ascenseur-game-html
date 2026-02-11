@@ -5,6 +5,7 @@ body {
   flex-direction: column;
   align-items: center;
   color: white;
+  overflow: hidden;
 }
 
 canvas {
@@ -14,18 +15,39 @@ canvas {
 }
 
 .controls {
-  margin-top: 15px;
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.dpad {
   display: grid;
-  grid-template-columns: repeat(3, 60px);
-  grid-gap: 8px;
-  justify-content: center;
+  grid-template-columns: 80px 80px 80px;
+  grid-template-rows: 80px 80px 80px;
+  gap: 5px;
+}
+
+#up { grid-column: 2; grid-row: 1; }
+#left { grid-column: 1; grid-row: 2; }
+#right { grid-column: 3; grid-row: 2; }
+#down { grid-column: 2; grid-row: 3; }
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .controls button {
-  height: 50px;
-  font-size: 18px;
+  width: 80px;
+  height: 80px;
+  font-size: 22px;
   background: #333;
   color: white;
-  border: 1px solid #666;
-  border-radius: 6px;
+  border: 2px solid #666;
+  border-radius: 12px;
 }

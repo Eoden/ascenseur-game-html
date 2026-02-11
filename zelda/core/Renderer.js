@@ -19,7 +19,11 @@ export class Renderer {
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const tile = tiles[y * width + x];
-        this.ctx.fillStyle = tile === 1 ? '#444' : '#222';
+
+        if (tile === 1) this.ctx.fillStyle = '#555';
+        else if (tile === 2) this.ctx.fillStyle = '#0a0';
+        else this.ctx.fillStyle = '#222';
+
         this.ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
       }
     }
