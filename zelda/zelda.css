@@ -22,21 +22,21 @@ canvas {
 
 .controls {
   position: fixed;
-  bottom: 20px;
+  bottom: 15px;
   left: 0;
   right: 0;
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 0 20px;
+  padding: 0 25px;
 }
 
+/* ===== D-PAD ===== */
 .dpad {
   display: grid;
-  grid-template-columns: 80px 80px 80px;
-  grid-template-rows: 80px 80px 80px;
-  gap: 5px;
+  grid-template-columns: 55px 55px 55px;
+  grid-template-rows: 55px 55px 55px;
+  gap: 4px;
 }
 
 #up { grid-column: 2; grid-row: 1; }
@@ -44,24 +44,54 @@ canvas {
 #right { grid-column: 3; grid-row: 2; }
 #down { grid-column: 2; grid-row: 3; }
 
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.controls button {
-  width: 80px;
-  height: 80px;
-  font-size: 22px;
-  background: #333;
+.dpad button {
+  width: 55px;
+  height: 55px;
+  font-size: 18px;
+  background: #2a2a2a;
   color: white;
   border: 2px solid #666;
-  border-radius: 12px;
+  border-radius: 10px;
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-touch-callout: none;
+}
+
+/* ===== NES STYLE A/B ===== */
+.actions {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+#btnA,
+#btnB {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  border: 3px solid rgba(0,0,0,0.4);
+  box-shadow: 0 4px 0 rgba(0,0,0,0.4);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+#btnB {
+  background: #d32f2f;
+  top: 0;
+  right: 0;
+}
+
+#btnA {
+  background: #2e7d32;
+  bottom: 0;
+  left: 0;
 }
