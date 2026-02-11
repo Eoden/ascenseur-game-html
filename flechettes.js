@@ -1,4 +1,4 @@
-// VERSION 010031 - UI ENHANCED
+// VERSION 010032 - SMART FINISH + BUST + ANIMATIONS
 
 document.addEventListener('DOMContentLoaded',function(){
 
@@ -9,6 +9,7 @@ let colors=[];
 let current=0;
 let multiplier=1;
 let dartsThrown=0;
+let turnStartScore=0;
 let fullHistory=[];
 
 const palette=['#ff6b6b','#4ecdc4','#ffe66d','#a29bfe','#f78fb3','#70a1ff'];
@@ -48,7 +49,7 @@ function startGame(startScore){
     scores.push(startScore);
     colors.push(palette[i%palette.length]);
   }
-  current=0;dartsThrown=0;
+  current=0;dartsThrown=0;turnStartScore=startScore;
   setupDiv.style.display='none';
   gameDiv.style.display='block';
   renderNumbers();renderScoreboard();renderDarts();updateUI();
@@ -67,7 +68,7 @@ function renderNumbers(){
   }
 }
 
-// Multiplier
+// Multiplier reset to simple after each throw
 
 document.querySelectorAll('.mult-btn').forEach(btn=>{
   btn.onclick=function(){
@@ -76,6 +77,12 @@ document.querySelectorAll('.mult-btn').forEach(btn=>{
     multiplier=parseInt(btn.dataset.m);
   }
 });
+
+function resetMultiplier(){
+  multiplier=1;
+  document.querySelectorAll('.mult-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('[data-m="1"]').classList.add('active');
+}
 
 function renderDarts(){
   dartIndicator.innerHTML='';
@@ -106,7 +113,16 @@ function renderScoreboard(){
 
 function addScore(value){
   const total=value*multiplier;
-  if(scores[current]-total<0)return;
+
+  if(dartsThrown===0) turnStartScore=scores[current];
+
+  if(scores[current]-total<0){
+    // BUST
+    scores[current]=turnStartScore;
+    funMessage.textContent='💥 BUST ! Tour annulé';
+    setTimeout(nextPlayer,1200);
+    return;
+  }
 
   scores[current]-=total;
   fullHistory.push(players[current]+' - '+total+' (reste '+scores[current]+')');
@@ -121,8 +137,10 @@ function addScore(value){
 
   if(dartsThrown===3){
     funMessage.textContent='✨ Changement de joueur ! ✨';
-    setTimeout(nextPlayer,1500);
+    setTimeout(nextPlayer,1200);
   }
+
+  resetMultiplier();
 }
 
 function renderHistory(){
@@ -134,17 +152,31 @@ function renderHistory(){
   });
 }
 
+function suggestFinish(){
+  const s=scores[current];
+  if(s<=40 && s>0){
+    let txt='Vise '+s;
+    if(s%2===0) txt+=' ou Double '+(s/2);
+    suggestionEl.textContent=txt;
+  } else suggestionEl.textContent='';
+}
+
 function updateUI(){
   currentPlayerEl.textContent='Tour de '+players[current];
   currentPlayerEl.style.color=colors[current];
   scoreEl.textContent=scores[current];
-  suggestionEl.textContent=scores[current]<=40?'Finir avec '+scores[current]:' ';}
+  suggestFinish();
+
+  if(scores[current]<100) scoreEl.classList.add('under100');
+  else scoreEl.classList.remove('under100');
+}
 
 function nextPlayer(){
   current=(current+1)%players.length;
   dartsThrown=0;
-  funMessage.textContent='';
-  renderDarts();updateUI();updateDarts();
+  gameDiv.classList.add('player-change');
+  setTimeout(()=>gameDiv.classList.remove('player-change'),500);
+  renderDarts();updateUI();updateDarts();funMessage.textContent='';
 }
 
 // Undo
@@ -152,8 +184,7 @@ function nextPlayer(){
 document.getElementById('undo').onclick=function(){
   if(fullHistory.length===0)return;
   const last=fullHistory.pop();
-  const parts=last.split(' - ');
-  const val=parseInt(parts[1]);
+  const val=parseInt(last.split(' - ')[1]);
   scores[current]+=val;
   dartsThrown=Math.max(0,dartsThrown-1);
   renderHistory();updateUI();updateDarts();renderScoreboard();
@@ -162,12 +193,13 @@ document.getElementById('undo').onclick=function(){
 // Miss
 
 document.getElementById('miss').onclick=function(){
+  if(dartsThrown===0) turnStartScore=scores[current];
   dartsThrown++;
   fullHistory.push(players[current]+' - 0 (reste '+scores[current]+')');
   renderHistory();updateDarts();
   if(dartsThrown===3){
     funMessage.textContent='✨ Tour terminé ! ✨';
-    setTimeout(nextPlayer,1500);
+    setTimeout(nextPlayer,1200);
   }
 };
 
