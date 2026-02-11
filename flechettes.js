@@ -1,4 +1,4 @@
-// VERSION 010034 - UI POLISH + END SCREEN
+// VERSION 010036 - PLAYER COLOR BUTTONS + RANDOM START
 
 document.addEventListener('DOMContentLoaded',function(){
 
@@ -44,6 +44,11 @@ renderPlayers();
 document.getElementById('plus').onclick=()=>{if(playerCount<6){playerCount++;renderPlayers();}};
 document.getElementById('minus').onclick=()=>{if(playerCount>1){playerCount--;renderPlayers();}};
 
+function chooseRandomStarter(){
+  current=Math.floor(Math.random()*players.length);
+  showPopup('🎲 '+players[current]+' commence !');
+}
+
 function startGame(startScore){
   startValue=startScore;
   players=[];scores=[];colors=[];history=[];
@@ -52,9 +57,10 @@ function startGame(startScore){
     scores.push(startScore);
     colors.push(palette[i%palette.length]);
   }
-  current=0;dartsThrown=0;turnStartScore=startScore;
+  dartsThrown=0;turnStartScore=startScore;
   setupDiv.style.display='none';
   gameDiv.style.display='block';
+  chooseRandomStarter();
   renderNumbers();renderScoreboard();renderDarts();updateUI();
 }
 
@@ -66,9 +72,17 @@ function renderNumbers(){
   for(let i=1;i<=20;i++){
     const btn=document.createElement('button');
     btn.textContent=i;
+    btn.style.background=colors[current];
+    btn.style.color='#000';
     btn.onclick=()=>addScore(i,false);
     numbersDiv.appendChild(btn);
   }
+}
+
+function updateNumberColors(){
+  document.querySelectorAll('#numbers button').forEach(btn=>{
+    btn.style.background=colors[current];
+  });
 }
 
 // Multiplier
@@ -116,14 +130,14 @@ function renderScoreboard(){
 
 function showPopup(text){
   popup.textContent=text;
+  popup.style.borderColor=colors[current]||'#fff';
   popup.style.display='block';
-  setTimeout(()=>popup.style.display='none',1200);
+  setTimeout(()=>popup.style.display='none',1400);
 }
 
 function addScore(value,isBull){
   if(isBull) multiplier=1;
   const total=value*multiplier;
-
   if(dartsThrown===0) turnStartScore=scores[current];
 
   if(scores[current]-total<0){
@@ -181,6 +195,7 @@ function updateUI(){
   currentPlayerEl.style.color=colors[current];
   scoreEl.textContent=scores[current];
   suggestFinish();
+  updateNumberColors();
 }
 
 function nextPlayer(){
@@ -193,21 +208,18 @@ function endGame(){
   gameDiv.style.display='none';
   endScreen.style.display='flex';
   let html='<h2>🏆 '+players[current]+' gagne !</h2>';
-  html+='<div>';
   players.forEach((p,i)=>{
     html+='<div style="color:'+colors[i]+'">'+p+' : '+scores[i]+'</div>';
   });
-  html+='</div>';
-  html+='<button onclick="location.href=\'index.html\'">Retour au menu</button>';
+  html+='<button onclick="location.reload()">Retour au menu</button>';
   endScreen.innerHTML=html;
 }
 
-// Bulls (no double/triple allowed)
+// Bulls
 document.getElementById('bull25').onclick=()=>addScore(25,true);
 document.getElementById('bull50').onclick=()=>addScore(50,true);
 
 // Undo
-
 document.getElementById('undo').onclick=function(){
   if(history.length===0)return;
   const last=history.pop();
@@ -218,7 +230,6 @@ document.getElementById('undo').onclick=function(){
 };
 
 // Miss
-
 document.getElementById('miss').onclick=function(){
   if(dartsThrown===0) turnStartScore=scores[current];
   dartsThrown++;
