@@ -1,4 +1,11 @@
-// Ajout effet graphique spectaculaire
+const body=document.body;
+const scoreBox=document.querySelector('.score');
+let fireStreak=0;
+
+function updateBackground(color){
+  body.style.background=`linear-gradient(180deg, ${color}, #111)`;
+}
+
 function triggerFlash(){
   scoreBox.classList.add('flash');
   setTimeout(()=>scoreBox.classList.remove('flash'),400);
@@ -11,46 +18,53 @@ function launchConfetti(color){
     piece.style.background=color;
     piece.style.left=Math.random()*100+'vw';
     piece.style.top='-10px';
-    piece.style.transform='rotate('+Math.random()*360+'deg)';
     document.body.appendChild(piece);
     setTimeout(()=>piece.remove(),1000);
   }
 }
 
-// Hook dans addThrow (remplacement partiel logique effet)
-const originalAddThrow=addThrow;
+function activateSlowMo(){
+  body.classList.add('slowmo');
+  setTimeout(()=>body.classList.remove('slowmo'),800);
+}
+
+function activateFireMode(){
+  scoreBox.classList.add('fire-mode');
+}
+
+function deactivateFireMode(){
+  scoreBox.classList.remove('fire-mode');
+}
+
+// Patch dans updateUI
+const originalUpdateUI=updateUI;
+updateUI=function(){
+  originalUpdateUI();
+  updateBackground(colors[current]);
+};
+
+// Patch dans addThrow
+const originalAddThrow2=addThrow;
 addThrow=function(n,isBull=false){
-  const val=isBull?n:n*mult;
-  const next=scores[current]-val;
+  const before=scores[current];
+  originalAddThrow2(n,isBull);
+  const after=scores[current];
 
-  if(next<0){showToast('😅 Bust !');return;}
-
-  scores[current]=next;
-  turn.push(val);
-
-  if(!isBull){
-    if(mult===3){
-      showToast('🔥 BOOM ! Triple !');
-      playTripleSound();
-      triggerFlash();
-      launchConfetti(colors[current]);
-    }
-    if(mult===2){
-      showToast('💪 Bien joué ! Double !');
-      triggerFlash();
-    }
-  }
-
-  if(isBull&&n===50){
-    showToast('🎯 Plein centre !!!');
+  if(after<before && (mult===3 || mult===2 || isBull)){
     triggerFlash();
   }
 
-  if(next===0){
+  if(mult===3){
+    activateSlowMo();
     launchConfetti(colors[current]);
-    showVictory();
-    return;
+    fireStreak++;
+  }else{
+    fireStreak=0;
   }
 
-  updateUI();
+  if(fireStreak>=2){
+    activateFireMode();
+  }else{
+    deactivateFireMode();
+  }
 };
