@@ -8,9 +8,9 @@ export class Renderer {
       attack: new Image()
     };
 
-    this.assets.idle.src = 'zelda/assets/sprites/hero_idle.svg';
-    this.assets.walk.src = 'zelda/assets/sprites/hero_walk.svg';
-    this.assets.attack.src = 'zelda/assets/sprites/hero_attack.svg';
+    this.assets.idle.src = './assets/sprites/hero_idle.svg';
+    this.assets.walk.src = './assets/sprites/hero_walk.svg';
+    this.assets.attack.src = './assets/sprites/hero_attack.svg';
   }
 
   drawPlayer(player) {
@@ -36,7 +36,8 @@ export class Renderer {
   }
 
   render(game) {
-    this.ctx.clearRect(0, 0, 800, 600);
+    const canvas = this.ctx.canvas;
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.drawPlayer(game.player);
   }
 }
