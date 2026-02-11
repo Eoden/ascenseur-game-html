@@ -13,19 +13,29 @@ export class Renderer {
     this.assets.attack.src = './assets/sprites/hero_attack.svg';
   }
 
+  drawMap(map) {
+    const { tileSize, width, height, tiles } = map;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const tile = tiles[y * width + x];
+        this.ctx.fillStyle = tile === 1 ? '#444' : '#222';
+        this.ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+      }
+    }
+  }
+
   drawPlayer(player) {
     const img = this.assets[player.state];
-
     if (!img.complete) return;
 
     const frameSize = 32;
     const sx = player.frame * frameSize;
-    const sy = 0;
 
     this.ctx.drawImage(
       img,
       sx,
-      sy,
+      0,
       frameSize,
       frameSize,
       player.x,
@@ -38,6 +48,8 @@ export class Renderer {
   render(game) {
     const canvas = this.ctx.canvas;
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    this.drawMap(game.map);
     this.drawPlayer(game.player);
   }
 }

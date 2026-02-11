@@ -1,1 +1,31 @@
-html,body{margin:0;padding:0;overflow:hidden;touch-action:none;background:#000;}body.zelda{display:flex;flex-direction:column;align-items:center;}canvas#game{display:block;background:#000;max-width:100vw;} .controls{position:fixed;bottom:10px;left:0;right:0;display:flex;justify-content:space-between;padding:0 20px;pointer-events:auto;} .dpad{display:flex;flex-direction:column;align-items:center;gap:10px;} .dpad button{width:64px;height:64px;font-size:28px;border-radius:12px;border:none;background:#333;color:#fff;} .dpad .mid{display:flex;gap:20px;} .actions{display:flex;gap:20px;} .actions button{width:72px;height:72px;font-size:28px;border-radius:50%;border:none;background:#b33;color:#fff;} .btn-return{position:fixed;top:10px;left:10px;z-index:10;}
+body {
+  margin: 0;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+canvas {
+  image-rendering: pixelated;
+  border: 2px solid #444;
+  margin-top: 10px;
+}
+
+.controls {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  grid-gap: 8px;
+  justify-content: center;
+}
+
+.controls button {
+  height: 50px;
+  font-size: 18px;
+  background: #333;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 6px;
+}
