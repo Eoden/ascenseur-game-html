@@ -6,11 +6,11 @@ export class Player {
     this.state = 'idle';
     this.dir = 'down';
 
-    this.speed = 2;
+    this.speed = 3;
 
     this.frame = 0;
     this.frameTimer = 0;
-    this.frameDuration = 150; // ms per frame
+    this.frameDuration = 150;
 
     this.attackCooldown = 0;
   }
@@ -40,13 +40,6 @@ export class Player {
     }
   }
 
-  attack() {
-    if (this.attackCooldown > 0) return;
-
-    this.setState('attack');
-    this.attackCooldown = 400;
-  }
-
   update(dt) {
     if (this.attackCooldown > 0) {
       this.attackCooldown -= dt;
@@ -55,12 +48,16 @@ export class Player {
       }
     }
 
-    if (this.state === 'walk' || this.state === 'idle' || this.state === 'attack') {
-      this.frameTimer += dt;
-      if (this.frameTimer >= this.frameDuration) {
-        this.frameTimer = 0;
-        this.frame = (this.frame + 1) % 4;
-      }
+    this.frameTimer += dt;
+    if (this.frameTimer >= this.frameDuration) {
+      this.frameTimer = 0;
+      this.frame = (this.frame + 1) % 4;
     }
+  }
+
+  attack() {
+    if (this.attackCooldown > 0) return;
+    this.setState('attack');
+    this.attackCooldown = 400;
   }
 }

@@ -3,6 +3,7 @@ import { Player } from '../entities/Player.js';
 export class Game {
   constructor() {
     this.player = new Player(64, 64);
+    this.input = { up:false, down:false, left:false, right:false };
     this.generateRoom();
   }
 
@@ -24,18 +25,25 @@ export class Game {
       }
     }
 
-    // sortie au centre du mur du haut
     const exitX = Math.floor(this.map.width / 2);
     this.map.tiles[0 * this.map.width + exitX] = 2;
   }
 
   tick(dt) {
+    const speedMultiplier = dt / 16;
+
+    if(this.input.up) this.player.move(0, -1 * speedMultiplier);
+    if(this.input.down) this.player.move(0, 1 * speedMultiplier);
+    if(this.input.left) this.player.move(-1 * speedMultiplier, 0);
+    if(this.input.right) this.player.move(1 * speedMultiplier, 0);
+
     this.player.update(dt);
 
-    // collision sortie
     const tileSize = this.map.tileSize;
-    const px = Math.floor(this.player.x / tileSize);
-    const py = Math.floor(this.player.y / tileSize);
+    const cx = this.player.x + 16;
+    const cy = this.player.y + 16;
+    const px = Math.floor(cx / tileSize);
+    const py = Math.floor(cy / tileSize);
 
     const tile = this.map.tiles[py * this.map.width + px];
     if (tile === 2) {
@@ -43,10 +51,6 @@ export class Game {
       this.player.y = 64;
       this.generateRoom();
     }
-  }
-
-  move(dx, dy) {
-    this.player.move(dx, dy);
   }
 
   attack() {

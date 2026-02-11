@@ -1,11 +1,28 @@
-export function bind(id, fn){
+export function bindDirectional(id, stateKey, inputState){
   const el = document.getElementById(id);
   if(!el) return;
 
-  const handler = (e) => {
+  const down = (e) => {
     e.preventDefault();
-    fn();
+    inputState[stateKey] = true;
   };
 
-  el.addEventListener('pointerdown', handler);
+  const up = () => {
+    inputState[stateKey] = false;
+  };
+
+  el.addEventListener('pointerdown', down);
+  el.addEventListener('pointerup', up);
+  el.addEventListener('pointerleave', up);
+  el.addEventListener('pointercancel', up);
+}
+
+export function bindAction(id, fn){
+  const el = document.getElementById(id);
+  if(!el) return;
+
+  el.addEventListener('pointerdown', (e)=>{
+    e.preventDefault();
+    fn();
+  });
 }
