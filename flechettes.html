@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fléchettes</title>
-<link rel="stylesheet" href="flechettes.css?v=010030">
+<link rel="stylesheet" href="flechettes.css?v=010031">
 </head>
 <body>
 <div class="app">
@@ -21,34 +21,37 @@
 </div>
 
 <div id="game" style="display:none;">
+
+  <div id="scoreboard"></div>
+
   <h2 id="currentPlayer"></h2>
   <div class="score">Score: <span id="score"></span></div>
   <div id="suggestion" class="suggestion"></div>
 
+  <div class="dart-indicator" id="dartIndicator"></div>
+
   <div class="multiplier">
-    <button data-m="1" class="active">Simple</button>
-    <button data-m="2">Double</button>
-    <button data-m="3">Triple</button>
+    <button data-m="1" class="active mult-btn simple">S</button>
+    <button data-m="2" class="mult-btn double">D</button>
+    <button data-m="3" class="mult-btn triple">T</button>
   </div>
 
   <div id="numbers"></div>
 
   <div class="actions">
-    <button id="miss">Out (raté)</button>
-    <button id="undo">Annuler dernier lancer</button>
+    <button id="miss">🎯 Out</button>
+    <button id="undo">↩ Annuler tir</button>
   </div>
 
-  <h3>Historique du tour :</h3>
-  <div id="throws"></div>
-
-  <h3>Historique complet :</h3>
+  <h3>Historique :</h3>
   <div id="history"></div>
 
-  <button id="next">Passer au joueur suivant</button>
+  <div id="funMessage" class="fun-message"></div>
+
 </div>
 
-<div class="version">v010030</div>
+<div class="version">v010031</div>
 </div>
-<script src="flechettes.js?v=010030"></script>
+<script src="flechettes.js?v=010031"></script>
 </body>
 </html>

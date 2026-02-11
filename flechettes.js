@@ -1,4 +1,4 @@
-// VERSION 010030 - FULL HISTORY + UNDO + MISS
+// VERSION 010031 - UI ENHANCED
 
 document.addEventListener('DOMContentLoaded',function(){
 
@@ -7,9 +7,8 @@ let players=[];
 let scores=[];
 let colors=[];
 let current=0;
-let startScore=301;
 let multiplier=1;
-let throwsThisTurn=[];
+let dartsThrown=0;
 let fullHistory=[];
 
 const palette=['#ff6b6b','#4ecdc4','#ffe66d','#a29bfe','#f78fb3','#70a1ff'];
@@ -21,9 +20,11 @@ const gameDiv=document.getElementById('game');
 const currentPlayerEl=document.getElementById('currentPlayer');
 const scoreEl=document.getElementById('score');
 const numbersDiv=document.getElementById('numbers');
-const throwsDiv=document.getElementById('throws');
 const historyDiv=document.getElementById('history');
 const suggestionEl=document.getElementById('suggestion');
+const dartIndicator=document.getElementById('dartIndicator');
+const scoreboardDiv=document.getElementById('scoreboard');
+const funMessage=document.getElementById('funMessage');
 
 function renderPlayers(){
   playerCountEl.textContent=playerCount;
@@ -40,25 +41,17 @@ renderPlayers();
 document.getElementById('plus').onclick=()=>{if(playerCount<6){playerCount++;renderPlayers();}};
 document.getElementById('minus').onclick=()=>{if(playerCount>1){playerCount--;renderPlayers();}};
 
-function startGame(scoreStart){
-  players=[];
-  scores=[];
-  colors=[];
-  fullHistory=[];
-  startScore=scoreStart;
-
+function startGame(startScore){
+  players=[];scores=[];colors=[];fullHistory=[];
   for(let i=0;i<playerCount;i++){
     players.push(document.getElementById('player'+i).value||('Joueur '+(i+1)));
     scores.push(startScore);
     colors.push(palette[i%palette.length]);
   }
-
-  current=0;
-  throwsThisTurn=[];
+  current=0;dartsThrown=0;
   setupDiv.style.display='none';
   gameDiv.style.display='block';
-  renderNumbers();
-  updateUI();
+  renderNumbers();renderScoreboard();renderDarts();updateUI();
 }
 
 document.getElementById('start301').onclick=()=>startGame(301);
@@ -76,53 +69,67 @@ function renderNumbers(){
 
 // Multiplier
 
-document.querySelectorAll('.multiplier button').forEach(btn=>{
+document.querySelectorAll('.mult-btn').forEach(btn=>{
   btn.onclick=function(){
-    document.querySelectorAll('.multiplier button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.mult-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     multiplier=parseInt(btn.dataset.m);
   }
 });
+
+function renderDarts(){
+  dartIndicator.innerHTML='';
+  for(let i=0;i<3;i++){
+    const d=document.createElement('div');
+    d.className='dart';
+    dartIndicator.appendChild(d);
+  }
+}
+
+function updateDarts(){
+  const darts=document.querySelectorAll('.dart');
+  darts.forEach((d,i)=>{
+    d.style.background=i<dartsThrown?colors[current]:'#555';
+  });
+}
+
+function renderScoreboard(){
+  scoreboardDiv.innerHTML='';
+  players.forEach((p,i)=>{
+    const badge=document.createElement('div');
+    badge.className='player-badge';
+    badge.style.background=colors[i];
+    badge.textContent=p.charAt(0)+' : '+scores[i];
+    scoreboardDiv.appendChild(badge);
+  });
+}
 
 function addScore(value){
   const total=value*multiplier;
   if(scores[current]-total<0)return;
 
   scores[current]-=total;
-  throwsThisTurn.push(total);
-  fullHistory.push({player:players[current],value:total,remaining:scores[current]});
+  fullHistory.push(players[current]+' - '+total+' (reste '+scores[current]+')');
+  dartsThrown++;
 
-  renderTurn();
-  renderHistory();
+  renderHistory();updateUI();updateDarts();renderScoreboard();
 
   if(scores[current]===0){
-    alert(players[current]+' gagne !');
-    location.reload();
+    funMessage.textContent='🏆 '+players[current]+' gagne !';
     return;
   }
 
-  if(throwsThisTurn.length===3){
-    alert('3 lancers effectués. Passer au joueur suivant.');
+  if(dartsThrown===3){
+    funMessage.textContent='✨ Changement de joueur ! ✨';
+    setTimeout(nextPlayer,1500);
   }
-
-  updateUI();
-}
-
-function renderTurn(){
-  throwsDiv.innerHTML='';
-  throwsThisTurn.forEach(v=>{
-    const div=document.createElement('div');
-    div.textContent='🎯 '+v;
-    div.style.color=colors[current];
-    throwsDiv.appendChild(div);
-  });
 }
 
 function renderHistory(){
   historyDiv.innerHTML='';
-  fullHistory.forEach(entry=>{
+  fullHistory.forEach(h=>{
     const div=document.createElement('div');
-    div.textContent=entry.player+' - '+entry.value+' (reste '+entry.remaining+')';
+    div.textContent=h;
     historyDiv.appendChild(div);
   });
 }
@@ -131,47 +138,37 @@ function updateUI(){
   currentPlayerEl.textContent='Tour de '+players[current];
   currentPlayerEl.style.color=colors[current];
   scoreEl.textContent=scores[current];
-  suggestFinish();
+  suggestionEl.textContent=scores[current]<=40?'Finir avec '+scores[current]:' ';}
+
+function nextPlayer(){
+  current=(current+1)%players.length;
+  dartsThrown=0;
+  funMessage.textContent='';
+  renderDarts();updateUI();updateDarts();
 }
-
-function suggestFinish(){
-  const s=scores[current];
-  if(s<=40){
-    let suggestion='Finir avec '+s;
-    if(s%2===0) suggestion+=' ou Double '+(s/2);
-    suggestionEl.textContent=suggestion;
-  }else suggestionEl.textContent='';
-}
-
-// Miss
-
-document.getElementById('miss').onclick=function(){
-  throwsThisTurn.push(0);
-  renderTurn();
-  if(throwsThisTurn.length===3){
-    alert('3 lancers effectués. Passer au joueur suivant.');
-  }
-};
 
 // Undo
 
 document.getElementById('undo').onclick=function(){
-  if(throwsThisTurn.length===0)return;
-  const last=throwsThisTurn.pop();
-  scores[current]+=last;
-  fullHistory.pop();
-  renderTurn();
-  renderHistory();
-  updateUI();
+  if(fullHistory.length===0)return;
+  const last=fullHistory.pop();
+  const parts=last.split(' - ');
+  const val=parseInt(parts[1]);
+  scores[current]+=val;
+  dartsThrown=Math.max(0,dartsThrown-1);
+  renderHistory();updateUI();updateDarts();renderScoreboard();
 };
 
-// Next player
+// Miss
 
-document.getElementById('next').onclick=function(){
-  current=(current+1)%players.length;
-  throwsThisTurn=[];
-  renderTurn();
-  updateUI();
+document.getElementById('miss').onclick=function(){
+  dartsThrown++;
+  fullHistory.push(players[current]+' - 0 (reste '+scores[current]+')');
+  renderHistory();updateDarts();
+  if(dartsThrown===3){
+    funMessage.textContent='✨ Tour terminé ! ✨';
+    setTimeout(nextPlayer,1500);
+  }
 };
 
 });
