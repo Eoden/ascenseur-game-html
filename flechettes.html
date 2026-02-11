@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fléchettes</title>
-<link rel="stylesheet" href="flechettes.css?v=010029">
+<link rel="stylesheet" href="flechettes.css?v=010030">
 </head>
 <body>
 <div class="app">
@@ -33,14 +33,22 @@
 
   <div id="numbers"></div>
 
-  <h3>Lancers du tour :</h3>
+  <div class="actions">
+    <button id="miss">Out (raté)</button>
+    <button id="undo">Annuler dernier lancer</button>
+  </div>
+
+  <h3>Historique du tour :</h3>
   <div id="throws"></div>
+
+  <h3>Historique complet :</h3>
+  <div id="history"></div>
 
   <button id="next">Passer au joueur suivant</button>
 </div>
 
-<div class="version">v010029</div>
+<div class="version">v010030</div>
 </div>
-<script src="flechettes.js?v=010029"></script>
+<script src="flechettes.js?v=010030"></script>
 </body>
 </html>
