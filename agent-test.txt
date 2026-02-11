@@ -1,0 +1,2 @@
+Agent /command test successful.
+If you see this file, /command works properly.
