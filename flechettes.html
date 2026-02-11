@@ -1,51 +1,38 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fléchettes – Compteur</title>
-  <link rel="stylesheet" href="flechettes.css?v=010027" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fléchettes</title>
+<link rel="stylesheet" href="flechettes.css?v=010028">
 </head>
 <body>
-  <main class="container">
 
-    <h1>🎯 Fléchettes</h1>
+<div class="app">
+<h1>🎯 Fléchettes</h1>
 
-    <section id="setup" class="card">
-      <h2>Configuration</h2>
-      <div class="player-count">
-        <button id="minus">−</button>
-        <span id="playerCount">1</span>
-        <button id="plus">+</button>
-      </div>
-      <div id="playerNames"></div>
-    </section>
+<div id="setup">
+  <h2>Configuration</h2>
+  <button id="minus">-</button>
+  <span id="playerCount">1</span>
+  <button id="plus">+</button>
+  <div id="players"></div>
+  <button id="start301">Start 301</button>
+  <button id="start501">Start 501</button>
+</div>
 
-    <section id="mode" class="card">
-      <h2>Mode</h2>
-      <button data-start="301">301</button>
-      <button data-start="501">501</button>
-    </section>
+<div id="game" style="display:none;">
+  <h2 id="currentPlayer"></h2>
+  <div class="score">
+    Score: <span id="score"></span>
+  </div>
+  <div id="numbers"></div>
+  <button id="next">Tour suivant</button>
+</div>
 
-    <section id="game" style="display:none">
-      <div class="score" id="scoreBox">
-        <div id="currentPlayer"></div>
-        <div>Score restant</div>
-        <strong id="remaining"></strong>
-        <div id="suggestion"></div>
-      </div>
+<div class="version">v010028</div>
+</div>
 
-      <div id="throws"></div>
-
-      <div id="numbers"></div>
-
-      <button id="nextTurn">Tour suivant</button>
-    </section>
-
-    <div class="version">v010027</div>
-
-  </main>
-
-<script src="flechettes.js?v=010027"></script>
+<script src="flechettes.js?v=010028"></script>
 </body>
 </html>
