@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fléchettes</title>
-<link rel="stylesheet" href="flechettes.css?v=010031">
+<link rel="stylesheet" href="flechettes.css?v=010033">
 </head>
 <body>
 <div class="app">
@@ -22,7 +22,7 @@
 
 <div id="game" style="display:none;">
 
-  <div id="scoreboard"></div>
+  <div id="scoreboard" class="scoreboard"></div>
 
   <h2 id="currentPlayer"></h2>
   <div class="score">Score: <span id="score"></span></div>
@@ -31,27 +31,29 @@
   <div class="dart-indicator" id="dartIndicator"></div>
 
   <div class="multiplier">
-    <button data-m="1" class="active mult-btn simple">S</button>
-    <button data-m="2" class="mult-btn double">D</button>
-    <button data-m="3" class="mult-btn triple">T</button>
+    <button data-m="1" class="mult-btn simple active">Simple</button>
+    <button data-m="2" class="mult-btn double">Double</button>
+    <button data-m="3" class="mult-btn triple">Triple</button>
   </div>
 
   <div id="numbers"></div>
 
   <div class="actions">
+    <button id="bull25">25</button>
+    <button id="bull50">50</button>
     <button id="miss">🎯 Out</button>
-    <button id="undo">↩ Annuler tir</button>
+    <button id="undo">↩ Annuler</button>
   </div>
 
   <h3>Historique :</h3>
   <div id="history"></div>
 
-  <div id="funMessage" class="fun-message"></div>
-
 </div>
 
-<div class="version">v010031</div>
+<div id="popup" class="popup" style="display:none;"></div>
+
+<div class="version">v010033</div>
 </div>
-<script src="flechettes.js?v=010031"></script>
+<script src="flechettes.js?v=010033"></script>
 </body>
 </html>

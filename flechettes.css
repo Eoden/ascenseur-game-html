@@ -1,21 +1,19 @@
-body{margin:0;font-family:Arial;background:#222;color:#fff;text-align:center;transition:background 0.4s ease}
+body{margin:0;font-family:Arial;background:#1f1f1f;color:#fff;text-align:center}
 .app{padding:20px}
-button{padding:10px;margin:5px;border:none;border-radius:8px;background:#444;color:#fff;font-weight:bold}
-button:hover{background:#666;cursor:pointer}
+button{padding:10px;margin:5px;border:none;border-radius:10px;font-weight:bold;color:#fff}
 #numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:15px}
 .score{font-size:24px;margin:10px 0}
 #history div{margin:4px 0}
 .multiplier{display:flex;justify-content:center;gap:10px;margin:10px 0}
-.mult-btn{padding:8px 14px;border-radius:20px;background:#555}
-.mult-btn.active{background:#fff;color:#000}
+.mult-btn{padding:10px 16px;border-radius:20px}
+.simple{background:#3498db}
+.double{background:#27ae60}
+.triple{background:#e74c3c}
+.mult-btn.active{outline:3px solid #fff}
 .dart-indicator{display:flex;justify-content:center;margin:10px 0}
-.dart{width:18px;height:18px;border-radius:50%;background:#555;margin:5px;transition:all 0.3s}
-.scoreboard{display:flex;justify-content:center;gap:10px;margin-bottom:10px}
-.player-badge{padding:5px 10px;border-radius:20px;font-weight:bold}
-.fun-message{margin-top:15px;font-size:20px;color:#ffd700;animation:pop 0.5s ease}
-@keyframes pop{0%{transform:scale(0.5)}100%{transform:scale(1)}}
-.under100{animation:pulse 0.8s infinite alternate}
-@keyframes pulse{from{box-shadow:0 0 5px #fff}to{box-shadow:0 0 20px #ffd700}}
-.player-change{animation:flashBg 0.6s ease}
-@keyframes flashBg{0%{background:#333}100%{background:#222}}
+.dart{width:18px;height:18px;border-radius:50%;background:#555;margin:5px}
+.scoreboard{display:flex;justify-content:center;gap:15px;margin-bottom:15px;flex-wrap:wrap}
+.player-badge{padding:6px 12px;border-radius:20px;font-weight:bold}
+.popup{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);background:#000;padding:20px 40px;border-radius:15px;font-size:22px;animation:pop 0.4s ease}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(0.5)}100%{transform:translate(-50%,-50%) scale(1)}}
 .version{position:fixed;bottom:5px;right:10px;font-size:12px;opacity:0.5}
