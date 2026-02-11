@@ -6,6 +6,7 @@ const throwsEl=document.getElementById('throws');
 const toast=document.getElementById('toast');
 const suggestionEl=document.getElementById('suggestion');
 const currentPlayerEl=document.getElementById('currentPlayer');
+const endScreen=document.getElementById('endScreen');
 
 let players=[];
 let scores=[];
@@ -14,6 +15,21 @@ let startScore=301;
 let mult=1;
 let turn=[];
 let prevRemaining=301;
+
+// Sound (triple)
+function playTripleSound(){
+  const ctx=new (window.AudioContext||window.webkitAudioContext)();
+  const osc=ctx.createOscillator();
+  const gain=ctx.createGain();
+  osc.type='sawtooth';
+  osc.frequency.value=220;
+  gain.gain.value=0.2;
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.frequency.exponentialRampToValueAtTime(880,ctx.currentTime+0.3);
+  osc.stop(ctx.currentTime+0.3);
+}
 
 // Player count
 let playerCount=1;
@@ -34,8 +50,8 @@ function updatePlayersUI(){
   }
 }
 updatePlayersUI();
+modeEl.classList.remove('hidden');
 
-// Mode selection
 modeEl.querySelectorAll('button[data-start]').forEach(b=>b.onclick=()=>startGame(+b.dataset.start));
 
 function startGame(v){
@@ -55,15 +71,9 @@ function startGame(v){
   updateUI();
 }
 
-// After setup show mode
-document.querySelectorAll('#playerNames input').forEach(i=>i.addEventListener('change',()=>modeEl.classList.remove('hidden')));
-modeEl.classList.remove('hidden');
-
-// Multiplier
 const multBtns=document.querySelectorAll('.mult button');
 multBtns.forEach(b=>b.onclick=()=>{multBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');mult=+b.dataset.m});
 
-// Build numbers
 const nums=document.getElementById('nums');
 for(let i=1;i<=20;i++){
   const b=document.createElement('button');
@@ -72,7 +82,6 @@ for(let i=1;i<=20;i++){
   nums.appendChild(b);
 }
 
-// Bulls
 document.querySelectorAll('[data-bull]').forEach(b=>b.onclick=()=>addThrow(+b.dataset.bull,true));
 
 function addThrow(n,isBull=false){
@@ -86,13 +95,13 @@ function addThrow(n,isBull=false){
   turn.push(val);
 
   if(!isBull){
-    if(mult===3)showToast('🔥 BOOM ! Triple !');
+    if(mult===3){showToast('🔥 BOOM ! Triple !');playTripleSound();}
     if(mult===2)showToast('💪 Bien joué ! Double !');
   }
   if(isBull&&n===50)showToast('🎯 Plein centre !!!');
 
   if(next===0){
-    showToast('🏆 '+players[current]+' a gagné !!!');
+    showVictory();
     return;
   }
 
@@ -124,7 +133,6 @@ function updateSuggestion(){
   }
 }
 
-// Actions
 document.getElementById('undo').onclick=()=>{
   if(!turn.length)return;
   const v=turn.pop();
@@ -142,4 +150,15 @@ function showToast(msg){
   toast.textContent=msg;
   toast.classList.remove('hidden');
   setTimeout(()=>toast.classList.add('hidden'),1200);
+}
+
+function showVictory(){
+  const ranking=[...players.keys()].sort((a,b)=>scores[a]-scores[b]);
+  let html='<h2>🏆 Classement final</h2><ul>';
+  ranking.forEach((i,pos)=>{
+    html+='<li>'+(pos+1)+'. '+players[i]+' ('+scores[i]+')</li>';
+  });
+  html+='</ul><button onclick="location.reload()">Nouvelle partie</button>';
+  endScreen.innerHTML=html;
+  endScreen.classList.remove('hidden');
 }
