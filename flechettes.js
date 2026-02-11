@@ -1,118 +1,75 @@
-const body=document.body;
-const setupEl=document.getElementById('setup');
-const modeEl=document.getElementById('mode');
-const gameEl=document.getElementById('game');
-const remainingEl=document.getElementById('remaining');
-const throwsEl=document.getElementById('throws');
-const toast=document.getElementById('toast');
-const suggestionEl=document.getElementById('suggestion');
-const currentPlayerEl=document.getElementById('currentPlayer');
-const endScreen=document.getElementById('endScreen');
-const scoreBox=document.querySelector('.score');
+// VERSION 010027 - CLEAN STABLE FIX
 
-let players=[];
-let scores=[];
-let colors=[];
-let current=0;
-let mult=1;
-let turn=[];
-let fireStreak=0;
-
-// --- Setup joueurs ---
-let playerCount=1;
 const playerCountEl=document.getElementById('playerCount');
 const namesEl=document.getElementById('playerNames');
+const gameEl=document.getElementById('game');
+const remainingEl=document.getElementById('remaining');
+const currentPlayerEl=document.getElementById('currentPlayer');
+const suggestionEl=document.getElementById('suggestion');
+const throwsEl=document.getElementById('throws');
+const numbersEl=document.getElementById('numbers');
 
-const defaultPalette=['#ff6b6b','#4ecdc4','#ffe66d','#a29bfe','#f78fb3','#70a1ff'];
+let playerCount=1;
+let players=[];
+let scores=[];
+let current=0;
 
-function updatePlayersUI(){
+// Setup UI
+function renderPlayers(){
   playerCountEl.textContent=playerCount;
   namesEl.innerHTML='';
   for(let i=0;i<playerCount;i++){
-    const wrapper=document.createElement('div');
-    wrapper.className='player-config';
-
-    const nameInput=document.createElement('input');
-    nameInput.type='text';
-    nameInput.placeholder='Joueur '+(i+1);
-    nameInput.id='player'+i;
-
-    const colorInput=document.createElement('input');
-    colorInput.type='color';
-    colorInput.value=defaultPalette[i%defaultPalette.length];
-    colorInput.id='color'+i;
-
-    wrapper.appendChild(nameInput);
-    wrapper.appendChild(colorInput);
-    namesEl.appendChild(wrapper);
+    const input=document.createElement('input');
+    input.placeholder='Joueur '+(i+1);
+    input.id='player'+i;
+    namesEl.appendChild(input);
   }
 }
 
-document.getElementById('plus').onclick=()=>{if(playerCount<6){playerCount++;updatePlayersUI();}};
-document.getElementById('minus').onclick=()=>{if(playerCount>1){playerCount--;updatePlayersUI();}};
-updatePlayersUI();
-modeEl.classList.remove('hidden');
+renderPlayers();
 
-modeEl.querySelectorAll('button[data-start]').forEach(b=>{
-  b.onclick=()=>startGame(+b.dataset.start);
-});
+document.getElementById('plus').onclick=()=>{if(playerCount<6){playerCount++;renderPlayers();}};
+document.getElementById('minus').onclick=()=>{if(playerCount>1){playerCount--;renderPlayers();}};
 
-function startGame(startScore){
-  players=[];
-  scores=[];
-  colors=[];
-  for(let i=0;i<playerCount;i++){
-    players.push(document.getElementById('player'+i).value||('Joueur '+(i+1)));
-    scores.push(startScore);
-    colors.push(document.getElementById('color'+i).value);
-  }
-  current=0;
-  turn=[];
-  setupEl.classList.add('hidden');
-  modeEl.classList.add('hidden');
-  gameEl.classList.remove('hidden');
-  updateUI();
-}
+// Start game
 
-// --- Jeu ---
-const multBtns=document.querySelectorAll('.mult button');
-multBtns.forEach(b=>{
-  b.onclick=()=>{
-    multBtns.forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    mult=+b.dataset.m;
+document.querySelectorAll('[data-start]').forEach(btn=>{
+  btn.onclick=()=>{
+    players=[];
+    scores=[];
+    const start=parseInt(btn.dataset.start);
+    for(let i=0;i<playerCount;i++){
+      players.push(document.getElementById('player'+i).value||('Joueur '+(i+1)));
+      scores.push(start);
+    }
+    current=0;
+    document.getElementById('setup').style.display='none';
+    document.getElementById('mode').style.display='none';
+    gameEl.style.display='block';
+    updateUI();
   };
 });
 
-const nums=document.getElementById('nums');
+// Numbers
 for(let i=1;i<=20;i++){
   const btn=document.createElement('button');
   btn.textContent=i;
-  btn.onclick=()=>addThrow(i);
-  nums.appendChild(btn);
+  btn.onclick=()=>addScore(i);
+  numbersEl.appendChild(btn);
 }
 
-document.querySelectorAll('[data-bull]').forEach(b=>{
-  b.onclick=()=>addThrow(+b.dataset.bull,true);
-});
+function addScore(value){
+  if(scores[current]-value<0)return;
+  scores[current]-=value;
+  const div=document.createElement('div');
+  div.textContent='🎯 -'+value;
+  throwsEl.appendChild(div);
 
-function addThrow(n,isBull=false){
-  const value=isBull?n:n*mult;
-  const next=scores[current]-value;
-
-  if(next<0){showToast('😅 Bust !');return;}
-
-  scores[current]=next;
-  turn.push(value);
-
-  if(mult===3){fireStreak++;flash();}
-  else if(mult===2){flash();fireStreak=0;}
-  else{fireStreak=0;}
-
-  if(fireStreak>=2){scoreBox.style.boxShadow='0 0 30px orange';}
-  else{scoreBox.style.boxShadow='0 0 25px '+colors[current];}
-
-  if(next===0){showVictory();return;}
+  if(scores[current]===0){
+    alert(players[current]+' a gagné !');
+    location.reload();
+    return;
+  }
 
   updateUI();
 }
@@ -120,55 +77,11 @@ function addThrow(n,isBull=false){
 function updateUI(){
   remainingEl.textContent=scores[current];
   currentPlayerEl.textContent='Au tour de : '+players[current];
-  scoreBox.style.color=colors[current];
-  scoreBox.style.borderColor=colors[current];
-  body.style.background=`linear-gradient(180deg, ${colors[current]}, #111)`;
-  renderThrows();
-  suggestionEl.textContent=scores[current]<=60?('🎯 Tu peux finir en faisant '+scores[current]):'';
+  suggestionEl.textContent=scores[current]<=60?'🎯 Tu peux finir en faisant '+scores[current]:'';
 }
-
-function renderThrows(){
-  throwsEl.innerHTML='';
-  turn.forEach(v=>{
-    const li=document.createElement('li');
-    li.textContent='🎯 -'+v;
-    li.style.color=colors[current];
-    throwsEl.appendChild(li);
-  });
-}
-
-function flash(){
-  scoreBox.classList.add('flash');
-  setTimeout(()=>scoreBox.classList.remove('flash'),400);
-}
-
-document.getElementById('undo').onclick=()=>{
-  if(!turn.length)return;
-  const v=turn.pop();
-  scores[current]+=v;
-  updateUI();
-};
 
 document.getElementById('nextTurn').onclick=()=>{
-  turn=[];
   current=(current+1)%players.length;
-  fireStreak=0;
+  throwsEl.innerHTML='';
   updateUI();
 };
-
-function showToast(msg){
-  toast.textContent=msg;
-  toast.classList.remove('hidden');
-  setTimeout(()=>toast.classList.add('hidden'),1200);
-}
-
-function showVictory(){
-  const ranking=[...players.keys()].sort((a,b)=>scores[a]-scores[b]);
-  let html='<h2>🏆 Classement final</h2><ul>';
-  ranking.forEach((i,pos)=>{
-    html+='<li style="color:'+colors[i]+'">'+(pos+1)+'. '+players[i]+' ('+scores[i]+')</li>';
-  });
-  html+='</ul><button onclick="location.reload()">Nouvelle partie</button>';
-  endScreen.innerHTML=html;
-  endScreen.classList.remove('hidden');
-}

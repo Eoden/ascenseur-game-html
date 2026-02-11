@@ -1,34 +1,8 @@
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:linear-gradient(180deg,#2c3e50,#000);color:#fff;text-align:center;overflow-x:hidden;transition:background 0.6s ease}
-.version{position:fixed;bottom:8px;right:10px;font-size:0.7rem;opacity:0.6}
-header{padding:1rem}
-.container{display:flex;flex-direction:column;align-items:center;gap:1rem}
-.card{background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border-radius:16px;padding:1rem;width:92vw;max-width:420px}
-button{padding:.8rem 1.2rem;border-radius:999px;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:1rem}
-button.active{background:#fff;color:#111}
-.hidden{display:none}
-.score strong{font-size:3rem}
-.score.sticky{position:sticky;top:0;background:#111;padding:1rem;border-radius:12px;z-index:10;transition:all .3s ease}
-.score.sticky.player-color{border:3px solid currentColor;box-shadow:0 0 25px currentColor}
-.score.flash{animation:flash 0.4s ease}
-@keyframes flash{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-.turn ul{list-style:none;padding:0;margin:.5rem 0}
-.turn li{font-weight:bold;animation:fadeIn .3s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-.turn-actions{display:flex;gap:.5rem;justify-content:center}
-.selector{width:92vw;max-width:420px}
-.mult{display:flex;gap:.5rem;justify-content:center;margin:.5rem 0}
-.nums{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
-.bulls{display:flex;gap:.5rem;justify-content:center;margin:.5rem 0}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;color:#111;padding:.8rem 1.2rem;border-radius:999px;font-weight:bold;animation:pop .6s ease}
-@keyframes pop{0%{transform:translateX(-50%) scale(.8)}100%{transform:translateX(-50%) scale(1)}}
-.back{color:#ccc;text-decoration:none;font-size:.9rem;margin-top:.5rem}
-.player-count{display:flex;gap:1rem;justify-content:center;align-items:center;margin:.5rem 0}
-.player-count span{font-size:1.5rem;font-weight:bold}
-.player-config{display:flex;flex-direction:column;align-items:center;gap:.3rem;margin:.5rem 0}
-.player-config input[type="color"]{width:50px;height:30px;border:none}
-input[type="text"]{margin:.3rem 0;padding:.5rem;border-radius:8px;border:none;width:80%}
-.suggestion{margin-top:.5rem;font-size:.9rem;opacity:.8}
-.end{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1rem;padding:2rem}
-.end h2{margin:0}
-.end ul{list-style:none;padding:0}
-.end button{background:#fff;color:#111}
+body{margin:0;font-family:sans-serif;background:#1e1e1e;color:white;text-align:center}
+.container{padding:20px}
+.card{background:#2c2c2c;padding:15px;border-radius:10px;margin-bottom:15px}
+button{padding:10px 15px;margin:5px;border:none;border-radius:8px;background:#444;color:white;font-size:16px}
+button:hover{background:#666;cursor:pointer}
+.score{background:#000;padding:15px;border-radius:12px;margin-bottom:15px}
+#numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:15px 0}
+.version{position:fixed;bottom:5px;right:10px;font-size:12px;opacity:0.6}

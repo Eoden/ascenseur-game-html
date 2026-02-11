@@ -4,18 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fléchettes – Compteur</title>
-  <link rel="stylesheet" href="flechettes.css?v=010025" />
+  <link rel="stylesheet" href="flechettes.css?v=010027" />
 </head>
 <body>
-  <header>
-    <h1>🎯 Fléchettes</h1>
-  </header>
-
   <main class="container">
+
+    <h1>🎯 Fléchettes</h1>
 
     <section id="setup" class="card">
       <h2>Configuration</h2>
-      <label>Nombre de joueurs</label>
       <div class="player-count">
         <button id="minus">−</button>
         <span id="playerCount">1</span>
@@ -24,53 +21,31 @@
       <div id="playerNames"></div>
     </section>
 
-    <section id="mode" class="card hidden">
-      <h2>Choisis le mode</h2>
-      <div class="modes">
-        <button data-start="301">301</button>
-        <button data-start="501">501</button>
-      </div>
+    <section id="mode" class="card">
+      <h2>Mode</h2>
+      <button data-start="301">301</button>
+      <button data-start="501">501</button>
     </section>
 
-    <section id="game" class="hidden">
-      <div class="score sticky">
-        <span id="currentPlayer"></span>
-        <span>Score restant</span>
-        <strong id="remaining">301</strong>
-        <div id="suggestion" class="suggestion"></div>
+    <section id="game" style="display:none">
+      <div class="score" id="scoreBox">
+        <div id="currentPlayer"></div>
+        <div>Score restant</div>
+        <strong id="remaining"></strong>
+        <div id="suggestion"></div>
       </div>
 
-      <div class="turn">
-        <h3>Tour en cours</h3>
-        <ul id="throws"></ul>
-        <div class="turn-actions">
-          <button id="undo">Annuler</button>
-          <button id="nextTurn">Tour suivant</button>
-        </div>
-      </div>
+      <div id="throws"></div>
 
-      <div class="selector">
-        <div class="mult">
-          <button data-m="1" class="active">Simple</button>
-          <button data-m="2">Double</button>
-          <button data-m="3">Triple</button>
-        </div>
-        <div class="nums" id="nums"></div>
-        <div class="bulls">
-          <button data-bull="25">25</button>
-          <button data-bull="50">50</button>
-        </div>
-      </div>
+      <div id="numbers"></div>
+
+      <button id="nextTurn">Tour suivant</button>
     </section>
 
-    <div id="toast" class="toast hidden"></div>
-    <div id="endScreen" class="end hidden"></div>
+    <div class="version">v010027</div>
 
-    <div class="version">v010025</div>
-
-    <a href="index.html" class="back">⬅ Retour au menu</a>
   </main>
 
-  <script src="flechettes.js?v=010025"></script>
+<script src="flechettes.js?v=010027"></script>
 </body>
 </html>
