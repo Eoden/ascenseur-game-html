@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fléchettes</title>
-<link rel="stylesheet" href="flechettes.css?v=010034">
+<link rel="stylesheet" href="flechettes.css?v=010038">
 </head>
 <body>
 <div class="app">
@@ -15,46 +15,40 @@
   <button id="minus">-</button>
   <span id="playerCount">1</span>
   <button id="plus">+</button>
-  <div id="players"></div>
+  <div id="players" class="players-row"></div>
   <button id="start301">Start 301</button>
   <button id="start501">Start 501</button>
 </div>
 
+<div id="reactionGame" style="display:none;"></div>
+
 <div id="game" style="display:none;">
-
   <div id="scoreboard" class="scoreboard"></div>
-
   <h2 id="currentPlayer"></h2>
   <div class="score">Score: <span id="score"></span></div>
   <div id="suggestion" class="suggestion"></div>
-
   <div class="dart-indicator" id="dartIndicator"></div>
-
   <div class="multiplier">
     <button data-m="1" class="mult-btn active" id="btnSimple">Simple</button>
     <button data-m="2" class="mult-btn" id="btnDouble">Double</button>
     <button data-m="3" class="mult-btn" id="btnTriple">Triple</button>
   </div>
-
   <div id="numbers"></div>
-
   <div class="actions">
     <button id="bull25" class="bull25">25</button>
     <button id="bull50" class="bull50">50</button>
     <button id="miss">🎯 Out</button>
     <button id="undo">↩ Annuler</button>
   </div>
-
   <h3>Historique :</h3>
   <div id="history"></div>
-
 </div>
 
 <div id="endScreen" class="end-screen" style="display:none;"></div>
 <div id="popup" class="popup" style="display:none;"></div>
 
-<div class="version">v010034</div>
+<div class="version">v010038</div>
 </div>
-<script src="flechettes.js?v=010034"></script>
+<script src="flechettes.js?v=010038"></script>
 </body>
 </html>

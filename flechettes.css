@@ -1,19 +1,6 @@
-body{margin:0;font-family:Arial;background:#1f1f1f;color:#fff;text-align:center}
-.app{padding:20px}
-button{padding:10px;margin:5px;border:none;border-radius:10px;font-weight:bold}
-#numbers button{color:#000}
-.bull25{background:#ffd600 !important;color:#000}
-.bull50{background:#fb8c00 !important;color:#000}
-.multiplier{display:flex;justify-content:center;gap:10px;margin:10px 0}
-.mult-btn{background:transparent;border:2px solid #fff;color:#fff}
-.mult-btn.active{background:#fff;color:#000}
-.score{font-size:24px;margin:10px 0}
-.scoreboard{display:flex;justify-content:center;gap:15px;margin-bottom:15px;flex-wrap:wrap}
-.player-badge{padding:6px 12px;border-radius:20px;font-weight:bold}
-.dart-indicator{display:flex;justify-content:center;margin:10px 0}
-.dart{width:18px;height:18px;border-radius:50%;background:#555;margin:5px}
-.popup{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);background:#000;padding:20px 40px;border-radius:15px;font-size:22px;border:4px solid #fff;box-shadow:0 0 30px #000;animation:pop 0.4s ease;z-index:999}
-.end-screen{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px}
+.players-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+.player-config{display:flex;flex-direction:column;align-items:center}
+.player-color{width:30px;height:30px;border-radius:50%;margin-top:5px;border:2px solid #fff}
+#reactionGame{position:relative;height:300px}
+.reaction-dot{width:40px;height:40px;border-radius:50%;position:absolute;cursor:pointer}
 .end-screen button{background:#ffd600;color:#000}
-@keyframes pop{0%{transform:translate(-50%,-50%) scale(0.5)}100%{transform:translate(-50%,-50%) scale(1)}}
-.version{position:fixed;bottom:5px;right:10px;font-size:12px;opacity:0.5}
