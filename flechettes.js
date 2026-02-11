@@ -1,4 +1,4 @@
-// VERSION 010036 - PLAYER COLOR BUTTONS + RANDOM START
+// VERSION 010037 - FIX PLAYER COLORS + POPUP BORDER + RANDOM START CLEAN
 
 document.addEventListener('DOMContentLoaded',function(){
 
@@ -72,16 +72,16 @@ function renderNumbers(){
   for(let i=1;i<=20;i++){
     const btn=document.createElement('button');
     btn.textContent=i;
-    btn.style.background=colors[current];
-    btn.style.color='#000';
     btn.onclick=()=>addScore(i,false);
     numbersDiv.appendChild(btn);
   }
+  updateNumberColors();
 }
 
 function updateNumberColors(){
   document.querySelectorAll('#numbers button').forEach(btn=>{
     btn.style.background=colors[current];
+    btn.style.color='#000';
   });
 }
 
@@ -132,7 +132,7 @@ function showPopup(text){
   popup.textContent=text;
   popup.style.borderColor=colors[current]||'#fff';
   popup.style.display='block';
-  setTimeout(()=>popup.style.display='none',1400);
+  setTimeout(()=>popup.style.display='none',1500);
 }
 
 function addScore(value,isBull){
