@@ -6,6 +6,7 @@ body {
   align-items: center;
   color: white;
   overflow: hidden;
+  touch-action: none;
 }
 
 canvas {
@@ -54,4 +55,7 @@ canvas {
   border: 2px solid #666;
   border-radius: 12px;
   touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }

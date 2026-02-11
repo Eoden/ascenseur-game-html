@@ -4,6 +4,7 @@ export class Game {
   constructor() {
     this.player = new Player(64, 64);
     this.input = { up:false, down:false, left:false, right:false };
+    this.roomIndex = 0;
     this.generateRoom();
   }
 
@@ -25,8 +26,24 @@ export class Game {
       }
     }
 
-    const exitX = Math.floor(this.map.width / 2);
-    this.map.tiles[0 * this.map.width + exitX] = 2;
+    const w = this.map.width;
+    const h = this.map.height;
+
+    // varier la position de la sortie selon roomIndex
+    const midX = Math.floor(w / 2);
+    const midY = Math.floor(h / 2);
+
+    const side = this.roomIndex % 4;
+
+    if (side === 0) {
+      this.map.tiles[0 * w + midX] = 2; // haut
+    } else if (side === 1) {
+      this.map.tiles[midY * w + (w - 1)] = 2; // droite
+    } else if (side === 2) {
+      this.map.tiles[(h - 1) * w + midX] = 2; // bas
+    } else {
+      this.map.tiles[midY * w + 0] = 2; // gauche
+    }
   }
 
   tick(dt) {
@@ -47,6 +64,7 @@ export class Game {
 
     const tile = this.map.tiles[py * this.map.width + px];
     if (tile === 2) {
+      this.roomIndex++;
       this.player.x = 64;
       this.player.y = 64;
       this.generateRoom();
