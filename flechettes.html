@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fléchettes</title>
-<link rel="stylesheet" href="flechettes.css?v=010033">
+<link rel="stylesheet" href="flechettes.css?v=010034">
 </head>
 <body>
 <div class="app">
@@ -31,16 +31,16 @@
   <div class="dart-indicator" id="dartIndicator"></div>
 
   <div class="multiplier">
-    <button data-m="1" class="mult-btn simple active">Simple</button>
-    <button data-m="2" class="mult-btn double">Double</button>
-    <button data-m="3" class="mult-btn triple">Triple</button>
+    <button data-m="1" class="mult-btn active" id="btnSimple">Simple</button>
+    <button data-m="2" class="mult-btn" id="btnDouble">Double</button>
+    <button data-m="3" class="mult-btn" id="btnTriple">Triple</button>
   </div>
 
   <div id="numbers"></div>
 
   <div class="actions">
-    <button id="bull25">25</button>
-    <button id="bull50">50</button>
+    <button id="bull25" class="bull25">25</button>
+    <button id="bull50" class="bull50">50</button>
     <button id="miss">🎯 Out</button>
     <button id="undo">↩ Annuler</button>
   </div>
@@ -50,10 +50,11 @@
 
 </div>
 
+<div id="endScreen" class="end-screen" style="display:none;"></div>
 <div id="popup" class="popup" style="display:none;"></div>
 
-<div class="version">v010033</div>
+<div class="version">v010034</div>
 </div>
-<script src="flechettes.js?v=010033"></script>
+<script src="flechettes.js?v=010034"></script>
 </body>
 </html>
