@@ -29,34 +29,49 @@ export class Game {
     const w = this.map.width;
     const h = this.map.height;
 
-    // varier la position de la sortie selon roomIndex
     const midX = Math.floor(w / 2);
     const midY = Math.floor(h / 2);
 
     const side = this.roomIndex % 4;
 
-    if (side === 0) {
-      this.map.tiles[0 * w + midX] = 2; // haut
-    } else if (side === 1) {
-      this.map.tiles[midY * w + (w - 1)] = 2; // droite
-    } else if (side === 2) {
-      this.map.tiles[(h - 1) * w + midX] = 2; // bas
-    } else {
-      this.map.tiles[midY * w + 0] = 2; // gauche
-    }
+    if (side === 0) this.map.tiles[0 * w + midX] = 2;
+    else if (side === 1) this.map.tiles[midY * w + (w - 1)] = 2;
+    else if (side === 2) this.map.tiles[(h - 1) * w + midX] = 2;
+    else this.map.tiles[midY * w + 0] = 2;
   }
 
   tick(dt) {
     const speedMultiplier = dt / 16;
+    const tileSize = this.map.tileSize;
 
-    if(this.input.up) this.player.move(0, -1 * speedMultiplier);
-    if(this.input.down) this.player.move(0, 1 * speedMultiplier);
-    if(this.input.left) this.player.move(-1 * speedMultiplier, 0);
-    if(this.input.right) this.player.move(1 * speedMultiplier, 0);
+    let dx = 0;
+    let dy = 0;
+
+    if(this.input.up) dy -= 1;
+    if(this.input.down) dy += 1;
+    if(this.input.left) dx -= 1;
+    if(this.input.right) dx += 1;
+
+    if(dx !== 0 || dy !== 0){
+      const nextX = this.player.x + dx * this.player.speed * speedMultiplier;
+      const nextY = this.player.y + dy * this.player.speed * speedMultiplier;
+
+      const cx = nextX + 16;
+      const cy = nextY + 16;
+
+      const px = Math.floor(cx / tileSize);
+      const py = Math.floor(cy / tileSize);
+
+      const tile = this.map.tiles[py * this.map.width + px];
+
+      if(tile !== 1){
+        this.player.x = nextX;
+        this.player.y = nextY;
+      }
+    }
 
     this.player.update(dt);
 
-    const tileSize = this.map.tileSize;
     const cx = this.player.x + 16;
     const cy = this.player.y + 16;
     const px = Math.floor(cx / tileSize);

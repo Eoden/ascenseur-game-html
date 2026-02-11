@@ -4,10 +4,12 @@ export function bindDirectional(id, stateKey, inputState){
 
   const down = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     inputState[stateKey] = true;
   };
 
-  const up = () => {
+  const up = (e) => {
+    if(e) e.preventDefault();
     inputState[stateKey] = false;
   };
 
@@ -23,6 +25,7 @@ export function bindAction(id, fn){
 
   el.addEventListener('pointerdown', (e)=>{
     e.preventDefault();
+    e.stopPropagation();
     fn();
   });
 }
