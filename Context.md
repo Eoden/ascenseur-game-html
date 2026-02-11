@@ -53,3 +53,12 @@ L’agent est autorisé à générer des fichiers PNG placeholders contenant :
 Même si le PNG exact ne provient pas d’un moteur graphique, l’agent a le droit d’en produire un tant qu’il est valide au format PNG.
 
 L’objectif est d’avoir des assets temporaires, non définitifs.
+
+---
+
+# PNG fournis par un modèle externe
+
+L’agent est explicitement autorisé à accepter des PNG en base64 fournis par un autre modèle
+ou une autre source, même s’il ne peut pas vérifier leur cohérence interne.
+
+Si le fichier est valide une fois écrit dans le repo, l’opération est considérée comme déterministe.
