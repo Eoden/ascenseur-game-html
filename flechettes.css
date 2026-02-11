@@ -4,4 +4,7 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;background:#444;col
 button:hover{background:#666;cursor:pointer}
 #numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:15px}
 .score{font-size:24px;margin:15px 0}
+#throws div{margin:4px 0}
+.multiplier button.active{background:#fff;color:#000}
+.suggestion{margin:10px 0;color:#ffd700}
 .version{position:fixed;bottom:5px;right:10px;font-size:12px;opacity:0.5}

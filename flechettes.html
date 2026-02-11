@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fléchettes</title>
-<link rel="stylesheet" href="flechettes.css?v=010028">
+<link rel="stylesheet" href="flechettes.css?v=010029">
 </head>
 <body>
-
 <div class="app">
 <h1>🎯 Fléchettes</h1>
 
@@ -23,16 +22,25 @@
 
 <div id="game" style="display:none;">
   <h2 id="currentPlayer"></h2>
-  <div class="score">
-    Score: <span id="score"></span>
+  <div class="score">Score: <span id="score"></span></div>
+  <div id="suggestion" class="suggestion"></div>
+
+  <div class="multiplier">
+    <button data-m="1" class="active">Simple</button>
+    <button data-m="2">Double</button>
+    <button data-m="3">Triple</button>
   </div>
+
   <div id="numbers"></div>
-  <button id="next">Tour suivant</button>
+
+  <h3>Lancers du tour :</h3>
+  <div id="throws"></div>
+
+  <button id="next">Passer au joueur suivant</button>
 </div>
 
-<div class="version">v010028</div>
+<div class="version">v010029</div>
 </div>
-
-<script src="flechettes.js?v=010028"></script>
+<script src="flechettes.js?v=010029"></script>
 </body>
 </html>
