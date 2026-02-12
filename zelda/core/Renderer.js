@@ -2,21 +2,13 @@ export class Renderer {
   constructor(ctx) {
     this.ctx = ctx;
     this.assets = {};
-    this.loadHeroAssets();
+    this.loadSpriteSheet();
   }
 
-  loadHeroAssets() {
-    const states = ["idle", "walk", "attack"];
-    const dirs = ["down", "up", "left", "right"];
-
-    for (const state of states) {
-      for (const dir of dirs) {
-        const key = `${state}_${dir}`;
-        const img = new Image();
-        img.src = `./assets/sprites/hero/${key}.svg`;
-        this.assets[key] = img;
-      }
-    }
+  loadSpriteSheet() {
+    const img = new Image();
+    img.src = "./assets/sprites/space_marine_sheet.png";
+    this.assets.sheet = img;
   }
 
   drawMap(map) {
@@ -32,11 +24,33 @@ export class Renderer {
     }
   }
 
+  getRow(player) {
+    const dirIndex = { down: 0, up: 1, left: 2, right: 3 };
+    const base = dirIndex[player.dir] || 0;
+
+    if (player.state === "walk") return base + 4;
+    return base; // idle rows 0-3, walk rows 4-7
+  }
+
   drawPlayer(player) {
-    const key = `${player.state}_${player.dir}`;
-    const img = this.assets[key];
-    if (!img || !img.complete) return;
-    this.ctx.drawImage(img, player.x, player.y, 32, 32);
+    const sheet = this.assets.sheet;
+    if (!sheet || !sheet.complete) return;
+
+    const frameSize = 32;
+    const row = this.getRow(player);
+    const col = player.frame;
+
+    this.ctx.drawImage(
+      sheet,
+      col * frameSize,
+      row * frameSize,
+      frameSize,
+      frameSize,
+      player.x,
+      player.y,
+      frameSize,
+      frameSize
+    );
   }
 
   render(game) {
