@@ -2,24 +2,24 @@ export class Renderer {
   constructor(ctx) {
     this.ctx = ctx;
     this.assets = {};
-    this.loadSpriteSheet();
+    this.loadPlayerSprite();
   }
 
-  loadSpriteSheet() {
+  loadPlayerSprite() {
     const img = new Image();
 
     img.onload = () => {
-      console.log("Sprite sheet loaded OK");
+      console.log("Player sprite loaded OK");
     };
 
     img.onerror = (e) => {
-      console.error("Failed to load sprite sheet", e);
+      console.error("Failed to load player sprite", e);
     };
 
-    // GitHub Pages relative path (no leading slash)
-    img.src = "./zelda/assets/sprites/mini_walk_sheet.png";
+    // Correct path for GitHub Pages (root = zelda/)
+    img.src = "assets/sprites/player_64x80.png";
 
-    this.assets.sheet = img;
+    this.assets.player = img;
   }
 
   drawMap(map) {
@@ -35,34 +35,30 @@ export class Renderer {
     }
   }
 
-  getRow(player) {
-    const dirIndex = { down: 0, up: 1, left: 2, right: 3 };
-    const base = dirIndex[player.dir] || 0;
-
-    if (player.state === "walk") return base + 4;
-    return base;
-  }
-
   drawPlayer(player) {
-    const sheet = this.assets.sheet;
+    const sprite = this.assets.player;
 
-    // Extra safety to avoid broken image crash
-    if (!sheet || !sheet.complete || sheet.naturalWidth === 0) return;
+    if (!sprite || !sprite.complete || sprite.naturalWidth === 0) return;
 
-    const frameSize = 32;
-    const row = this.getRow(player);
-    const col = player.frame;
+    const spriteWidth = 64;
+    const spriteHeight = 80;
+
+    // Player position represents feet position
+    const drawX = Math.floor(player.x - spriteWidth / 2);
+    const drawY = Math.floor(player.y - spriteHeight + 64);
+
+    this.ctx.imageSmoothingEnabled = false;
 
     this.ctx.drawImage(
-      sheet,
-      col * frameSize,
-      row * frameSize,
-      frameSize,
-      frameSize,
-      player.x,
-      player.y,
-      frameSize,
-      frameSize
+      sprite,
+      0,
+      0,
+      spriteWidth,
+      spriteHeight,
+      drawX,
+      drawY,
+      spriteWidth,
+      spriteHeight
     );
   }
 
