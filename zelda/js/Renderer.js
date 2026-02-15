@@ -1,27 +1,28 @@
-// UPDATED FOR 96x96 HERO RENDER (feet anchored)
-export default class Renderer {
-  constructor(ctx, assets) {
-    this.ctx = ctx;
-    this.assets = assets;
-  }
+drawPlayer(player) {
+    const img = this.assets.images.player;
 
-  drawPlayer(player) {
-    const key = `${player.state}_${player.direction}`;
-    const img = this.assets.hero[key];
-    if (!img) return;
+    const frameWidth = 64;
+    const frameHeight = 80;
 
-    // 96x96 sprite, feet anchored at player.x / player.y
+    const frameX = player.frameIndex || 0;
+
+    const hitboxOffsetX = (64 - player.width) / 2;
+    const hitboxOffsetY = 80 - player.height;
+
+    const screenX = player.x - hitboxOffsetX;
+    const screenY = player.y - hitboxOffsetY;
+
+    this.ctx.imageSmoothingEnabled = false;
+
     this.ctx.drawImage(
-      img,
-      player.x - 48,
-      player.y - 88,
-      96,
-      96
+        img,
+        frameX * frameWidth,
+        0,
+        frameWidth,
+        frameHeight,
+        Math.floor(screenX),
+        Math.floor(screenY),
+        frameWidth,
+        frameHeight
     );
-  }
-
-  render(player, map) {
-    map.draw(this.ctx);
-    this.drawPlayer(player);
-  }
 }
