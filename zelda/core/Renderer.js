@@ -16,8 +16,8 @@ export class Renderer {
       console.error("Failed to load player sprite", e);
     };
 
-    // Correct path for GitHub Pages (root = zelda/)
-    img.src = "assets/sprites/player_64x80.png";
+    // Use existing sprite in repo
+    img.src = "assets/sprites/hero_walk_right_sheet.png";
 
     this.assets.player = img;
   }
