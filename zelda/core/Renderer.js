@@ -9,15 +9,15 @@ export class Renderer {
     const img = new Image();
 
     img.onload = () => {
-      console.log("Player sprite loaded OK");
+      console.log("Player sprite HD loaded OK");
     };
 
     img.onerror = (e) => {
-      console.error("Failed to load player sprite", e);
+      console.error("Failed to load player sprite HD", e);
     };
 
-    // Use existing sprite in repo
-    img.src = "assets/sprites/hero_walk_right_sheet.png";
+    // Use HD sprite version
+    img.src = "assets/sprites/hero_walk_right_sheet_hd.png";
 
     this.assets.player = img;
   }
