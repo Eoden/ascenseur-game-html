@@ -1,71 +1,74 @@
-export class Renderer {
-  constructor(ctx) {
-    this.ctx = ctx;
-    this.assets = {};
-    this.loadPlayerSprite();
-  }
+export default class Renderer {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext("2d");
 
-  loadPlayerSprite() {
-    const img = new Image();
+        // Pixel perfect rendering
+        this.ctx.imageSmoothingEnabled = false;
 
-    img.onload = () => {
-      console.log("Player sprite HD loaded OK");
-    };
-
-    img.onerror = (e) => {
-      console.error("Failed to load player sprite HD", e);
-    };
-
-    // Use HD sprite version
-    img.src = "assets/sprites/hero_walk_right_sheet_hd.png";
-
-    this.assets.player = img;
-  }
-
-  drawMap(map) {
-    const { tileSize, width, height, tiles } = map;
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const tile = tiles[y * width + x];
-        if (tile === 1) this.ctx.fillStyle = "#555";
-        else if (tile === 2) this.ctx.fillStyle = "#0a0";
-        else this.ctx.fillStyle = "#222";
-        this.ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
-      }
+        this.camera = { x: 0, y: 0 };
     }
-  }
 
-  drawPlayer(player) {
-    const sprite = this.assets.player;
+    setCamera(x, y) {
+        this.camera.x = x;
+        this.camera.y = y;
+    }
 
-    if (!sprite || !sprite.complete || sprite.naturalWidth === 0) return;
+    clear() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 
-    const spriteWidth = 64;
-    const spriteHeight = 80;
+    /**
+     * Draw any sprite scaled into a logical 64x82 box
+     * Supports HD sprite sheets
+     */
+    drawSprite(options) {
+        const {
+            image,
+            sx = 0,
+            sy = 0,
+            sw = image.width,
+            sh = image.height,
+            dx,
+            dy,
+            targetWidth = 64,
+            targetHeight = 82,
+            flip = false
+        } = options;
 
-    // Player position represents feet position
-    const drawX = Math.floor(player.x - spriteWidth / 2);
-    const drawY = Math.floor(player.y - spriteHeight + 64);
+        const screenX = Math.floor(dx - this.camera.x);
+        const screenY = Math.floor(dy - this.camera.y);
 
-    this.ctx.imageSmoothingEnabled = false;
+        this.ctx.save();
 
-    this.ctx.drawImage(
-      sprite,
-      0,
-      0,
-      spriteWidth,
-      spriteHeight,
-      drawX,
-      drawY,
-      spriteWidth,
-      spriteHeight
-    );
-  }
+        if (flip) {
+            this.ctx.translate(screenX + targetWidth, screenY);
+            this.ctx.scale(-1, 1);
+            this.ctx.drawImage(
+                image,
+                sx,
+                sy,
+                sw,
+                sh,
+                0,
+                0,
+                targetWidth,
+                targetHeight
+            );
+        } else {
+            this.ctx.drawImage(
+                image,
+                sx,
+                sy,
+                sw,
+                sh,
+                screenX,
+                screenY,
+                targetWidth,
+                targetHeight
+            );
+        }
 
-  render(game) {
-    const canvas = this.ctx.canvas;
-    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.drawMap(game.map);
-    this.drawPlayer(game.player);
-  }
+        this.ctx.restore();
+    }
 }
