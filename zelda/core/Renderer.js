@@ -19,11 +19,14 @@ export default class Renderer {
     }
 
     render(game) {
+        console.log("GAME:", game);
+        console.log("WORLD:", game.world);
+        console.log("MAP:", game.world?.map);
+
         const tileSize = 32;
 
-        // --- Draw map ---
         const map = game.world?.map;
-        if (map) {
+        if (map && map.length) {
             for (let y = 0; y < map.length; y++) {
                 for (let x = 0; x < map[y].length; x++) {
                     const tile = map[y][x];
@@ -32,11 +35,11 @@ export default class Renderer {
                     const screenY = y * tileSize - this.camera.y;
 
                     if (tile === 1) {
-                        this.ctx.fillStyle = "#444"; // wall
+                        this.ctx.fillStyle = "#444";
                     } else if (tile === 2) {
-                        this.ctx.fillStyle = "#2ecc71"; // exit
+                        this.ctx.fillStyle = "#2ecc71";
                     } else {
-                        this.ctx.fillStyle = "#222"; // floor
+                        this.ctx.fillStyle = "#222";
                     }
 
                     this.ctx.fillRect(screenX, screenY, tileSize, tileSize);
@@ -44,7 +47,6 @@ export default class Renderer {
             }
         }
 
-        // --- Draw player ---
         const player = game.player;
 
         if (player?.sprite && player.sprite.complete) {
