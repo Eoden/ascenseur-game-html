@@ -3,7 +3,6 @@ export default class Renderer {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
 
-        // Pixel perfect rendering
         this.ctx.imageSmoothingEnabled = false;
 
         this.camera = { x: 0, y: 0 };
@@ -15,60 +14,53 @@ export default class Renderer {
     }
 
     clear() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = "black";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    /**
-     * Draw any sprite scaled into a logical 64x82 box
-     * Supports HD sprite sheets
-     */
-    drawSprite(options) {
-        const {
-            image,
-            sx = 0,
-            sy = 0,
-            sw = image.width,
-            sh = image.height,
-            dx,
-            dy,
-            targetWidth = 64,
-            targetHeight = 82,
-            flip = false
-        } = options;
+    render(game) {
+        const tileSize = 32;
 
-        const screenX = Math.floor(dx - this.camera.x);
-        const screenY = Math.floor(dy - this.camera.y);
+        // --- Draw map ---
+        for (let y = 0; y < game.map.length; y++) {
+            for (let x = 0; x < game.map[y].length; x++) {
+                const tile = game.map[y][x];
 
-        this.ctx.save();
+                const screenX = x * tileSize - this.camera.x;
+                const screenY = y * tileSize - this.camera.y;
 
-        if (flip) {
-            this.ctx.translate(screenX + targetWidth, screenY);
-            this.ctx.scale(-1, 1);
-            this.ctx.drawImage(
-                image,
-                sx,
-                sy,
-                sw,
-                sh,
-                0,
-                0,
-                targetWidth,
-                targetHeight
-            );
-        } else {
-            this.ctx.drawImage(
-                image,
-                sx,
-                sy,
-                sw,
-                sh,
-                screenX,
-                screenY,
-                targetWidth,
-                targetHeight
-            );
+                if (tile === 1) {
+                    this.ctx.fillStyle = "#444"; // wall
+                } else if (tile === 2) {
+                    this.ctx.fillStyle = "#2ecc71"; // exit
+                } else {
+                    this.ctx.fillStyle = "#222"; // floor
+                }
+
+                this.ctx.fillRect(screenX, screenY, tileSize, tileSize);
+            }
         }
 
-        this.ctx.restore();
+        // --- Draw player ---
+        const player = game.player;
+
+        if (player?.sprite && player.sprite.complete) {
+            this.ctx.drawImage(
+                player.sprite,
+                player.x - this.camera.x,
+                player.y - this.camera.y,
+                64,
+                82
+            );
+        } else {
+            // fallback rectangle if sprite not loaded
+            this.ctx.fillStyle = "red";
+            this.ctx.fillRect(
+                player.x - this.camera.x,
+                player.y - this.camera.y,
+                32,
+                32
+            );
+        }
     }
 }
