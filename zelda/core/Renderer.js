@@ -40,8 +40,29 @@ export default class Renderer {
             }
         }
 
-        // Draw player (fallback simple block for now)
-        ctx.fillStyle = "red";
-        ctx.fillRect(game.player.x, game.player.y, 32, 32);
+        // Draw player with HD sprite scaled to 64x82
+        const player = game.player;
+
+        if (player.sprite && player.sprite.complete) {
+            const renderWidth = 64;
+            const renderHeight = 82;
+
+            // Center horizontally on 32px hitbox and align feet to ground
+            const drawX = player.x - renderWidth / 2 + 16;
+            const drawY = player.y - renderHeight + 32;
+
+            ctx.imageSmoothingEnabled = false;
+
+            ctx.drawImage(
+                player.sprite,
+                drawX,
+                drawY,
+                renderWidth,
+                renderHeight
+            );
+        } else {
+            ctx.fillStyle = "red";
+            ctx.fillRect(player.x, player.y, 32, 32);
+        }
     }
 }
