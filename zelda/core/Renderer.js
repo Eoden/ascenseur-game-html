@@ -4,16 +4,17 @@ export default class Renderer {
         this.ctx = canvas.getContext("2d");
     }
 
+    clear() {
+        this.ctx.fillStyle = "#000";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     render(game) {
         if (!game) return;
 
         const ctx = this.ctx;
         const map = game.map;
         if (!map) return;
-
-        // Clear screen
-        ctx.fillStyle = "#000";
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         const tileSize = map.tileSize;
 
