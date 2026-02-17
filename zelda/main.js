@@ -1,12 +1,11 @@
 import { Game } from './core/Game.js';
-import { Renderer } from './core/Renderer.js';
+import Renderer from './core/Renderer.js';
 import { bindDirectional, bindAction } from './core/Input.js';
 
 const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
 
 const game = new Game();
-const renderer = new Renderer(ctx);
+const renderer = new Renderer(canvas);
 
 bindDirectional('up','up',game.input);
 bindDirectional('down','down',game.input);
@@ -22,7 +21,8 @@ function loop(now) {
   last = now;
 
   game.tick(dt);
-  renderer.render(game);
+  renderer.clear();
+  if (renderer.render) renderer.render(game);
 
   requestAnimationFrame(loop);
 }
