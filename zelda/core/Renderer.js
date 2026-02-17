@@ -4,13 +4,19 @@ export default class Renderer {
     this.game = game;
   }
 
+  clear() {
+    const { ctx, game } = this;
+    if (!game || !game.map) return;
+
+    const { tileSize, width, height } = game.map;
+    ctx.clearRect(0, 0, width * tileSize, height * tileSize);
+  }
+
   render() {
     const { ctx, game } = this;
     if (!game || !game.map) return;
 
     const { tileSize, width, height, tiles } = game.map;
-
-    ctx.clearRect(0, 0, width * tileSize, height * tileSize);
 
     // Draw map
     for (let y = 0; y < height; y++) {
