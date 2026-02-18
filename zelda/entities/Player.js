@@ -1,57 +1,48 @@
-export class Player {
+export default class Player {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.state = "idle";
-    this.dir = "down";
     this.speed = 3;
-    this.attackCooldown = 0;
+    this.size = 32;
 
-    // Animation
-    this.frame = 0;
-    this.frameTimer = 0;
-    this.frameDuration = 120; // ms per frame
+    this.image1 = new Image();
+    this.image1.src = "assets/sprites/hero_walk_right_sheet.png";
+
+    this.image2 = new Image();
+    this.image2.src = "./assets/sprites/hero_walk_right_sheet.png";
+
+    this.image3 = new Image();
+    this.image3.src = "zelda/assets/sprites/hero_walk_right_sheet.png";
   }
 
-  move(dx, dy) {
-    if (this.state === "attack") return;
-
-    if (dx !== 0 || dy !== 0) {
-      if (Math.abs(dx) > Math.abs(dy)) {
-        this.dir = dx > 0 ? "right" : "left";
-      } else {
-        this.dir = dy > 0 ? "down" : "up";
-      }
-      this.state = "walk";
-    } else {
-      this.state = "idle";
-    }
-
-    this.x += dx;
-    this.y += dy;
+  update(input) {
+    if (input.left) this.x -= this.speed;
+    if (input.right) this.x += this.speed;
+    if (input.up) this.y -= this.speed;
+    if (input.down) this.y += this.speed;
   }
 
-  update(dt) {
-    // Attack cooldown
-    if (this.attackCooldown > 0) {
-      this.attackCooldown -= dt;
-      if (this.attackCooldown <= 0) {
-        this.state = "idle";
-      }
+  render(ctx) {
+    let drawn = false;
+
+    if (this.image1.complete && this.image1.naturalWidth > 0) {
+      ctx.drawImage(this.image1, this.x, this.y, this.size, this.size);
+      drawn = true;
     }
 
-    // Animation update
-    this.frameTimer += dt;
-    if (this.frameTimer >= this.frameDuration) {
-      this.frameTimer = 0;
-      this.frame = (this.frame + 1) % 4; // 4 columns in sheet
+    if (this.image2.complete && this.image2.naturalWidth > 0) {
+      ctx.drawImage(this.image2, this.x + 40, this.y, this.size, this.size);
+      drawn = true;
     }
-  }
 
-  attack() {
-    if (this.attackCooldown > 0) return;
-    this.state = "attack";
-    this.attackCooldown = 400;
-    this.frame = 0;
+    if (this.image3.complete && this.image3.naturalWidth > 0) {
+      ctx.drawImage(this.image3, this.x + 80, this.y, this.size, this.size);
+      drawn = true;
+    }
+
+    if (!drawn) {
+      ctx.fillStyle = "red";
+      ctx.fillRect(this.x, this.y, this.size, this.size);
+    }
   }
 }
