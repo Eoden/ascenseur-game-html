@@ -2,23 +2,29 @@ export default class Player {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.speed = 1.5; // divided by two
+    this.speed = 1.5;
     this.state = 'idle';
     this.dir = 'right';
 
-    this.frame = 1; // start on Frame2
+    this.frame = 1;
     this.frameTick = 0;
-    this.frameDelay = 4; // faster animation
+    this.frameDelay = 4;
 
-    this.images = [];
+    // RIGHT
+    this.walkRight = [];
+    const right1 = new Image();
+    right1.src = 'assets/sprites/Pierre/Pierre_Walk_Right_1.png';
+    const right2 = new Image();
+    right2.src = 'assets/sprites/Pierre/Pierre_Walk_Right_2.png';
+    this.walkRight.push(right1, right2);
 
-    const img1 = new Image();
-    img1.src = 'assets/sprites/Pierre/Pierre_Walk_Right_1.png';
-
-    const img2 = new Image();
-    img2.src = 'assets/sprites/Pierre/Pierre_Walk_Right_2.png';
-
-    this.images.push(img1, img2);
+    // LEFT
+    this.walkLeft = [];
+    const left1 = new Image();
+    left1.src = 'assets/sprites/Pierre/Pierre_Walk_Left_1.png';
+    const left2 = new Image();
+    left2.src = 'assets/sprites/Pierre/Pierre_Walk_Left_2.png';
+    this.walkLeft.push(left1, left2);
   }
 
   update(input) {
@@ -36,12 +42,10 @@ export default class Player {
     }
     if (input.up) {
       this.y -= this.speed;
-      this.dir = 'up';
       moving = true;
     }
     if (input.down) {
       this.y += this.speed;
-      this.dir = 'down';
       moving = true;
     }
 
@@ -49,12 +53,17 @@ export default class Player {
       this.frameTick++;
       if (this.frameTick >= this.frameDelay) {
         this.frameTick = 0;
-        this.frame = (this.frame + 1) % this.images.length;
+        const frames = this.dir === 'left' ? this.walkLeft : this.walkRight;
+        this.frame = (this.frame + 1) % frames.length;
       }
     } else {
-      // Always return to Frame2 when idle
       this.frame = 1;
       this.frameTick = 0;
     }
+  }
+
+  getCurrentSprite() {
+    const frames = this.dir === 'left' ? this.walkLeft : this.walkRight;
+    return frames[this.frame];
   }
 }
