@@ -1,4 +1,4 @@
-import { Player } from '../entities/Player.js';
+import Player from '../entities/Player.js';
 
 export class Game {
   constructor() {
@@ -70,7 +70,8 @@ export class Game {
       }
     }
 
-    this.player.update(dt);
+    // FIX: pass input instead of dt to player update
+    this.player.update(this.input);
 
     const cx = this.player.x + 16;
     const cy = this.player.y + 16;
@@ -87,6 +88,8 @@ export class Game {
   }
 
   attack() {
-    this.player.attack();
+    if (this.player.attack) {
+      this.player.attack();
+    }
   }
 }
