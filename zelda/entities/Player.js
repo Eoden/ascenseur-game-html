@@ -25,6 +25,14 @@ export default class Player {
     const left2 = new Image();
     left2.src = 'assets/sprites/Pierre/Pierre_Walk_Left_2.png';
     this.walkLeft.push(left1, left2);
+
+    // UP
+    this.walkUp = [];
+    const up1 = new Image();
+    up1.src = 'assets/sprites/Pierre/Pierre_Walk_Up_1.png';
+    const up2 = new Image();
+    up2.src = 'assets/sprites/Pierre/Pierre_Walk_Up_2.png';
+    this.walkUp.push(up1, up2);
   }
 
   update(input) {
@@ -42,6 +50,7 @@ export default class Player {
     }
     if (input.up) {
       this.y -= this.speed;
+      this.dir = 'up';
       moving = true;
     }
     if (input.down) {
@@ -53,7 +62,7 @@ export default class Player {
       this.frameTick++;
       if (this.frameTick >= this.frameDelay) {
         this.frameTick = 0;
-        const frames = this.dir === 'left' ? this.walkLeft : this.walkRight;
+        const frames = this.getFramesForDirection();
         this.frame = (this.frame + 1) % frames.length;
       }
     } else {
@@ -62,8 +71,14 @@ export default class Player {
     }
   }
 
+  getFramesForDirection() {
+    if (this.dir === 'left') return this.walkLeft;
+    if (this.dir === 'up') return this.walkUp;
+    return this.walkRight;
+  }
+
   getCurrentSprite() {
-    const frames = this.dir === 'left' ? this.walkLeft : this.walkRight;
+    const frames = this.getFramesForDirection();
     return frames[this.frame];
   }
 }
