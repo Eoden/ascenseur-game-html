@@ -31,11 +31,11 @@ export default class Renderer {
       }
     }
 
-    // draw player animated
+    // draw player using new sprite system
     const p = game.player;
     if (!p) return;
 
-    const currentImage = p.images[p.frame];
+    const currentImage = p.getCurrentSprite ? p.getCurrentSprite() : null;
 
     if (currentImage && currentImage.complete) {
       ctx.drawImage(
