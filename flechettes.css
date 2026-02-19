@@ -1,4 +1,4 @@
-body{margin:0;font-family:Arial;background:#1f1f1f;color:#fff;text-align:center}
+body{margin:0;font-family:Arial;background:#1f1f1f;color:#fff;text-align:center;touch-action:manipulation}
 .app{padding:20px}
 button{padding:10px;margin:5px;border:none;border-radius:10px;font-weight:bold}
 #numbers button{color:#000}

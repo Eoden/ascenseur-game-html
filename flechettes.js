@@ -1,6 +1,20 @@
-// RESTORED STABLE VERSION v010037
+// PATCH v010037.1 - FIX UNDO SCORE + DISABLE DOUBLE TAP ZOOM
 
 document.addEventListener('DOMContentLoaded',function(){
+
+// Disable double click zoom
+let lastTouchEnd=0;
+document.addEventListener('touchend',function(e){
+  const now=(new Date()).getTime();
+  if(now-lastTouchEnd<=300){
+    e.preventDefault();
+  }
+  lastTouchEnd=now;
+},false);
+
+document.addEventListener('dblclick',function(e){
+  e.preventDefault();
+});
 
 let playerCount=1;
 let players=[];
@@ -209,6 +223,7 @@ function updateUI(){
   scoreEl.textContent=scores[current];
   suggestFinish();
   updateNumberColors();
+  renderScoreboard();
 }
 
 function nextPlayer(){
@@ -235,18 +250,19 @@ function endGame(){
 document.getElementById('bull25').onclick=()=>addScore(25,true);
 document.getElementById('bull50').onclick=()=>addScore(50,true);
 
-// Undo
+// Undo FIXED
 
 document.getElementById('undo').onclick=function(){
   if(history.length===0)return;
+
   const last=history.pop();
   const val=parseInt(last.split(' - ')[1]);
   scores[current]+=val;
   dartsThrown=Math.max(0,dartsThrown-1);
+
   renderHistory();
-  updateUI();
+  updateUI(); // ensures top score updates
   updateDarts();
-  renderScoreboard();
 };
 
 // Miss
