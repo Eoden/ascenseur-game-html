@@ -33,6 +33,14 @@ export default class Player {
     const up2 = new Image();
     up2.src = 'assets/sprites/Pierre/Pierre_Walk_Up_2.png';
     this.walkUp.push(up1, up2);
+
+    // DOWN
+    this.walkDown = [];
+    const down1 = new Image();
+    down1.src = 'assets/sprites/Pierre/Pierre_Walk_Down_1.png';
+    const down2 = new Image();
+    down2.src = 'assets/sprites/Pierre/Pierre_Walk_Down_2.png';
+    this.walkDown.push(down1, down2);
   }
 
   update(input) {
@@ -55,6 +63,7 @@ export default class Player {
     }
     if (input.down) {
       this.y += this.speed;
+      this.dir = 'down';
       moving = true;
     }
 
@@ -74,6 +83,7 @@ export default class Player {
   getFramesForDirection() {
     if (this.dir === 'left') return this.walkLeft;
     if (this.dir === 'up') return this.walkUp;
+    if (this.dir === 'down') return this.walkDown;
     return this.walkRight;
   }
 
