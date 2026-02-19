@@ -22,8 +22,12 @@ export default class SelectionMenu {
   }
 
   move(dir) {
-    if (dir === "left") this.index = 0;
-    if (dir === "right") this.index = 1;
+    if (dir === "left") {
+      this.index = (this.index - 1 + this.characters.length) % this.characters.length;
+    }
+    if (dir === "right") {
+      this.index = (this.index + 1) % this.characters.length;
+    }
   }
 
   validate() {
@@ -34,31 +38,46 @@ export default class SelectionMenu {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, 420, 420);
 
+    const current = this.characters[this.index];
+
     ctx.fillStyle = "white";
-    ctx.font = "20px Arial";
-    ctx.fillText("Select Your Character", 100, 50);
+    ctx.font = "24px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Select Your Character", 210, 50);
 
-    this.characters.forEach((char, i) => {
-      const x = 120 + i * 150;
-      const y = 150;
+    const centerX = 210;
+    const centerY = 220;
 
-      if (i === this.index) {
-        ctx.strokeStyle = "yellow";
-        ctx.lineWidth = 3;
-        ctx.strokeRect(x - 10, y - 10, 100, 120);
-      }
+    if (current.sprite && current.sprite.complete) {
+      const img = current.sprite;
 
-      if (char.sprite && char.sprite.complete) {
-        ctx.drawImage(char.sprite, x, y, 80, 100);
-      } else {
-        ctx.fillStyle = "gray";
-        ctx.fillRect(x, y, 80, 100);
-        ctx.fillStyle = "black";
-        ctx.fillText("?", x + 30, y + 60);
-      }
+      // Use native resolution but clamp to canvas width
+      const maxWidth = 360;
+      const scale = Math.min(1, maxWidth / img.width);
 
-      ctx.fillStyle = "white";
-      ctx.fillText(char.name, x, y + 130);
-    });
+      const drawWidth = img.width * scale;
+      const drawHeight = img.height * scale;
+
+      ctx.drawImage(
+        img,
+        centerX - drawWidth / 2,
+        centerY - drawHeight / 2,
+        drawWidth,
+        drawHeight
+      );
+    } else {
+      ctx.fillStyle = "gray";
+      ctx.fillRect(centerX - 120, centerY - 120, 240, 240);
+
+      ctx.fillStyle = "black";
+      ctx.font = "80px Arial";
+      ctx.fillText("?", centerX, centerY + 30);
+    }
+
+    ctx.fillStyle = current.selectable ? "white" : "red";
+    ctx.font = "22px Arial";
+    ctx.fillText(current.name, 210, 390);
+
+    ctx.textAlign = "start";
   }
 }
