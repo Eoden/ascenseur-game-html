@@ -6,9 +6,9 @@ export default class Player {
     this.state = 'idle';
     this.dir = 'right';
 
-    this.frame = 0;
+    this.frame = 1; // start on Frame2
     this.frameTick = 0;
-    this.frameDelay = 10;
+    this.frameDelay = 8; // faster animation
 
     this.images = [];
 
@@ -52,7 +52,9 @@ export default class Player {
         this.frame = (this.frame + 1) % this.images.length;
       }
     } else {
-      this.frame = 0;
+      // Always return to Frame2 when idle
+      this.frame = 1;
+      this.frameTick = 0;
     }
   }
 }
