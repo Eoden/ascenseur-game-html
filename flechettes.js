@@ -1,4 +1,4 @@
-// v010038.2 UX IMPROVEMENTS + REMATCH SYSTEM (MAX 2)
+// v010038.3 MATCH DECISIF
 
 document.addEventListener('DOMContentLoaded',function(){
 
@@ -24,12 +24,16 @@ const gameDiv=document.getElementById('game');
 const currentPlayerEl=document.getElementById('currentPlayer');
 const scoreEl=document.getElementById('score');
 const numbersDiv=document.getElementById('numbers');
-const historyDiv=document.getElementById('history');
-const suggestionEl=document.getElementById('suggestion');
 const dartIndicator=document.getElementById('dartIndicator');
 const scoreboardDiv=document.getElementById('scoreboard');
 const popup=document.getElementById('popup');
 const endScreen=document.getElementById('endScreen');
+
+function showPopup(text){
+  popup.textContent=text;
+  popup.style.display='block';
+  setTimeout(()=>popup.style.display='none',1500);
+}
 
 function renderPlayers(){
   playerCountEl.textContent=playerCount;
@@ -48,7 +52,7 @@ document.getElementById('minus').onclick=()=>{if(playerCount>1){playerCount--;re
 
 function startGame(startScore){
   startScoreGlobal=startScore;
-  players=[];scores=[];colors=[];history=[];
+  players=[];scores=[];colors=[];
   for(let i=0;i<playerCount;i++){
     const name=document.getElementById('player'+i).value||('Joueur '+(i+1));
     players.push(name);
@@ -56,11 +60,17 @@ function startGame(startScore){
     colors.push(palette[i%palette.length]);
     if(!wins[name]) wins[name]=0;
   }
+
   dartsThrown=0;
   turnStartScore=startScore;
   setupDiv.style.display='none';
   gameDiv.style.display='block';
   current=0;
+
+  if(rematchCount===1){
+    setTimeout(()=>showPopup('🔥 MATCH DÉCISIF 🔥'),500);
+  }
+
   renderNumbers();
   renderScoreboard();
   renderDarts();
@@ -78,28 +88,6 @@ function renderNumbers(){
     btn.onclick=()=>addScore(i,false);
     numbersDiv.appendChild(btn);
   }
-  updateNumberColors();
-}
-
-function updateNumberColors(){
-  document.querySelectorAll('#numbers button').forEach(btn=>{
-    btn.style.background=colors[current];
-    btn.style.color='#000';
-  });
-}
-
-document.querySelectorAll('.mult-btn').forEach(btn=>{
-  btn.onclick=function(){
-    document.querySelectorAll('.mult-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    multiplier=parseInt(btn.dataset.m);
-  };
-});
-
-function resetMultiplier(){
-  multiplier=1;
-  document.querySelectorAll('.mult-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('btnSimple').classList.add('active');
 }
 
 function renderDarts(){
@@ -129,20 +117,17 @@ function renderScoreboard(){
   });
 }
 
-function addScore(value,isBull){
-  if(isBull) multiplier=1;
+function addScore(value){
   const total=value*multiplier;
   if(dartsThrown===0) turnStartScore=scores[current];
 
   if(scores[current]-total<0){
     scores[current]=turnStartScore;
-    showPopup('💥 BUST !');
-    setTimeout(nextPlayer,1000);
+    setTimeout(nextPlayer,800);
     return;
   }
 
   scores[current]-=total;
-  history.push(players[current]+' - '+total);
   dartsThrown++;
 
   updateUI();
@@ -158,15 +143,12 @@ function addScore(value,isBull){
   if(dartsThrown===3){
     setTimeout(nextPlayer,800);
   }
-
-  resetMultiplier();
 }
 
 function updateUI(){
   currentPlayerEl.textContent='Tour de '+players[current];
   currentPlayerEl.style.color=colors[current];
   scoreEl.textContent=scores[current];
-  updateNumberColors();
 }
 
 function nextPlayer(){
@@ -180,7 +162,12 @@ function endGame(winner){
   gameDiv.style.display='none';
   endScreen.style.display='flex';
 
-  let html='<h2>🏆 '+winner+' gagne !</h2>';
+  let title='🏆 '+winner+' gagne !';
+  if(rematchCount===1){
+    title='🔥 '+winner+' remporte le MATCH DÉCISIF ! 🔥';
+  }
+
+  let html='<h2>'+title+'</h2>';
   players.forEach(p=>{
     html+='<div>'+p+' : '+wins[p]+' victoire(s)</div>';
   });
