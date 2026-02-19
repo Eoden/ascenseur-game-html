@@ -13,10 +13,10 @@ export default class Player {
     this.images = [];
 
     const img1 = new Image();
-    img1.src = 'zelda/assets/sprites/Pierre/Pierre_Walk_Right_1.png';
+    img1.src = 'assets/sprites/Pierre/Pierre_Walk_Right_1.png';
 
     const img2 = new Image();
-    img2.src = 'zelda/assets/sprites/Pierre/Pierre_Walk_Right_2.png';
+    img2.src = 'assets/sprites/Pierre/Pierre_Walk_Right_2.png';
 
     this.images.push(img1, img2);
   }
@@ -53,13 +53,6 @@ export default class Player {
       }
     } else {
       this.frame = 0;
-    }
-  }
-
-  draw(ctx) {
-    const img = this.images[this.frame];
-    if (img && img.complete) {
-      ctx.drawImage(img, this.x, this.y, 64, 82);
     }
   }
 }
