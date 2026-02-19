@@ -31,19 +31,23 @@ export default class Renderer {
       }
     }
 
-    // draw player using new sprite system
+    // draw player with 64x82 sprite but 64x64 hitbox
     const p = game.player;
     if (!p) return;
 
     const currentImage = p.getCurrentSprite ? p.getCurrentSprite() : null;
 
     if (currentImage && currentImage.complete) {
+      const spriteWidth = 64;
+      const spriteHeight = 82;
+      const offsetY = spriteHeight - tileSize; // align feet with hitbox
+
       ctx.drawImage(
         currentImage,
         p.x,
-        p.y,
-        tileSize,
-        tileSize
+        p.y - offsetY,
+        spriteWidth,
+        spriteHeight
       );
     } else {
       ctx.fillStyle = 'red';
