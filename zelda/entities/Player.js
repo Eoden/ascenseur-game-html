@@ -1,55 +1,65 @@
 export default class Player {
-  constructor() {
-    this.x = 64;
-    this.y = 64;
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
     this.speed = 3;
+    this.state = 'idle';
+    this.dir = 'right';
 
     this.frame = 0;
     this.frameTick = 0;
     this.frameDelay = 10;
 
-    // Load walking cycle images
     this.images = [];
 
     const img1 = new Image();
-    img1.src = "assets/sprites/IMG_8354.png";
+    img1.src = 'zelda/assets/sprites/Pierre/Pierre_Walk_Right_1.png';
 
     const img2 = new Image();
-    img2.src = "assets/sprites/IMG_8355.png";
+    img2.src = 'zelda/assets/sprites/Pierre/Pierre_Walk_Right_2.png';
 
-    this.images.push(img1);
-    this.images.push(img2);
+    this.images.push(img1, img2);
   }
 
   update(input) {
     let moving = false;
 
-    if (input.left) {
-      this.x -= this.speed;
-      moving = true;
-    }
     if (input.right) {
       this.x += this.speed;
+      this.dir = 'right';
+      moving = true;
+    }
+    if (input.left) {
+      this.x -= this.speed;
+      this.dir = 'left';
       moving = true;
     }
     if (input.up) {
       this.y -= this.speed;
+      this.dir = 'up';
       moving = true;
     }
     if (input.down) {
       this.y += this.speed;
+      this.dir = 'down';
       moving = true;
     }
 
     if (moving) {
       this.frameTick++;
       if (this.frameTick >= this.frameDelay) {
-        this.frame = (this.frame + 1) % this.images.length;
         this.frameTick = 0;
+        this.frame = (this.frame + 1) % this.images.length;
       }
     } else {
       this.frame = 0;
-      this.frameTick = 0;
+    }
+  }
+
+  draw(ctx) {
+    const img = this.images[this.frame];
+    if (img && img.complete) {
+      ctx.drawImage(img, this.x, this.y, 64, 82);
     }
   }
 }
