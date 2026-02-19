@@ -1,5 +1,3 @@
-import Input from "../core/Input.js";
-
 export default class Player {
   constructor() {
     this.x = 64;
@@ -78,7 +76,6 @@ export default class Player {
       this.frame = 1;
     }
 
-    // Collision basique murs
     const tileSize = map.tileSize;
     const tileX = Math.floor(this.x / tileSize);
     const tileY = Math.floor(this.y / tileSize);
