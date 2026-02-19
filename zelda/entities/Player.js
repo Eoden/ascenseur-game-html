@@ -2,13 +2,13 @@ export default class Player {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.speed = 3;
+    this.speed = 1.5; // divided by two
     this.state = 'idle';
     this.dir = 'right';
 
     this.frame = 1; // start on Frame2
     this.frameTick = 0;
-    this.frameDelay = 8; // faster animation
+    this.frameDelay = 4; // faster animation
 
     this.images = [];
 
