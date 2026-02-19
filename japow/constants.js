@@ -1,1 +1,3 @@
-<DUPLICATED_FROM_ZELDA_CONSTANTS_JS>
+export const CANVAS_SIZE = 420;
+export const TILE = 40;
+export const GRID = 10;
