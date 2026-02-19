@@ -20,24 +20,26 @@ export default class Renderer {
         const tile = tiles[y * width + x];
 
         if (tile === 1) {
-          ctx.fillStyle = '#222'; // wall
+          ctx.fillStyle = '#222';
           ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
         }
 
         if (tile === 2) {
-          ctx.fillStyle = '#0f0'; // exit
+          ctx.fillStyle = '#0f0';
           ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
         }
       }
     }
 
-    // draw player
+    // draw player animated
     const p = game.player;
     if (!p) return;
 
-    if (p.image && p.image.complete) {
+    const currentImage = p.images[p.frame];
+
+    if (currentImage && currentImage.complete) {
       ctx.drawImage(
-        p.image,
+        currentImage,
         p.x,
         p.y,
         tileSize,
