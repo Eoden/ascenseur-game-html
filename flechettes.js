@@ -1,4 +1,4 @@
-// v010041 - REMATCH SYSTEM + MENU SPACING
+// v010042 FIX MULTIPLIER + POPUPS + MENU ALIGNMENT
 
 document.addEventListener('DOMContentLoaded',function(){
 
@@ -12,7 +12,6 @@ let current=0;
 let multiplier=1;
 let dartsThrown=0;
 let turnStartScore=0;
-let history=[];
 let startScoreGlobal=301;
 
 const palette=['#ff6b6b','#4ecdc4','#ffe66d','#a29bfe','#f78fb3','#70a1ff'];
@@ -24,12 +23,16 @@ const gameDiv=document.getElementById('game');
 const currentPlayerEl=document.getElementById('currentPlayer');
 const scoreEl=document.getElementById('score');
 const numbersDiv=document.getElementById('numbers');
-const historyDiv=document.getElementById('history');
-const suggestionEl=document.getElementById('suggestion');
 const dartIndicator=document.getElementById('dartIndicator');
 const scoreboardDiv=document.getElementById('scoreboard');
 const popup=document.getElementById('popup');
 const endScreen=document.getElementById('endScreen');
+
+function showPopup(text){
+  popup.textContent=text;
+  popup.style.display='block';
+  setTimeout(()=>popup.style.display='none',1500);
+}
 
 function renderPlayers(){
   playerCountEl.textContent=playerCount;
@@ -48,8 +51,7 @@ document.getElementById('minus').onclick=()=>{if(playerCount>1){playerCount--;re
 
 function startGame(startScore){
   startScoreGlobal=startScore;
-  players=[];scores=[];colors=[];history=[];
-
+  players=[];scores=[];colors=[];
   for(let i=0;i<playerCount;i++){
     const name=document.getElementById('player'+i).value||('Joueur '+(i+1));
     players.push(name);
@@ -63,6 +65,8 @@ function startGame(startScore){
   setupDiv.style.display='none';
   gameDiv.style.display='block';
   current=0;
+
+  showPopup('🎯 '+players[current]+' commence');
 
   renderNumbers();
   renderScoreboard();
@@ -89,6 +93,22 @@ function updateNumberColors(){
     btn.style.background=colors[current];
     btn.style.color='#000';
   });
+}
+
+// MULTIPLIER FIX
+
+document.querySelectorAll('.mult-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.mult-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    multiplier=parseInt(this.dataset.m);
+  });
+});
+
+function resetMultiplier(){
+  multiplier=1;
+  document.querySelectorAll('.mult-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btnSimple').classList.add('active');
 }
 
 function renderDarts(){
@@ -126,6 +146,7 @@ function addScore(value,isBull){
 
   if(scores[current]-total<0){
     scores[current]=turnStartScore;
+    showPopup('💥 BUST !');
     setTimeout(nextPlayer,1000);
     return;
   }
@@ -144,8 +165,11 @@ function addScore(value,isBull){
   }
 
   if(dartsThrown===3){
-    setTimeout(nextPlayer,800);
+    showPopup('👉 Au tour de '+players[(current+1)%players.length]);
+    setTimeout(nextPlayer,1000);
   }
+
+  resetMultiplier();
 }
 
 function updateUI(){

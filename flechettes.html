@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Fléchettes</title>
-<link rel="stylesheet" href="flechettes.css?v=010039">
+<link rel="stylesheet" href="flechettes.css?v=010042">
 </head>
 <body>
 <div class="app">
@@ -12,9 +12,11 @@
 
 <div id="setup">
   <h2>Configuration</h2>
-  <button id="minus">-</button>
-  <span id="playerCount">1</span>
-  <button id="plus">+</button>
+  <div class="player-count-row">
+    <button id="minus">-</button>
+    <span id="playerCount">1</span>
+    <button id="plus">+</button>
+  </div>
   <div id="players"></div>
   <button id="start301">Start 301</button>
   <button id="start501">Start 501</button>
@@ -51,10 +53,10 @@
 </div>
 
 <div id="endScreen" class="end-screen" style="display:none;"></div>
-<div id="popup" class="popup" style="display:none;"></div>
+<div id="popup" class="popup"></div>
 
-<div class="version">v010039</div>
+<div class="version">v010042</div>
 </div>
-<script src="flechettes.js?v=010039"></script>
+<script src="flechettes.js?v=010042"></script>
 </body>
 </html>
