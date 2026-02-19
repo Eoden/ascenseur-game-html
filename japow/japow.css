@@ -1,1 +1,87 @@
-<DUPLICATED_FROM_ZELDA_CSS>
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  overflow: hidden;
+  touch-action: none;
+}
+
+canvas {
+  image-rendering: pixelated;
+  border: 2px solid #444;
+  margin-top: 10px;
+  max-width: 100vw;
+}
+
+.controls {
+  position: fixed;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 25px;
+}
+
+.dpad {
+  display: grid;
+  grid-template-columns: 55px 55px 55px;
+  grid-template-rows: 55px 55px 55px;
+  gap: 4px;
+}
+
+#up { grid-column: 2; grid-row: 1; }
+#left { grid-column: 1; grid-row: 2; }
+#right { grid-column: 3; grid-row: 2; }
+#down { grid-column: 2; grid-row: 3; }
+
+.dpad button {
+  width: 55px;
+  height: 55px;
+  font-size: 18px;
+  background: #2a2a2a;
+  color: white;
+  border: 2px solid #666;
+  border-radius: 10px;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.actions {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+#btnA,
+#btnB {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  border: 3px solid rgba(0,0,0,0.4);
+  box-shadow: 0 4px 0 rgba(0,0,0,0.4);
+}
+
+#btnB {
+  background: #d32f2f;
+  top: 0;
+  right: 0;
+}
+
+#btnA {
+  background: #2e7d32;
+  bottom: 0;
+  left: 0;
+}
