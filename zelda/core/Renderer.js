@@ -31,20 +31,20 @@ export default class Renderer {
       }
     }
 
-    // draw player with 64x82 sprite but 64x64 hitbox
+    // draw player smaller (scaled) but aligned to feet
     const p = game.player;
     if (!p) return;
 
     const currentImage = p.getCurrentSprite ? p.getCurrentSprite() : null;
 
     if (currentImage && currentImage.complete) {
-      const spriteWidth = 64;
-      const spriteHeight = 82;
-      const offsetY = spriteHeight - tileSize; // align feet with hitbox
+      const spriteWidth = 48;   // scaled down from 64
+      const spriteHeight = 62;  // scaled proportionally from 82
+      const offsetY = spriteHeight - tileSize;
 
       ctx.drawImage(
         currentImage,
-        p.x,
+        p.x + (tileSize - spriteWidth) / 2,
         p.y - offsetY,
         spriteWidth,
         spriteHeight

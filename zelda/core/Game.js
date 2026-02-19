@@ -28,10 +28,8 @@ export class Game {
 
     const w = this.map.width;
     const h = this.map.height;
-
     const midX = Math.floor(w / 2);
     const midY = Math.floor(h / 2);
-
     const side = this.roomIndex % 4;
 
     if (side === 0) this.map.tiles[0 * w + midX] = 2;
@@ -56,11 +54,12 @@ export class Game {
       const nextX = this.player.x + dx * this.player.speed * speedMultiplier;
       const nextY = this.player.y + dy * this.player.speed * speedMultiplier;
 
-      const cx = nextX + 16;
-      const cy = nextY + 16;
+      // collision based on feet
+      const footX = nextX + tileSize / 2;
+      const footY = nextY + tileSize - 4;
 
-      const px = Math.floor(cx / tileSize);
-      const py = Math.floor(cy / tileSize);
+      const px = Math.floor(footX / tileSize);
+      const py = Math.floor(footY / tileSize);
 
       const tile = this.map.tiles[py * this.map.width + px];
 
@@ -70,13 +69,12 @@ export class Game {
       }
     }
 
-    // FIX: pass input instead of dt to player update
     this.player.update(this.input);
 
-    const cx = this.player.x + 16;
-    const cy = this.player.y + 16;
-    const px = Math.floor(cx / tileSize);
-    const py = Math.floor(cy / tileSize);
+    const footX = this.player.x + tileSize / 2;
+    const footY = this.player.y + tileSize - 4;
+    const px = Math.floor(footX / tileSize);
+    const py = Math.floor(footY / tileSize);
 
     const tile = this.map.tiles[py * this.map.width + px];
     if (tile === 2) {
