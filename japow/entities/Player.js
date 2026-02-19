@@ -40,7 +40,7 @@ export default class Player {
     return img;
   }
 
-  update(input, map) {
+  update(input) {
     let moving = false;
 
     if (input.left) {
@@ -74,17 +74,6 @@ export default class Player {
       }
     } else {
       this.frame = 1;
-    }
-
-    const tileSize = map.tileSize;
-    const tileX = Math.floor(this.x / tileSize);
-    const tileY = Math.floor(this.y / tileSize);
-
-    if (map.tiles[tileY * map.width + tileX] === 1) {
-      if (input.left) this.x += this.speed;
-      if (input.right) this.x -= this.speed;
-      if (input.up) this.y += this.speed;
-      if (input.down) this.y -= this.speed;
     }
   }
 
