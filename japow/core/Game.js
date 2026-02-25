@@ -3,6 +3,8 @@ import Enemy from '../entities/Enemy.js';
 
 export class Game {
   constructor() {
+    console.log("GAME VERSION TEST 999");
+
     this.player = new Player(64, 64);
     this.input = { up:false, down:false, left:false, right:false };
     this.roomIndex = 0;
