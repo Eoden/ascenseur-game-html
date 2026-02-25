@@ -1,12 +1,32 @@
 {
-  "current_objective": "Persistent memory system integrated with Context.md",
-  "current_phase": "operational",
+  "current_objective": "Industrialized persistent autonomous agent",
+  "current_phase": "integrity_layer_active",
   "active_files": [
     "Context.md",
+    ".agent/STATE.json",
     ".agent/MEMORY.md",
-    ".agent/ARCHITECTURE.md"
+    ".agent/TASKS.md",
+    ".agent/DECISIONS.md"
   ],
   "blocked": false,
-  "last_checkpoint": null,
-  "next_action": "On new session: read STATE.json then Context.md before any decision"
+  "last_checkpoint": "INITIAL_INTEGRITY_CHECKPOINT",
+  "next_action": "On new session: run integrity validation (tree + lightweight hash)",
+  "integrity": {
+    "lightweight": {
+      "repo_file_count": 82,
+      "critical_files": [
+        "Context.md",
+        ".agent/STATE.json",
+        ".agent/MEMORY.md"
+      ]
+    },
+    "extended": {
+      "includes": [
+        ".agent/TASKS.md",
+        ".agent/DECISIONS.md",
+        ".agent/ARCHITECTURE.md"
+      ],
+      "mode": "checkpoint_only"
+    }
+  }
 }

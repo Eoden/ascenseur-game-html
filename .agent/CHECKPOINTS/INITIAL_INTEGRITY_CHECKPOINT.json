@@ -1,0 +1,14 @@
+{
+  "timestamp": "INITIAL",
+  "repo_file_count": 82,
+  "mode": "extended",
+  "validated_files": [
+    "Context.md",
+    ".agent/STATE.json",
+    ".agent/MEMORY.md",
+    ".agent/TASKS.md",
+    ".agent/DECISIONS.md",
+    ".agent/ARCHITECTURE.md"
+  ],
+  "status": "baseline_created"
+}
