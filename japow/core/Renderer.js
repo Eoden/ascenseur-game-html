@@ -32,6 +32,11 @@ export default class Renderer {
           ctx.fillStyle = '#555';
           ctx.fillRect(x * size, y * size, size, size);
         }
+
+        if (tile === 4) {
+          ctx.fillStyle = '#777';
+          ctx.fillRect(x * size, y * size, size, size);
+        }
       }
     }
 
