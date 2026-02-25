@@ -1,10 +1,12 @@
 import Player from '../entities/Player.js';
+import Enemy from '../entities/Enemy.js';
 
 export class Game {
   constructor() {
     this.player = new Player(64, 64);
     this.input = { up:false, down:false, left:false, right:false };
     this.roomIndex = 0;
+    this.enemies = [];
     this.generateRoom();
   }
 
@@ -18,8 +20,8 @@ export class Game {
 
     const w = this.map.width;
     const h = this.map.height;
+    this.enemies = [];
 
-    // 🛂 Special layout: Sécurité Douane (roomIndex === 5)
     if (this.roomIndex === 5) {
       const layout = [
         "1111111111111",
@@ -43,17 +45,28 @@ export class Game {
         }
       }
 
-      // spawn player bottom-left safe zone
       this.player.x = 64;
       this.player.y = 64;
 
+      const controller = new Enemy(160, 160, {
+        behavior: "patrol_detection",
+        speed: 1,
+        visionLength: 4,
+        patrolPoints: [
+          { x: 64, y: 64 },
+          { x: 320, y: 64 },
+          { x: 320, y: 320 },
+          { x: 64, y: 320 }
+        ]
+      });
+
+      this.enemies.push(controller);
       return;
     }
 
-    // Default procedural room (legacy behavior)
-    for (let y = 0; y < this.map.height; y++) {
-      for (let x = 0; x < this.map.width; x++) {
-        if (x === 0 || y === 0 || x === this.map.width - 1 || y === this.map.height - 1) {
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        if (x === 0 || y === 0 || x === w - 1 || y === h - 1) {
           this.map.tiles.push(1);
         } else {
           this.map.tiles.push(0);
@@ -95,7 +108,6 @@ export class Game {
 
       const tile = this.map.tiles[py * this.map.width + px];
 
-      // Block walls (1) and obstacles (3)
       if(tile !== 1 && tile !== 3){
         this.player.x = nextX;
         this.player.y = nextY;
@@ -103,6 +115,15 @@ export class Game {
     }
 
     this.player.update(this.input);
+
+    for (const enemy of this.enemies) {
+      enemy.update(this);
+      if (enemy.detectPlayer(this.player, tileSize)) {
+        this.roomIndex = 4;
+        this.generateRoom();
+        return;
+      }
+    }
 
     const footX = this.player.x + tileSize / 2;
     const footY = this.player.y + tileSize - 4;

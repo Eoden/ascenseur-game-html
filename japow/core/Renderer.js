@@ -10,7 +10,7 @@ export default class Renderer {
 
   render(game) {
     const { ctx } = this;
-    const { map, player } = game;
+    const { map, player, enemies } = game;
 
     const size = map.tileSize;
 
@@ -27,6 +27,18 @@ export default class Renderer {
           ctx.fillStyle = 'gold';
           ctx.fillRect(x * size, y * size, size, size);
         }
+
+        if (tile === 3) {
+          ctx.fillStyle = '#555';
+          ctx.fillRect(x * size, y * size, size, size);
+        }
+      }
+    }
+
+    if (enemies) {
+      for (const enemy of enemies) {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(enemy.x, enemy.y, size, size);
       }
     }
 
