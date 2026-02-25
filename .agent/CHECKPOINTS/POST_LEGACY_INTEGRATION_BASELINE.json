@@ -1,0 +1,14 @@
+{
+  "checkpoint_name": "POST_LEGACY_INTEGRATION_BASELINE",
+  "created_after": "legacy_session_full_integration",
+  "reason": "integration_of_legacy_session_with_deterministic_hardening",
+  "integrity_level": "extended",
+  "bootstrap_validated": true,
+  "safe_mode_enabled": false,
+  "includes": [
+    ".agent/SESSIONS/LEGACY_SESSION_ARCHIVE_2026.md",
+    ".agent/ARCHITECTURE.md",
+    ".agent/MEMORY.md",
+    ".agent/TASKS.md"
+  ]
+}
