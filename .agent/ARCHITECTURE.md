@@ -57,3 +57,17 @@ Components:
 ### Anti-Determinism Safeguard
 - Conversation memory is never considered system state.
 - Only repository reads and STATE.json define operational reality.
+
+---
+
+## Context Compliance Gate (Mandatory)
+
+Before ANY modification outside `.agent/`, the agent MUST:
+
+1. Explicitly list all files to be modified.
+2. Confirm those files were freshly read in the current session.
+3. Provide an impact analysis (technical + behavioral).
+4. Simulate the expected behavioral result ("play version" reasoning).
+5. If gameplay logic is affected, wait for explicit user validation before committing.
+
+If any of these steps are missing, the operation is considered INVALID and must not proceed to write.
