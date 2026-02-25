@@ -104,6 +104,10 @@ export class Game {
     const room = ROOMS[this.currentRoom];
     for (const exit of room.exits) {
       if (px === exit.x && py === exit.y) {
+        if (exit.target === "outside" && !this.inventory.key) {
+          console.log("🚪 La porte est verrouillée.");
+          return;
+        }
         this.loadRoom(exit.target);
         this.player.x = exit.targetSpawn.x;
         this.player.y = exit.targetSpawn.y;
