@@ -1,8 +1,12 @@
 {
-  "current_objective": "System initialization",
-  "current_phase": "bootstrap",
-  "active_files": [],
+  "current_objective": "Persistent memory system integrated with Context.md",
+  "current_phase": "operational",
+  "active_files": [
+    "Context.md",
+    ".agent/MEMORY.md",
+    ".agent/ARCHITECTURE.md"
+  ],
   "blocked": false,
   "last_checkpoint": null,
-  "next_action": "Idle"
+  "next_action": "On new session: read STATE.json then Context.md before any decision"
 }
