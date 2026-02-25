@@ -12,27 +12,30 @@ let game = null;
 
 const renderer = new Renderer(canvas);
 
-bindDirectional('up','up',{});
-bindDirectional('down','down',{});
-bindDirectional('left','left',{
+// Shared input state for on-screen controls
+const inputState = {
+  up: false,
+  down: false,
   left: false,
   right: false
-});
-bindDirectional('right','right',{
-  left: false,
-  right: false
-});
+};
 
-window.addEventListener("keydown", (e) => {
-  if (state === "menu") {
-    if (e.key === "ArrowLeft") menu.move("left");
-    if (e.key === "ArrowRight") menu.move("right");
-    if (e.key.toLowerCase() === "a" && menu.validate()) {
-      game = new Game();
-      state = "game";
-    }
+// Bind on-screen directional buttons
+bindDirectional('up', 'up', inputState);
+bindDirectional('down', 'down', inputState);
+bindDirectional('left', 'left', inputState);
+bindDirectional('right', 'right', inputState);
+
+// Bind on-screen A button for validation
+bindAction('btnA', () => {
+  if (state === "menu" && menu.validate()) {
+    game = new Game();
+    state = "game";
   }
 });
+
+let lastMoveTime = 0;
+const moveCooldown = 200; // ms to avoid ultra-fast cycling
 
 let last = performance.now();
 
@@ -40,12 +43,24 @@ function loop(now) {
   const dt = now - last;
   last = now;
 
-  if (state === "game" && game) {
+  if (state === "menu") {
+    // Handle menu navigation ONLY via on-screen arrows
+    if (now - lastMoveTime > moveCooldown) {
+      if (inputState.left) {
+        menu.move("left");
+        lastMoveTime = now;
+      }
+      if (inputState.right) {
+        menu.move("right");
+        lastMoveTime = now;
+      }
+    }
+
+    menu.render(ctx);
+  } else if (state === "game" && game) {
     game.tick(dt);
     renderer.clear();
     renderer.render(game);
-  } else {
-    menu.render(ctx);
   }
 
   requestAnimationFrame(loop);
