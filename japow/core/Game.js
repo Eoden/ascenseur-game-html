@@ -1,18 +1,16 @@
 import Player from '../entities/Player.js';
-import Enemy from '../entities/Enemy.js';
+import { ROOMS } from '../world/rooms.js';
 
 export class Game {
   constructor() {
-    console.log("GAME VERSION TEST 999");
-
     this.player = new Player(64, 64);
     this.input = { up:false, down:false, left:false, right:false };
-    this.roomIndex = 0;
-    this.enemies = [];
-    this.generateRoom();
+    this.currentRoom = "couloir";
+    this.loadRoom(this.currentRoom);
   }
 
-  generateRoom() {
+  loadRoom(roomName) {
+    const room = ROOMS[roomName];
     this.map = {
       tileSize: 32,
       width: 13,
@@ -20,70 +18,15 @@ export class Game {
       tiles: []
     };
 
-    const w = this.map.width;
-    const h = this.map.height;
-    this.enemies = [];
-
-    if (this.roomIndex === 5) {
-      const layout = [
-        "1111111111111",
-        "1000000000001",
-        "1033300003301",
-        "1000000000001",
-        "1000033300001",
-        "1000000000001",
-        "1000033300001",
-        "1000000000001",
-        "1000000000001",
-        "1000000000201",
-        "1000000000001",
-        "1000000000001",
-        "1111111111111"
-      ];
-
-      for (let y = 0; y < h; y++) {
-        for (let x = 0; x < w; x++) {
-          this.map.tiles.push(parseInt(layout[y][x]));
-        }
-      }
-
-      this.player.x = 64;
-      this.player.y = 64;
-
-      const controller = new Enemy(160, 160, {
-        behavior: "patrol_detection",
-        speed: 1,
-        visionLength: 4,
-        patrolPoints: [
-          { x: 64, y: 64 },
-          { x: 320, y: 64 },
-          { x: 320, y: 320 },
-          { x: 64, y: 320 }
-        ]
-      });
-
-      this.enemies.push(controller);
-      return;
-    }
-
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        if (x === 0 || y === 0 || x === w - 1 || y === h - 1) {
-          this.map.tiles.push(1);
-        } else {
-          this.map.tiles.push(0);
-        }
+    for (let y = 0; y < 13; y++) {
+      for (let x = 0; x < 13; x++) {
+        this.map.tiles.push(parseInt(room.layout[y][x]));
       }
     }
 
-    const midX = Math.floor(w / 2);
-    const midY = Math.floor(h / 2);
-    const side = this.roomIndex % 4;
-
-    if (side === 0) this.map.tiles[0 * w + midX] = 2;
-    else if (side === 1) this.map.tiles[midY * w + (w - 1)] = 2;
-    else if (side === 2) this.map.tiles[(h - 1) * w + midX] = 2;
-    else this.map.tiles[midY * w + 0] = 2;
+    this.player.x = room.spawn.x;
+    this.player.y = room.spawn.y;
+    this.currentRoom = roomName;
   }
 
   tick(dt) {
@@ -118,26 +61,19 @@ export class Game {
 
     this.player.update(this.input);
 
-    for (const enemy of this.enemies) {
-      enemy.update(this);
-      if (enemy.detectPlayer(this.player, tileSize)) {
-        this.roomIndex = 4;
-        this.generateRoom();
-        return;
-      }
-    }
-
     const footX = this.player.x + tileSize / 2;
     const footY = this.player.y + tileSize - 4;
     const px = Math.floor(footX / tileSize);
     const py = Math.floor(footY / tileSize);
 
-    const tile = this.map.tiles[py * this.map.width + px];
-    if (tile === 2) {
-      this.roomIndex++;
-      this.player.x = 64;
-      this.player.y = 64;
-      this.generateRoom();
+    const room = ROOMS[this.currentRoom];
+    for (const exit of room.exits) {
+      if (px === exit.x && py === exit.y) {
+        this.loadRoom(exit.target);
+        this.player.x = exit.targetSpawn.x;
+        this.player.y = exit.targetSpawn.y;
+        return;
+      }
     }
   }
 
