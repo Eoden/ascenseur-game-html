@@ -28,3 +28,32 @@ Components:
 2. Targeted file reads
 3. Context.md validation
 4. Atomic write
+
+---
+
+## Deterministic Execution Model (Post-Legacy Hardening)
+
+### Structural Truth
+- getRepoTree is the single structural source of truth.
+- No structural reasoning is valid without fresh tree validation.
+
+### Mandatory Read Before Write
+- Every modification must be preceded by targeted file reads.
+- No multi-file modification without full prior validation.
+
+### Atomicity
+- One logical operation cycle = one commit.
+- No fragmented corrective chains without validation checkpoint.
+- Revert is performed via additive commit only.
+
+### Runtime Capability Validation
+- Declared capabilities (OpenAPI, documentation, YAML) are NOT proof of runtime availability.
+- Runtime handshake validation is required before assuming tool availability.
+
+### Adaptive Bulk Strategy
+- Bulk reads must support adaptive reduction in case of failure.
+- Partial bulk reads are considered non-authoritative.
+
+### Anti-Determinism Safeguard
+- Conversation memory is never considered system state.
+- Only repository reads and STATE.json define operational reality.
