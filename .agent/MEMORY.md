@@ -77,3 +77,19 @@ Level 3:
 - Agent may generate valid PNG placeholders.
 - Agent may accept externally provided base64 PNG.
 - Valid file write = deterministic operation.
+
+---
+
+## Legacy Session Rule
+
+Any session executed without verified access to agent Actions
+is considered NON-DETERMINISTIC.
+
+No architectural decision, repository assumption, or structural modification
+originating from a legacy session may be considered valid
+without full revalidation through the deterministic cycle:
+
+getRepoTree → targeted file reads → state validation → atomic commit.
+
+Conversation memory is never treated as authoritative system state.
+Only repository reads and STATE.json define operational reality.
