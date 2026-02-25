@@ -1,0 +1,65 @@
+{
+  "id": "airport_departure",
+  "character": "pierre",
+  "title": "Départ pour le Japon",
+  "screens": [
+    {
+      "id": 1,
+      "name": "chambre",
+      "type": "exploration",
+      "objectives": [
+        { "action": "interact", "target": "bag", "flag": "bag_packed" },
+        { "action": "interact", "target": "passport", "flag": "passport_taken" }
+      ],
+      "next": 2
+    },
+    {
+      "id": 2,
+      "name": "immeuble",
+      "type": "transition",
+      "next": 3
+    },
+    {
+      "id": 3,
+      "name": "arret_bus",
+      "type": "interaction",
+      "requirements": ["bag_packed"],
+      "next": 4
+    },
+    {
+      "id": 4,
+      "name": "bus_interieur",
+      "type": "script",
+      "requirements": ["passport_taken"],
+      "next": 5
+    },
+    {
+      "id": 5,
+      "name": "hall_aeroport",
+      "type": "hub",
+      "objectives": [
+        { "action": "interact", "target": "checkin", "flag": "baggage_checked" },
+        { "action": "interact", "target": "douane", "flag": "passport_validated" }
+      ],
+      "next": 6
+    },
+    {
+      "id": 6,
+      "name": "securite_douane",
+      "type": "minigame_escape",
+      "requirements": ["passport_validated"],
+      "failure_screen": 5,
+      "success_screen": 7,
+      "enemy": {
+        "behavior": "patrol_detection",
+        "vision_length": 4,
+        "speed_ratio": 0.8
+      }
+    },
+    {
+      "id": 7,
+      "name": "embarquement",
+      "type": "ending"
+    }
+  ]
+}
