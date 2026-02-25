@@ -1,19 +1,20 @@
 {
-  "current_objective": "Industrialized persistent autonomous agent",
-  "current_phase": "integrity_layer_active",
+  "current_objective": "Auto-healing autonomous agent active",
+  "current_phase": "safe_mode_enabled_architecture",
   "active_files": [
     "Context.md",
     ".agent/STATE.json",
     ".agent/MEMORY.md",
     ".agent/TASKS.md",
-    ".agent/DECISIONS.md"
+    ".agent/DECISIONS.md",
+    ".agent/OPERATIONS_LOG.json"
   ],
   "blocked": false,
   "last_checkpoint": "INITIAL_INTEGRITY_CHECKPOINT",
-  "next_action": "On new session: run integrity validation (tree + lightweight hash)",
+  "next_action": "On new session: run lightweight integrity validation",
   "integrity": {
     "lightweight": {
-      "repo_file_count": 82,
+      "validation": "repo_tree_file_count + critical_files_presence",
       "critical_files": [
         "Context.md",
         ".agent/STATE.json",
@@ -28,5 +29,11 @@
       ],
       "mode": "checkpoint_only"
     }
+  },
+  "safe_mode": {
+    "enabled": false,
+    "reason": null,
+    "since": null,
+    "write_policy": "agent_folder_only"
   }
 }

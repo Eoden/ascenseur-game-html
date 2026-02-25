@@ -11,15 +11,16 @@
 - STATE.json is the single machine-readable state entry point.
 - Context.md defines operational and architectural ground rules.
 
-## Integrity Model (Level C)
+## Integrity Model (Level C - Auto-Healing Enabled)
 Two-level integrity validation:
 
 ### Lightweight (Every Session Start)
-- Validate repository file count via getRepoTree.
+- Validate repository structure via getRepoTree.
 - Ensure critical files exist:
   - Context.md
   - .agent/STATE.json
   - .agent/MEMORY.md
+- If mismatch → Level 1 divergence.
 
 ### Extended (Checkpoint Only)
 - Validate consistency of:
@@ -28,11 +29,37 @@ Two-level integrity validation:
   - ARCHITECTURE.md
 - Snapshot metadata stored in CHECKPOINTS/.
 
+## Divergence Classification
+- Level 1 → Minor (force re-read + recalc state)
+- Level 2 → Major (enable safe_mode)
+- Level 3 → Critical (recommend revertRepo + freeze operations)
+
+## Safe Mode Policy
+When safe_mode.enabled = true:
+- Writes are restricted to `.agent/` folder only.
+- No modification allowed outside persistent memory layer.
+- Full critical file re-read mandatory before exit.
+
+## Auto-Repair Protocol
+Level 1:
+- Re-read affected files
+- Update STATE
+- Log operation
+
+Level 2:
+- Activate safe_mode
+- Create emergency checkpoint
+- Await validation
+
+Level 3:
+- Recommend revertRepo
+- Generate divergence report in SESSIONS/
+
 ## Standards
 - One logical operation cycle = one commit.
 - Update STATE.json before critical operations.
-- Always read Context.md at session start before strategic decisions.
 - Every 5 major operations → create checkpoint.
+- All major operations logged in OPERATIONS_LOG.json.
 
 ## PNG Policy
 - Agent may generate valid PNG placeholders.

@@ -1,0 +1,6 @@
+{
+  "timestamp": "AUTO_HEALING_BASELINE",
+  "mode": "extended",
+  "safe_mode_policy": "agent_folder_only",
+  "status": "auto_healing_layer_activated"
+}
