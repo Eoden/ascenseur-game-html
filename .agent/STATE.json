@@ -1,6 +1,6 @@
 {
   "current_objective": "Auto-healing autonomous agent with enforced bootstrap",
-  "current_phase": "bootstrap_enforced",
+  "current_phase": "bootstrap_validated",
   "active_files": [
     "Context.md",
     ".agent/STATE.json",
@@ -11,10 +11,10 @@
   ],
   "blocked": false,
   "last_checkpoint": "INITIAL_INTEGRITY_CHECKPOINT",
-  "next_action": "Mandatory bootstrap before any operation",
+  "next_action": "Awaiting user instruction",
   "bootstrap": {
     "required": true,
-    "validated": false,
+    "validated": true,
     "steps": [
       "getRepoTree",
       "read STATE.json",
@@ -43,9 +43,9 @@
     }
   },
   "safe_mode": {
-    "enabled": true,
-    "reason": "bootstrap_not_validated",
-    "since": "AUTO_ENFORCE",
-    "write_policy": "agent_folder_only"
+    "enabled": false,
+    "reason": null,
+    "since": null,
+    "write_policy": "full_access"
   }
 }
