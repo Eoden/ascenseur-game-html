@@ -1,0 +1,13 @@
+{
+  "current_act": 1,
+  "current_level": "level_01",
+  "selected_character": null,
+  "main_story_progress": 0,
+  "completed_main_quests": [],
+  "completed_personal_quests": [],
+  "world_flags": {
+    "met_mentor": false,
+    "artifact_examined": false,
+    "ruins_unlocked": false
+  }
+}

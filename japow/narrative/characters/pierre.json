@@ -1,0 +1,14 @@
+{
+  "id": "pierre",
+  "background": "Ancien garde royal ayant quitté l’armée après un événement mystérieux.",
+  "personality_traits": ["discipline", "loyauté", "culpabilité latente"],
+  "personal_motivation": "Comprendre le lien entre la Trame et un incident passé.",
+  "personal_quests": [
+    "quest_pierre_01"
+  ],
+  "dialogue_modifiers": {
+    "mentor": "respectueux",
+    "village_guard": "autoritaire",
+    "mysterious_stranger": "méfiant"
+  }
+}
