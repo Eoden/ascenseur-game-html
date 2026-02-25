@@ -1,6 +1,6 @@
 {
-  "current_objective": "Auto-healing autonomous agent active",
-  "current_phase": "safe_mode_enabled_architecture",
+  "current_objective": "Auto-healing autonomous agent with enforced bootstrap",
+  "current_phase": "bootstrap_enforced",
   "active_files": [
     "Context.md",
     ".agent/STATE.json",
@@ -11,7 +11,19 @@
   ],
   "blocked": false,
   "last_checkpoint": "INITIAL_INTEGRITY_CHECKPOINT",
-  "next_action": "On new session: run lightweight integrity validation",
+  "next_action": "Mandatory bootstrap before any operation",
+  "bootstrap": {
+    "required": true,
+    "validated": false,
+    "steps": [
+      "getRepoTree",
+      "read STATE.json",
+      "read Context.md",
+      "read MEMORY.md",
+      "read TASKS.md",
+      "run lightweight integrity check"
+    ]
+  },
   "integrity": {
     "lightweight": {
       "validation": "repo_tree_file_count + critical_files_presence",
@@ -31,9 +43,9 @@
     }
   },
   "safe_mode": {
-    "enabled": false,
-    "reason": null,
-    "since": null,
+    "enabled": true,
+    "reason": "bootstrap_not_validated",
+    "since": "AUTO_ENFORCE",
     "write_policy": "agent_folder_only"
   }
 }
