@@ -40,24 +40,27 @@ export default class Player {
     return img;
   }
 
-  update(input, map) {
+  update(input, map, dt) {
+    const speedMultiplier = dt / 16;
+    const moveSpeed = this.speed * 2 * speedMultiplier;
+
     let nextX = this.x;
     let nextY = this.y;
 
     if (input.left) {
-      nextX -= this.speed;
+      nextX -= moveSpeed;
       this.dir = "left";
     }
     if (input.right) {
-      nextX += this.speed;
+      nextX += moveSpeed;
       this.dir = "right";
     }
     if (input.up) {
-      nextY -= this.speed;
+      nextY -= moveSpeed;
       this.dir = "up";
     }
     if (input.down) {
-      nextY += this.speed;
+      nextY += moveSpeed;
       this.dir = "down";
     }
 

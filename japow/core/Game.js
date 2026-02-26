@@ -67,12 +67,10 @@ export class Game {
   tick(dt) {
     const tileSize = this.map.tileSize;
 
-    this.player.update(this.input, this.map);
+    this.player.update(this.input, this.map, dt);
 
-    const footX = this.player.x + tileSize / 2;
-    const footY = this.player.y + tileSize - 4;
-    const px = Math.floor(footX / tileSize);
-    const py = Math.floor(footY / tileSize);
+    const px = Math.floor((this.player.x + tileSize/2) / tileSize);
+    const py = Math.floor((this.player.y + tileSize/2) / tileSize);
 
     const room = ROOMS[this.currentRoom];
     for (const exit of room.exits) {
