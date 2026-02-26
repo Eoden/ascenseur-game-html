@@ -7,6 +7,7 @@ export class Game {
     this.input = { up:false, down:false, left:false, right:false };
     this.inventory = { key: false, passport: false };
     this.currentRoom = "salon";
+    this.transitionCooldown = 0;
     this.loadRoom(this.currentRoom);
   }
 
@@ -67,7 +68,15 @@ export class Game {
   tick(dt) {
     const tileSize = this.map.tileSize;
 
+    // Cooldown decrement
+    if (this.transitionCooldown > 0) {
+      this.transitionCooldown -= dt;
+    }
+
     this.player.update(this.input, this.map, dt);
+
+    // Prevent door spam
+    if (this.transitionCooldown > 0) return;
 
     const centerX = Math.floor((this.player.x + tileSize/2) / tileSize);
     const centerY = Math.floor((this.player.y + tileSize/2) / tileSize);
@@ -83,32 +92,28 @@ export class Game {
       this.loadRoom(exit.target);
       this.player.x = exit.targetSpawn.x;
       this.player.y = exit.targetSpawn.y;
+      this.transitionCooldown = 200; // 200ms cooldown
       return true;
     };
 
     for (const exit of room.exits) {
 
-      // Exact tile match
       if (centerX === exit.x && centerY === exit.y) {
         if (triggerExit(exit)) return;
       }
 
-      // If player is just below a top door
       if (centerX === exit.x && centerY === exit.y + 1) {
         if (triggerExit(exit)) return;
       }
 
-      // If player is just above a bottom door
       if (centerX === exit.x && centerY === exit.y - 1) {
         if (triggerExit(exit)) return;
       }
 
-      // If player is just right of a left door
       if (centerX === exit.x + 1 && centerY === exit.y) {
         if (triggerExit(exit)) return;
       }
 
-      // If player is just left of a right door
       if (centerX === exit.x - 1 && centerY === exit.y) {
         if (triggerExit(exit)) return;
       }
