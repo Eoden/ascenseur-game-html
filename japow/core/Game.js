@@ -65,36 +65,9 @@ export class Game {
   }
 
   tick(dt) {
-    const speedMultiplier = dt / 16;
     const tileSize = this.map.tileSize;
 
-    let dx = 0;
-    let dy = 0;
-
-    if(this.input.up) dy -= 1;
-    if(this.input.down) dy += 1;
-    if(this.input.left) dx -= 1;
-    if(this.input.right) dx += 1;
-
-    if(dx !== 0 || dy !== 0){
-      const nextX = this.player.x + dx * this.player.speed * speedMultiplier;
-      const nextY = this.player.y + dy * this.player.speed * speedMultiplier;
-
-      const footX = nextX + tileSize / 2;
-      const footY = nextY + tileSize - 4;
-
-      const px = Math.floor(footX / tileSize);
-      const py = Math.floor(footY / tileSize);
-
-      const tile = this.map.tiles[py * this.map.width + px];
-
-      if(tile !== 1){
-        this.player.x = nextX;
-        this.player.y = nextY;
-      }
-    }
-
-    this.player.update(this.input);
+    this.player.update(this.input, this.map);
 
     const footX = this.player.x + tileSize / 2;
     const footY = this.player.y + tileSize - 4;

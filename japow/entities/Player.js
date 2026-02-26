@@ -4,8 +4,8 @@ export default class Player {
     this.y = 64;
     this.speed = 1.5;
 
-    this.width = 64;
-    this.height = 64;
+    this.width = 32;
+    this.height = 32;
 
     this.state = "idle";
     this.dir = "down";
@@ -40,29 +40,38 @@ export default class Player {
     return img;
   }
 
-  update(input) {
-    let moving = false;
+  update(input, map) {
+    let nextX = this.x;
+    let nextY = this.y;
 
     if (input.left) {
-      this.x -= this.speed;
+      nextX -= this.speed;
       this.dir = "left";
-      moving = true;
     }
     if (input.right) {
-      this.x += this.speed;
+      nextX += this.speed;
       this.dir = "right";
-      moving = true;
     }
     if (input.up) {
-      this.y -= this.speed;
+      nextY -= this.speed;
       this.dir = "up";
-      moving = true;
     }
     if (input.down) {
-      this.y += this.speed;
+      nextY += this.speed;
       this.dir = "down";
-      moving = true;
     }
+
+    if (!this.isBlocked(nextX, this.y, map)) {
+      this.x = nextX;
+    }
+
+    if (!this.isBlocked(this.x, nextY, map)) {
+      this.y = nextY;
+    }
+
+    const moving = (
+      input.left || input.right || input.up || input.down
+    );
 
     this.state = moving ? "walk" : "idle";
 
@@ -75,6 +84,36 @@ export default class Player {
     } else {
       this.frame = 1;
     }
+  }
+
+  isBlocked(nextX, nextY, map) {
+    const size = map.tileSize;
+    const padding = 4;
+
+    const points = [
+      { x: nextX + padding, y: nextY + padding },
+      { x: nextX + size - padding, y: nextY + padding },
+      { x: nextX + padding, y: nextY + size - padding },
+      { x: nextX + size - padding, y: nextY + size - padding }
+    ];
+
+    return points.some(p => {
+      const tileX = Math.floor(p.x / size);
+      const tileY = Math.floor(p.y / size);
+
+      if (
+        tileX < 0 ||
+        tileY < 0 ||
+        tileX >= map.width ||
+        tileY >= map.height
+      ) {
+        return true;
+      }
+
+      const tile = map.tiles[tileY * map.width + tileX];
+
+      return tile === 1 || tile === 4;
+    });
   }
 
   getCurrentSprite() {
