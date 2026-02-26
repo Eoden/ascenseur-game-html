@@ -33,24 +33,20 @@ export class Game {
     const tileSize = this.map.tileSize;
     const targetRoom = ROOMS[this.currentRoom];
 
-    // Find matching return door in new room
     const returnExit = targetRoom.exits.find(e => e.target === fromRoomName);
     if (!returnExit) return;
-
-    const dx = exit.x - returnExit.x;
-    const dy = exit.y - returnExit.y;
 
     let spawnX = returnExit.x;
     let spawnY = returnExit.y;
 
-    // Determine correct side placement
-    if (returnExit.y === 0) spawnY += 1; // door at top
-    else if (returnExit.y === this.map.height - 1) spawnY -= 1; // bottom
-    else if (returnExit.x === 0) spawnX += 1; // left
-    else if (returnExit.x === this.map.width - 1) spawnX -= 1; // right
+    if (returnExit.y === 0) spawnY += 1;
+    else if (returnExit.y === this.map.height - 1) spawnY -= 1;
+    else if (returnExit.x === 0) spawnX += 1;
+    else if (returnExit.x === this.map.width - 1) spawnX -= 1;
 
-    this.player.x = spawnX * tileSize;
-    this.player.y = spawnY * tileSize;
+    // Perfect center alignment inside tile
+    this.player.x = spawnX * tileSize + tileSize / 2 - this.player.width / 2;
+    this.player.y = spawnY * tileSize + tileSize / 2 - this.player.height / 2;
   }
 
   interact() {
@@ -113,18 +109,26 @@ export class Game {
         (centerX === exit.x - 1 && centerY === exit.y)
       );
 
-      if (isNearDoor) {
-        if (exit.target === "outside" && !this.inventory.key) {
-          console.log("🚪 La porte est verrouillée.");
-          return;
-        }
+      if (!isNearDoor) continue;
 
-        const previousRoom = this.currentRoom;
-        this.loadRoom(exit.target);
-        this.placePlayerAtDoor(exit, previousRoom);
-        this.transitionCooldown = 200;
+      const movingTowardDoor =
+        (exit.y === 0 && this.input.up) ||
+        (exit.y === this.map.height - 1 && this.input.down) ||
+        (exit.x === 0 && this.input.left) ||
+        (exit.x === this.map.width - 1 && this.input.right);
+
+      if (!movingTowardDoor) continue;
+
+      if (exit.target === "outside" && !this.inventory.key) {
+        console.log("🚪 La porte est verrouillée.");
         return;
       }
+
+      const previousRoom = this.currentRoom;
+      this.loadRoom(exit.target);
+      this.placePlayerAtDoor(exit, previousRoom);
+      this.transitionCooldown = 200;
+      return;
     }
   }
 
