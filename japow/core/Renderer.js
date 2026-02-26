@@ -1,5 +1,6 @@
 export default class Renderer {
   constructor(canvas) {
+    this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
   }
 
@@ -63,6 +64,28 @@ export default class Renderer {
     } else {
       ctx.fillStyle = 'red';
       ctx.fillRect(player.x, player.y, size, size);
+    }
+
+    // Simple dialog box
+    if (game.dialog) {
+      const canvasW = this.canvas?.width ?? 420;
+      const canvasH = this.canvas?.height ?? 420;
+
+      const pad = 16;
+      const boxH = 80;
+      const x = pad;
+      const y = canvasH - boxH - pad;
+      const w = canvasW - pad * 2;
+      const h = boxH;
+
+      ctx.fillStyle = 'rgba(0,0,0,0.8)';
+      ctx.fillRect(x, y, w, h);
+
+      ctx.fillStyle = 'white';
+      ctx.font = '16px Arial';
+      ctx.textBaseline = 'middle';
+
+      ctx.fillText(game.dialog, x + 16, y + h / 2);
     }
   }
 }

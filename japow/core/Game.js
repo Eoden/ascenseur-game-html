@@ -8,6 +8,10 @@ export class Game {
     this.inventory = { key: false, passport: false };
     this.currentRoom = "salon";
     this.transitionCooldown = 0;
+
+    // Simple 1-line dialog UI
+    this.dialog = null;
+
     this.loadRoom(this.currentRoom);
   }
 
@@ -44,9 +48,17 @@ export class Game {
     else if (returnExit.x === 0) spawnX += 1;
     else if (returnExit.x === this.map.width - 1) spawnX -= 1;
 
-    // Perfect center alignment inside tile
-    this.player.x = spawnX * tileSize + tileSize / 2 - this.player.width / 2;
-    this.player.y = spawnY * tileSize + tileSize / 2 - this.player.height / 2;
+    // Center hitbox in tile
+    let px = spawnX * tileSize + tileSize / 2 - this.player.width / 2;
+    let py = spawnY * tileSize + tileSize / 2 - this.player.height / 2;
+
+    // Visual sprite is 48px wide drawn centered relative to 32px tile (see Renderer)
+    // Compensate so the sprite looks aligned to the door.
+    const visualOffsetX = (48 - tileSize) / 2; // 8px
+    px -= visualOffsetX;
+
+    this.player.x = px;
+    this.player.y = py;
   }
 
   interact() {
@@ -65,22 +77,23 @@ export class Game {
     const room = ROOMS[this.currentRoom];
     const interactive = room.interactives?.find(obj => obj.x === tx && obj.y === ty);
 
-    if (interactive) {
-      if (!interactive.opened) {
-        interactive.opened = true;
-        if (interactive.contains === "key") {
-          this.inventory.key = true;
-          console.log("🔑 Clé trouvée !");
-        } else if (interactive.contains === "passport") {
-          this.inventory.passport = true;
-          console.log("🛂 Passeport trouvé !");
-        } else {
-          console.log("Rien d'intéressant...");
-        }
+    if (!interactive) return;
+
+    // For now: every furniture shows a dialog.
+    // Only the corridor furniture gives the key.
+    const isCorridorKeyFurniture = interactive.id === "meuble_couloir" || interactive.contains === "key";
+
+    if (isCorridorKeyFurniture) {
+      if (!this.inventory.key) {
+        this.inventory.key = true;
+        this.dialog = "On a trouvé les clés de l'appartement.";
       } else {
-        console.log("Déjà fouillé.");
+        this.dialog = "On a déjà les clés de l'appartement.";
       }
+      return;
     }
+
+    this.dialog = "Rien à part des chaussettes sales.";
   }
 
   tick(dt) {
@@ -89,6 +102,9 @@ export class Game {
     if (this.transitionCooldown > 0) {
       this.transitionCooldown -= dt;
     }
+
+    // Freeze movement & transitions while dialog is open
+    if (this.dialog) return;
 
     this.player.update(this.input, this.map, dt);
 
@@ -120,7 +136,7 @@ export class Game {
       if (!movingTowardDoor) continue;
 
       if (exit.target === "outside" && !this.inventory.key) {
-        console.log("🚪 La porte est verrouillée.");
+        this.dialog = "La porte est verrouillée.";
         return;
       }
 
@@ -133,7 +149,14 @@ export class Game {
   }
 
   attack() {
+    // A closes dialog first
+    if (this.dialog) {
+      this.dialog = null;
+      return;
+    }
+
     this.interact();
+
     if (this.player.attack) {
       this.player.attack();
     }
