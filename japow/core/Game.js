@@ -26,9 +26,31 @@ export class Game {
       }
     }
 
-    this.player.x = room.spawn.x;
-    this.player.y = room.spawn.y;
     this.currentRoom = roomName;
+  }
+
+  placePlayerAtDoor(exit, fromRoomName) {
+    const tileSize = this.map.tileSize;
+    const targetRoom = ROOMS[this.currentRoom];
+
+    // Find matching return door in new room
+    const returnExit = targetRoom.exits.find(e => e.target === fromRoomName);
+    if (!returnExit) return;
+
+    const dx = exit.x - returnExit.x;
+    const dy = exit.y - returnExit.y;
+
+    let spawnX = returnExit.x;
+    let spawnY = returnExit.y;
+
+    // Determine correct side placement
+    if (returnExit.y === 0) spawnY += 1; // door at top
+    else if (returnExit.y === this.map.height - 1) spawnY -= 1; // bottom
+    else if (returnExit.x === 0) spawnX += 1; // left
+    else if (returnExit.x === this.map.width - 1) spawnX -= 1; // right
+
+    this.player.x = spawnX * tileSize;
+    this.player.y = spawnY * tileSize;
   }
 
   interact() {
@@ -68,14 +90,12 @@ export class Game {
   tick(dt) {
     const tileSize = this.map.tileSize;
 
-    // Cooldown decrement
     if (this.transitionCooldown > 0) {
       this.transitionCooldown -= dt;
     }
 
     this.player.update(this.input, this.map, dt);
 
-    // Prevent door spam
     if (this.transitionCooldown > 0) return;
 
     const centerX = Math.floor((this.player.x + tileSize/2) / tileSize);
@@ -83,39 +103,27 @@ export class Game {
 
     const room = ROOMS[this.currentRoom];
 
-    const triggerExit = (exit) => {
-      if (exit.target === "outside" && !this.inventory.key) {
-        console.log("🚪 La porte est verrouillée.");
-        return true;
-      }
-
-      this.loadRoom(exit.target);
-      this.player.x = exit.targetSpawn.x;
-      this.player.y = exit.targetSpawn.y;
-      this.transitionCooldown = 200; // 200ms cooldown
-      return true;
-    };
-
     for (const exit of room.exits) {
 
-      if (centerX === exit.x && centerY === exit.y) {
-        if (triggerExit(exit)) return;
-      }
+      const isNearDoor = (
+        (centerX === exit.x && centerY === exit.y) ||
+        (centerX === exit.x && centerY === exit.y + 1) ||
+        (centerX === exit.x && centerY === exit.y - 1) ||
+        (centerX === exit.x + 1 && centerY === exit.y) ||
+        (centerX === exit.x - 1 && centerY === exit.y)
+      );
 
-      if (centerX === exit.x && centerY === exit.y + 1) {
-        if (triggerExit(exit)) return;
-      }
+      if (isNearDoor) {
+        if (exit.target === "outside" && !this.inventory.key) {
+          console.log("🚪 La porte est verrouillée.");
+          return;
+        }
 
-      if (centerX === exit.x && centerY === exit.y - 1) {
-        if (triggerExit(exit)) return;
-      }
-
-      if (centerX === exit.x + 1 && centerY === exit.y) {
-        if (triggerExit(exit)) return;
-      }
-
-      if (centerX === exit.x - 1 && centerY === exit.y) {
-        if (triggerExit(exit)) return;
+        const previousRoom = this.currentRoom;
+        this.loadRoom(exit.target);
+        this.placePlayerAtDoor(exit, previousRoom);
+        this.transitionCooldown = 200;
+        return;
       }
     }
   }
