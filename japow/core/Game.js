@@ -69,25 +69,48 @@ export class Game {
 
     this.player.update(this.input, this.map, dt);
 
-    const px = Math.floor((this.player.x + tileSize/2) / tileSize);
-    const py = Math.floor((this.player.y + tileSize/2) / tileSize);
+    const centerX = Math.floor((this.player.x + tileSize/2) / tileSize);
+    const centerY = Math.floor((this.player.y + tileSize/2) / tileSize);
 
-    const currentTile = this.map.tiles[py * this.map.width + px];
+    const room = ROOMS[this.currentRoom];
 
-    if (currentTile === 2) {
-      const room = ROOMS[this.currentRoom];
-      const exit = room.exits.find(e => e.x === px && e.y === py);
+    const triggerExit = (exit) => {
+      if (exit.target === "outside" && !this.inventory.key) {
+        console.log("🚪 La porte est verrouillée.");
+        return true;
+      }
 
-      if (exit) {
-        if (exit.target === "outside" && !this.inventory.key) {
-          console.log("🚪 La porte est verrouillée.");
-          return;
-        }
+      this.loadRoom(exit.target);
+      this.player.x = exit.targetSpawn.x;
+      this.player.y = exit.targetSpawn.y;
+      return true;
+    };
 
-        this.loadRoom(exit.target);
-        this.player.x = exit.targetSpawn.x;
-        this.player.y = exit.targetSpawn.y;
-        return;
+    for (const exit of room.exits) {
+
+      // Exact tile match
+      if (centerX === exit.x && centerY === exit.y) {
+        if (triggerExit(exit)) return;
+      }
+
+      // If player is just below a top door
+      if (centerX === exit.x && centerY === exit.y + 1) {
+        if (triggerExit(exit)) return;
+      }
+
+      // If player is just above a bottom door
+      if (centerX === exit.x && centerY === exit.y - 1) {
+        if (triggerExit(exit)) return;
+      }
+
+      // If player is just right of a left door
+      if (centerX === exit.x + 1 && centerY === exit.y) {
+        if (triggerExit(exit)) return;
+      }
+
+      // If player is just left of a right door
+      if (centerX === exit.x - 1 && centerY === exit.y) {
+        if (triggerExit(exit)) return;
       }
     }
   }
