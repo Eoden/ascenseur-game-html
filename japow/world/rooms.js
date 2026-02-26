@@ -1,23 +1,24 @@
 export const ROOMS = {
+
   couloir: {
-    spawn: { x: 64, y: 64 },
+    spawn: { x: 6 * 32, y: 6 * 32 },
     exits: [
-      { x: 6, y: 0, target: "chambre_haut", targetSpawn: { x: 64, y: 320 } },
-      { x: 6, y: 12, target: "chambre_bas", targetSpawn: { x: 64, y: 64 } },
-      { x: 12, y: 6, target: "salon", targetSpawn: { x: 32, y: 192 } },
-      { x: 0, y: 6, target: "outside", targetSpawn: { x: 64, y: 160 } }
+      { x: 6, y: 0, target: "chambre2", targetSpawn: { x: 6 * 32, y: 11 * 32 } },
+      { x: 6, y: 12, target: "chambre1", targetSpawn: { x: 6 * 32, y: 1 * 32 } },
+      { x: 0, y: 6, target: "outside", targetSpawn: { x: 11 * 32, y: 6 * 32 } },
+      { x: 12, y: 6, target: "salon", targetSpawn: { x: 1 * 32, y: 6 * 32 } }
     ],
     interactives: [
-      { x: 3, y: 5, id: "meuble_couloir", contains: "key", opened: false }
+      { x: 3, y: 6, id: "meuble_couloir", contains: "key", opened: false }
     ],
     layout: [
       "1111112111111",
       "1000000000001",
       "1000000000001",
       "1000000000001",
-      "1004000000001",
       "1000000000001",
-      "2000000000002",
+      "1000000000001",
+      "2004000000002",
       "1000000000001",
       "1000000000001",
       "1000000000001",
@@ -28,30 +29,155 @@ export const ROOMS = {
   },
 
   salon: {
-    spawn: { x: 160, y: 192 },
+    spawn: { x: 6 * 32, y: 8 * 32 },
     exits: [
-      { x: 0, y: 6, target: "couloir", targetSpawn: { x: 352, y: 192 } },
-      { x: 6, y: 0, target: "sdb", targetSpawn: { x: 160, y: 320 } },
-      { x: 10, y: 0, target: "chambre_3", targetSpawn: { x: 64, y: 160 } }
+      { x: 0, y: 6, target: "couloir", targetSpawn: { x: 11 * 32, y: 6 * 32 } },
+      { x: 6, y: 0, target: "sdb", targetSpawn: { x: 6 * 32, y: 11 * 32 } },
+      { x: 10, y: 0, target: "chambre3", targetSpawn: { x: 6 * 32, y: 11 * 32 } }
     ],
     interactives: [
-      { x: 4, y: 4, id: "meuble_salon_a", contains: null, opened: false },
-      { x: 8, y: 8, id: "meuble_salon_b", contains: null, opened: false }
+      { x: 3, y: 8, id: "canape", contains: null, opened: false },
+      { x: 5, y: 8, id: "table", contains: null, opened: false },
+      { x: 9, y: 6, id: "cuisine", contains: null, opened: false }
     ],
     layout: [
       "1111112112111",
       "1000000000001",
       "1000000000001",
       "1000000000001",
-      "1000400000001",
+      "1000000000001",
       "1000000000001",
       "2000000000001",
       "1000000000001",
+      "1004040004001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1111111111111"
+    ]
+  },
+
+  chambre1: {
+    spawn: { x: 6 * 32, y: 10 * 32 },
+    exits: [
+      { x: 6, y: 0, target: "couloir", targetSpawn: { x: 6 * 32, y: 11 * 32 } }
+    ],
+    interactives: [
+      { x: 3, y: 9, id: "lit_ch1", contains: null, opened: false }
+    ],
+    layout: [
+      "1111112111111",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1004000000001",
+      "1004000000001",
+      "1000000000001",
+      "1111111111111"
+    ]
+  },
+
+  chambre2: {
+    spawn: { x: 6 * 32, y: 2 * 32 },
+    exits: [
+      { x: 6, y: 12, target: "couloir", targetSpawn: { x: 6 * 32, y: 1 * 32 } }
+    ],
+    interactives: [
+      { x: 8, y: 3, id: "bureau_ch2", contains: null, opened: false }
+    ],
+    layout: [
+      "1111111111111",
+      "1000000000001",
+      "1000000000001",
       "1000000040001",
+      "1000000040001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1111112111111"
+    ]
+  },
+
+  chambre3: {
+    spawn: { x: 6 * 32, y: 10 * 32 },
+    exits: [
+      { x: 6, y: 12, target: "salon", targetSpawn: { x: 6 * 32, y: 1 * 32 } }
+    ],
+    interactives: [
+      { x: 9, y: 9, id: "meuble_ch3", contains: "passport", opened: false }
+    ],
+    layout: [
+      "1111111111111",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000004001",
+      "1000000004001",
+      "1000000000001",
+      "1111112111111"
+    ]
+  },
+
+  sdb: {
+    spawn: { x: 6 * 32, y: 10 * 32 },
+    exits: [
+      { x: 6, y: 12, target: "salon", targetSpawn: { x: 6 * 32, y: 1 * 32 } }
+    ],
+    interactives: [
+      { x: 4, y: 8, id: "baignoire", contains: null, opened: false }
+    ],
+    layout: [
+      "1111111111111",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000400000001",
+      "1000400000001",
+      "1000000000001",
+      "1000000000001",
+      "1111112111111"
+    ]
+  },
+
+  outside: {
+    spawn: { x: 2 * 32, y: 6 * 32 },
+    exits: [
+      { x: 12, y: 6, target: "couloir", targetSpawn: { x: 1 * 32, y: 6 * 32 } }
+    ],
+    interactives: [],
+    layout: [
+      "1111111111111",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000001",
+      "1000000000002",
+      "1000000000001",
+      "1000000000001",
       "1000000000001",
       "1000000000001",
       "1000000000001",
       "1111111111111"
     ]
   }
+
 };
