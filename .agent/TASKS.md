@@ -1,6 +1,10 @@
 # Task Board
 
 ## TODO
+- [ ] Rebuild atomique japow/world/rooms.js (7 rooms cohérentes)
+- [ ] Vérifier cohérence exits ↔ rooms
+- [ ] Valider navigation sans crash
+- [ ] Réactiver interactions (clé / passeport)
 - [ ] Integrate automatic checkpoint rotation
 - [ ] Implement state hash validation
 

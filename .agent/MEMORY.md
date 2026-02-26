@@ -93,3 +93,31 @@ getRepoTree → targeted file reads → state validation → atomic commit.
 
 Conversation memory is never treated as authoritative system state.
 Only repository reads and STATE.json define operational reality.
+
+---
+
+## 2026-02-26 — Recovery: Japow Appartement Multi-Room Refactor
+
+### Context
+Session dérivée partiellement sans persistance fiable.
+Crash runtime observé :
+`Cannot read properties of undefined (reading 'layout')`
+
+### Root Cause
+Exits pointant vers rooms inexistantes dans ROOMS.
+Suppression partielle de chambres sans synchronisation exits.
+
+### Validated Architectural Decision
+- Appartement en multi-room (pas de mega-map).
+- 7 rooms obligatoires :
+  salon, couloir, chambre1, chambre2, chambre3, sdb, outside
+- Portes standardisées sur murs (13x13).
+- Meubles multi-tiles visibles (tile 4).
+- Tous meubles interactifs.
+- Clé : meuble couloir.
+- Passeport : meuble chambre3.
+- Sortie extérieure bloquée sans clé.
+
+### Next Deterministic Step
+Rebuild atomique de japow/world/rooms.js
+Validation navigation avant logique gameplay.
