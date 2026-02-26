@@ -72,13 +72,18 @@ export class Game {
     const px = Math.floor((this.player.x + tileSize/2) / tileSize);
     const py = Math.floor((this.player.y + tileSize/2) / tileSize);
 
-    const room = ROOMS[this.currentRoom];
-    for (const exit of room.exits) {
-      if (px === exit.x && py === exit.y) {
+    const currentTile = this.map.tiles[py * this.map.width + px];
+
+    if (currentTile === 2) {
+      const room = ROOMS[this.currentRoom];
+      const exit = room.exits.find(e => e.x === px && e.y === py);
+
+      if (exit) {
         if (exit.target === "outside" && !this.inventory.key) {
           console.log("🚪 La porte est verrouillée.");
           return;
         }
+
         this.loadRoom(exit.target);
         this.player.x = exit.targetSpawn.x;
         this.player.y = exit.targetSpawn.y;

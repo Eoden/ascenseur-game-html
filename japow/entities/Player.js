@@ -12,7 +12,7 @@ export default class Player {
 
     this.frame = 0;
     this.frameTick = 0;
-    this.frameDelay = 4;
+    this.frameDelay = 10;
 
     this.sprites = {
       right: [
