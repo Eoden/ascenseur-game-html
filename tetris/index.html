@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tetris</title>
+  <link rel="stylesheet" href="tetris.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="back" href="../index.html">← Back</a>
+    <div class="title">Tetris</div>
+    <div class="score" id="score">Score: 0</div>
+  </header>
+
+  <canvas id="game" width="240" height="480" aria-label="Tetris board"></canvas>
+
+  <div class="controls" aria-label="Mobile controls">
+    <div class="dpad">
+      <button id="up" aria-label="Up">▲</button>
+      <button id="left" aria-label="Left">◀</button>
+      <button id="right" aria-label="Right">▶</button>
+      <button id="down" aria-label="Down">▼</button>
+    </div>
+
+    <div class="actions">
+      <button id="btnB" aria-label="B">B</button>
+      <button id="btnA" aria-label="A">A</button>
+    </div>
+  </div>
+
+  <script src="../mobile-safe.js"></script>
+  <script type="module" src="tetris.js"></script>
+</body>
+</html>
