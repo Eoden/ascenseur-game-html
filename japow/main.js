@@ -20,26 +20,28 @@ const inputState = {
   right: false
 };
 
-// Bind on-screen directional buttons (used for BOTH menu and game)
+// Bind on-screen directional buttons
 bindDirectional('up', 'up', inputState);
 bindDirectional('down', 'down', inputState);
 bindDirectional('left', 'left', inputState);
 bindDirectional('right', 'right', inputState);
 
-// Bind on-screen A button for validation
+// Bind A button for BOTH menu and game
 bindAction('btnA', () => {
   if (state === "menu" && menu.validate()) {
     game = new Game();
-
-    // 🔗 Synchronize game input with shared on-screen input
     game.input = inputState;
-
     state = "game";
+    return;
+  }
+
+  if (state === "game" && game) {
+    game.attack();
   }
 });
 
 let lastMoveTime = 0;
-const moveCooldown = 200; // ms to avoid ultra-fast cycling in menu
+const moveCooldown = 200;
 
 let last = performance.now();
 
@@ -48,7 +50,6 @@ function loop(now) {
   last = now;
 
   if (state === "menu") {
-    // Handle menu navigation ONLY via on-screen arrows
     if (now - lastMoveTime > moveCooldown) {
       if (inputState.left) {
         menu.move("left");
@@ -64,7 +65,6 @@ function loop(now) {
 
   } else if (state === "game" && game) {
 
-    // Game now reads directly from shared inputState
     game.tick(dt);
 
     renderer.clear();
