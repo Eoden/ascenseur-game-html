@@ -1,7 +1,6 @@
-/* Prevent text selection & copy on mobile controls */
-#up, #down, #left, #right, #btnA {
+/* Prevent text selection & copy on mobile controls (non-intrusive) */
+.controls, .controls * {
   user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
   -webkit-touch-callout: none;
 }
