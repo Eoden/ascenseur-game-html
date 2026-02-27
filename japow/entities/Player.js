@@ -115,7 +115,9 @@ export default class Player {
 
       const tile = map.tiles[tileY * map.width + tileX];
 
-      return tile === 1 || tile === 4;
+      // 0 = floor, 2 = door (walkable)
+      // 1 = wall, 3..9 = furniture (blocked)
+      return tile === 1 || (tile >= 3 && tile <= 9);
     });
   }
 

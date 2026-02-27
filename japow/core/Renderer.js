@@ -20,22 +20,47 @@ export default class Renderer {
         const tile = map.tiles[y * map.width + x];
 
         if (tile === 1) {
-          ctx.fillStyle = '#333';
+          ctx.fillStyle = '#333'; // wall
           ctx.fillRect(x * size, y * size, size, size);
         }
 
         if (tile === 2) {
-          ctx.fillStyle = 'gold';
+          ctx.fillStyle = 'gold'; // door
           ctx.fillRect(x * size, y * size, size, size);
         }
 
         if (tile === 3) {
-          ctx.fillStyle = '#555';
+          ctx.fillStyle = '#8d8d8d'; // commode / meuble interactif
           ctx.fillRect(x * size, y * size, size, size);
         }
 
         if (tile === 4) {
-          ctx.fillStyle = '#777';
+          ctx.fillStyle = '#1e88e5'; // bed (non-interactive)
+          ctx.fillRect(x * size, y * size, size, size);
+        }
+
+        if (tile === 5) {
+          ctx.fillStyle = '#8b5a2b'; // desk (non-interactive)
+          ctx.fillRect(x * size, y * size, size, size);
+        }
+
+        if (tile === 6) {
+          ctx.fillStyle = '#6a0dad'; // sofa
+          ctx.fillRect(x * size, y * size, size, size);
+        }
+
+        if (tile === 7) {
+          ctx.fillStyle = '#ff9800'; // coffee table
+          ctx.fillRect(x * size, y * size, size, size);
+        }
+
+        if (tile === 8) {
+          ctx.fillStyle = '#1b5e20'; // kitchen
+          ctx.fillRect(x * size, y * size, size, size);
+        }
+
+        if (tile === 9) {
+          ctx.fillStyle = '#d2b48c'; // dining table
           ctx.fillRect(x * size, y * size, size, size);
         }
       }

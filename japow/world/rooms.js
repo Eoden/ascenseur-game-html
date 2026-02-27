@@ -9,7 +9,8 @@ export const ROOMS = {
       { x: 12, y: 6, target: "salon", targetSpawn: { x: 1 * 32, y: 6 * 32 } }
     ],
     interactives: [
-      { x: 3, y: 6, id: "meuble_couloir", contains: "key", opened: false }
+      // Key furniture (against left wall)
+      { x: 1, y: 6, id: "meuble_couloir", contains: "key", opened: false }
     ],
     layout: [
       "1111112111111",
@@ -18,8 +19,8 @@ export const ROOMS = {
       "1000000000001",
       "1000000000001",
       "1000000000001",
-      "2004000000002",
-      "1000000000001",
+      "2330000000002",
+      "1330000000001",
       "1000000000001",
       "1000000000001",
       "1000000000001",
@@ -36,23 +37,21 @@ export const ROOMS = {
       { x: 10, y: 0, target: "chambre3", targetSpawn: { x: 6 * 32, y: 11 * 32 } }
     ],
     interactives: [
-      { x: 3, y: 8, id: "canape", contains: null, opened: false },
-      { x: 5, y: 8, id: "table", contains: null, opened: false },
-      { x: 9, y: 6, id: "cuisine", contains: null, opened: false }
+      // (Optional) later: add interactives for table/cuisine if needed
     ],
     layout: [
       "1111112112111",
-      "1000000000001",
-      "1000000000001",
-      "1000000000001",
-      "1000000000001",
-      "1000000000001",
-      "2000000000001",
-      "1000000000001",
-      "1004040004001",
-      "1000000000001",
-      "1000000000001",
-      "1000000000001",
+      "1000000000081",
+      "1000000000081",
+      "1000000000081",
+      "1000000000081",
+      "1000000000081",
+      "2000000000081",
+      "1060000000081",
+      "1060007700081",
+      "1066660000081",
+      "1000000009981",
+      "1000000009981",
       "1111111111111"
     ]
   },
@@ -63,7 +62,8 @@ export const ROOMS = {
       { x: 6, y: 0, target: "couloir", targetSpawn: { x: 6 * 32, y: 11 * 32 } }
     ],
     interactives: [
-      { x: 3, y: 9, id: "lit_ch1", contains: null, opened: false }
+      // Commode (bottom-right)
+      { x: 10, y: 10, id: "commode_ch1", contains: null, opened: false }
     ],
     layout: [
       "1111112111111",
@@ -71,13 +71,13 @@ export const ROOMS = {
       "1000000000001",
       "1000000000001",
       "1000000000001",
+      "1444000000001",
+      "1444000000001",
+      "1444000000001",
       "1000000000001",
       "1000000000001",
-      "1000000000001",
-      "1000000000001",
-      "1004000000001",
-      "1004000000001",
-      "1000000000001",
+      "1000000000331",
+      "1000000000331",
       "1111111111111"
     ]
   },
@@ -88,17 +88,18 @@ export const ROOMS = {
       { x: 6, y: 12, target: "couloir", targetSpawn: { x: 6 * 32, y: 1 * 32 } }
     ],
     interactives: [
-      { x: 8, y: 3, id: "bureau_ch2", contains: null, opened: false }
+      // Meuble interactif (right wall)
+      { x: 11, y: 6, id: "meuble_ch2", contains: null, opened: false }
     ],
     layout: [
       "1111111111111",
-      "1000000000001",
-      "1000000000001",
-      "1000000040001",
-      "1000000040001",
+      "1555000000001",
+      "1555000000001",
       "1000000000001",
       "1000000000001",
       "1000000000001",
+      "1000000000331",
+      "1000000000331",
       "1000000000001",
       "1000000000001",
       "1000000000001",
