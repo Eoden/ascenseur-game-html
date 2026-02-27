@@ -47,5 +47,11 @@
     "reason": null,
     "since": null,
     "write_policy": "full_access"
+  },
+  "precommit_guard": {
+    "enabled": true,
+    "requires_user_validation": true,
+    "last_plan_presented": null,
+    "last_user_validation": null
   }
 }

@@ -9,5 +9,16 @@
     ],
     "objective": "Activate auto-healing architecture",
     "integrity_level": "extended"
+  },
+  {
+    "timestamp": "PRECOMMIT_GUARD_ACTIVATION",
+    "type": "architecture_enforcement",
+    "files": [
+      ".agent/ARCHITECTURE.md",
+      ".agent/STATE.json",
+      ".agent/DECISIONS.md"
+    ],
+    "objective": "Enforce mandatory pre-commit validation protocol",
+    "integrity_level": "extended"
   }
 ]

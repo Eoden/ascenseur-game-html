@@ -71,3 +71,19 @@ Before ANY modification outside `.agent/`, the agent MUST:
 5. If gameplay logic is affected, wait for explicit user validation before committing.
 
 If any of these steps are missing, the operation is considered INVALID and must not proceed to write.
+
+---
+
+## PRE-COMMIT VALIDATION PROTOCOL (MANDATORY)
+
+Before any sendAgentCommand execution:
+
+1. Produce a "PLAN DE MODIFICATION" section.
+2. List all affected files.
+3. Describe intended changes precisely.
+4. Describe technical and behavioral risks.
+5. Require explicit user approval (GO).
+6. Only then execute sendAgentCommand.
+
+No silent commits are permitted.
+Violation of this rule is considered architectural non-compliance.
