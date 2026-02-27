@@ -8,10 +8,7 @@ export class Game {
     this.inventory = { key: false, passport: false };
     this.currentRoom = "salon";
     this.transitionCooldown = 0;
-
-    // Simple 1-line dialog UI
     this.dialog = null;
-
     this.loadRoom(this.currentRoom);
   }
 
@@ -36,7 +33,6 @@ export class Game {
   placePlayerAtDoor(exit, fromRoomName) {
     const tileSize = this.map.tileSize;
     const targetRoom = ROOMS[this.currentRoom];
-
     const returnExit = targetRoom.exits.find(e => e.target === fromRoomName);
     if (!returnExit) return;
 
@@ -48,13 +44,10 @@ export class Game {
     else if (returnExit.x === 0) spawnX += 1;
     else if (returnExit.x === this.map.width - 1) spawnX -= 1;
 
-    // Center hitbox in tile
     let px = spawnX * tileSize + tileSize / 2 - this.player.width / 2;
     let py = spawnY * tileSize + tileSize / 2 - this.player.height / 2;
 
-    // Visual sprite is 48px wide drawn centered relative to 32px tile (see Renderer)
-    // Compensate so the sprite looks aligned to the door.
-    const visualOffsetX = (48 - tileSize) / 2; // 8px
+    const visualOffsetX = (48 - tileSize) / 2;
     px -= visualOffsetX;
 
     this.player.x = px;
@@ -76,14 +69,21 @@ export class Game {
 
     const room = ROOMS[this.currentRoom];
     const interactive = room.interactives?.find(obj => obj.x === tx && obj.y === ty);
-
     if (!interactive) return;
 
-    // For now: every furniture shows a dialog.
-    // Only the corridor furniture gives the key.
-    const isCorridorKeyFurniture = interactive.id === "meuble_couloir" || interactive.contains === "key";
+    // PASSPORT (chambre 3)
+    if (interactive.contains === "passport") {
+      if (!this.inventory.passport) {
+        this.inventory.passport = true;
+        this.dialog = "Passeport trouvé. Direction le Japon !";
+      } else {
+        this.dialog = "On a déjà le passeport.";
+      }
+      return;
+    }
 
-    if (isCorridorKeyFurniture) {
+    // KEY (couloir)
+    if (interactive.contains === "key") {
       if (!this.inventory.key) {
         this.inventory.key = true;
         this.dialog = "On a trouvé les clés de l'appartement.";
@@ -93,6 +93,7 @@ export class Game {
       return;
     }
 
+    // All other furniture
     this.dialog = "Rien à part des chaussettes sales.";
   }
 
@@ -103,7 +104,6 @@ export class Game {
       this.transitionCooldown -= dt;
     }
 
-    // Freeze movement & transitions while dialog is open
     if (this.dialog) return;
 
     this.player.update(this.input, this.map, dt);
@@ -149,7 +149,6 @@ export class Game {
   }
 
   attack() {
-    // A closes dialog first
     if (this.dialog) {
       this.dialog = null;
       return;
