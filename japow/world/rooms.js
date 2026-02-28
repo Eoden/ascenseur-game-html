@@ -9,16 +9,16 @@ export const ROOMS = {
       { x: 9, y: 6, target: "salon", targetSpawn: { x: 1 * 32, y: 6 * 32 } }
     ],
     interactives: [
-      { x: 2, y: 5, id: "meuble_couloir", contains: "key", opened: false }
+      { x: 3, y: 5, id: "meuble_couloir", contains: "key", opened: false }
     ],
     layout: [
       "1111112111111",
       "1111000000111",
       "1120000000111",
-      "1110000000111",
-      "1110000000111",
-      "1103000000111",
-      "1103000002111",
+      "1100000000111",
+      "1100000000111",
+      "1113000000111",
+      "1113000002111",
       "1110000000111",
       "1110000000111",
       "1110000000111",
