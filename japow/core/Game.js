@@ -39,7 +39,9 @@ export class Game {
     let spawnX = returnExit.x;
     let spawnY = returnExit.y;
 
-    if (returnExit.y === 0) spawnY += 1;
+    if (returnExit.dir === "left") spawnX += 1;
+    else if (returnExit.dir === "right") spawnX -= 1;
+    else if (returnExit.y === 0) spawnY += 1;
     else if (returnExit.y === this.map.height - 1) spawnY -= 1;
     else if (returnExit.x === 0) spawnX += 1;
     else if (returnExit.x === this.map.width - 1) spawnX -= 1;
@@ -71,7 +73,6 @@ export class Game {
     const interactive = room.interactives?.find(obj => obj.x === tx && obj.y === ty);
     if (!interactive) return;
 
-    // PASSPORT (chambre 3)
     if (interactive.contains === "passport") {
       if (!this.inventory.passport) {
         this.inventory.passport = true;
@@ -82,7 +83,6 @@ export class Game {
       return;
     }
 
-    // KEY (couloir)
     if (interactive.contains === "key") {
       if (!this.inventory.key) {
         this.inventory.key = true;
@@ -93,7 +93,6 @@ export class Game {
       return;
     }
 
-    // All other furniture
     this.dialog = "Rien à part des chaussettes sales.";
   }
 
@@ -127,11 +126,17 @@ export class Game {
 
       if (!isNearDoor) continue;
 
-      const movingTowardDoor =
-        (exit.y === 0 && this.input.up) ||
-        (exit.y === this.map.height - 1 && this.input.down) ||
-        (exit.x === 0 && this.input.left) ||
-        (exit.x === this.map.width - 1 && this.input.right);
+      let movingTowardDoor = false;
+
+      if (exit.dir === "left") movingTowardDoor = this.input.left;
+      else if (exit.dir === "right") movingTowardDoor = this.input.right;
+      else {
+        movingTowardDoor =
+          (exit.y === 0 && this.input.up) ||
+          (exit.y === this.map.height - 1 && this.input.down) ||
+          (exit.x === 0 && this.input.left) ||
+          (exit.x === this.map.width - 1 && this.input.right);
+      }
 
       if (!movingTowardDoor) continue;
 
