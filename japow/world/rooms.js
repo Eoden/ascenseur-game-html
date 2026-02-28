@@ -5,33 +5,33 @@ export const ROOMS = {
     exits: [
       { x: 6, y: 0, target: "chambre2", targetSpawn: { x: 6 * 32, y: 11 * 32 } },
       { x: 6, y: 12, target: "chambre1", targetSpawn: { x: 6 * 32, y: 1 * 32 } },
-      { x: 0, y: 3, target: "outside", targetSpawn: { x: 11 * 32, y: 6 * 32 } },
-      { x: 8, y: 6, target: "salon", targetSpawn: { x: 1 * 32, y: 6 * 32 } }
+      { x: 0, y: 1, target: "outside", targetSpawn: { x: 11 * 32, y: 6 * 32 } },
+      { x: 10, y: 6, target: "salon", targetSpawn: { x: 1 * 32, y: 6 * 32 } }
     ],
     interactives: [
-      { x: 3, y: 5, id: "meuble_couloir", contains: "key", opened: false }
+      { x: 1, y: 5, id: "meuble_couloir", contains: "key", opened: false }
     ],
     layout: [
-      "1111111111111",
-      "1110002000111",
-      "1110000000111",
+      "1111112111111",
       "2000000000111",
-      "1110330000111",
-      "1110330000111",
-      "1110000020001",
-      "1110000000111",
-      "1110000000111",
-      "1110000000111",
-      "1110000000111",
-      "1110000000111",
-      "1111111111111"
+      "1000000000111",
+      "1000000000111",
+      "1000000000111",
+      "1030000000111",
+      "1030000000021",
+      "1000000000111",
+      "1000000000111",
+      "1000000000111",
+      "1000000000111",
+      "1000000000111",
+      "1111112111111"
     ]
   },
 
   salon: {
     spawn: { x: 6 * 32, y: 8 * 32 },
     exits: [
-      { x: 0, y: 6, target: "couloir", targetSpawn: { x: 7 * 32, y: 6 * 32 } },
+      { x: 0, y: 6, target: "couloir", targetSpawn: { x: 9 * 32, y: 6 * 32 } },
       { x: 6, y: 0, target: "sdb", targetSpawn: { x: 6 * 32, y: 11 * 32 } },
       { x: 10, y: 0, target: "chambre3", targetSpawn: { x: 6 * 32, y: 11 * 32 } }
     ],
@@ -59,7 +59,7 @@ export const ROOMS = {
       { x: 6, y: 0, target: "couloir", targetSpawn: { x: 6 * 32, y: 11 * 32 } }
     ],
     interactives: [
-      { x: 9, y: 10, id: "commode_ch1", contains: null, opened: false }
+      { x: 9, y: 11, id: "commode_ch1", contains: null, opened: false }
     ],
     layout: [
       "1111112111111",
@@ -72,8 +72,8 @@ export const ROOMS = {
       "1444400000001",
       "1000000000001",
       "1000000000001",
-      "1000000033001",
       "1000000000001",
+      "1000000033001",
       "1111111111111"
     ]
   },
