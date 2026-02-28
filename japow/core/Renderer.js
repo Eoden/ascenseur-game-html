@@ -19,50 +19,18 @@ export default class Renderer {
       for (let x = 0; x < map.width; x++) {
         const tile = map.tiles[y * map.width + x];
 
-        if (tile === 1) {
-          ctx.fillStyle = '#333'; // wall
-          ctx.fillRect(x * size, y * size, size, size);
-        }
+        if (tile === 1) { ctx.fillStyle = '#333'; }
+        else if (tile === 2) { ctx.fillStyle = 'gold'; }
+        else if (tile === 3) { ctx.fillStyle = '#8d8d8d'; }
+        else if (tile === 4) { ctx.fillStyle = '#1e88e5'; }
+        else if (tile === 5) { ctx.fillStyle = '#8b5a2b'; }
+        else if (tile === 6) { ctx.fillStyle = '#6a0dad'; }
+        else if (tile === 7) { ctx.fillStyle = '#ff9800'; }
+        else if (tile === 8) { ctx.fillStyle = '#1b5e20'; }
+        else if (tile === 9) { ctx.fillStyle = '#d2b48c'; }
+        else { continue; }
 
-        if (tile === 2) {
-          ctx.fillStyle = 'gold'; // door
-          ctx.fillRect(x * size, y * size, size, size);
-        }
-
-        if (tile === 3) {
-          ctx.fillStyle = '#8d8d8d'; // commode / meuble interactif
-          ctx.fillRect(x * size, y * size, size, size);
-        }
-
-        if (tile === 4) {
-          ctx.fillStyle = '#1e88e5'; // bed (non-interactive)
-          ctx.fillRect(x * size, y * size, size, size);
-        }
-
-        if (tile === 5) {
-          ctx.fillStyle = '#8b5a2b'; // desk (non-interactive)
-          ctx.fillRect(x * size, y * size, size, size);
-        }
-
-        if (tile === 6) {
-          ctx.fillStyle = '#6a0dad'; // sofa
-          ctx.fillRect(x * size, y * size, size, size);
-        }
-
-        if (tile === 7) {
-          ctx.fillStyle = '#ff9800'; // coffee table
-          ctx.fillRect(x * size, y * size, size, size);
-        }
-
-        if (tile === 8) {
-          ctx.fillStyle = '#1b5e20'; // kitchen
-          ctx.fillRect(x * size, y * size, size, size);
-        }
-
-        if (tile === 9) {
-          ctx.fillStyle = '#d2b48c'; // dining table
-          ctx.fillRect(x * size, y * size, size, size);
-        }
+        ctx.fillRect(x * size, y * size, size, size);
       }
     }
 
@@ -74,11 +42,9 @@ export default class Renderer {
     }
 
     const sprite = player.getCurrentSprite();
-
     if (sprite && sprite.complete) {
       const visualWidth = 48;
       const visualHeight = 62;
-
       ctx.drawImage(
         sprite,
         player.x + (size - visualWidth) / 2,
@@ -91,25 +57,20 @@ export default class Renderer {
       ctx.fillRect(player.x, player.y, size, size);
     }
 
-    // Simple dialog box
     if (game.dialog) {
       const canvasW = this.canvas?.width ?? 420;
       const canvasH = this.canvas?.height ?? 420;
-
       const pad = 16;
       const boxH = 80;
       const x = pad;
       const y = canvasH - boxH - pad;
       const w = canvasW - pad * 2;
       const h = boxH;
-
       ctx.fillStyle = 'rgba(0,0,0,0.8)';
       ctx.fillRect(x, y, w, h);
-
       ctx.fillStyle = 'white';
       ctx.font = '16px Arial';
       ctx.textBaseline = 'middle';
-
       ctx.fillText(game.dialog, x + 16, y + h / 2);
     }
   }

@@ -9,7 +9,6 @@ export const ROOMS = {
       { x: 12, y: 6, target: "salon", targetSpawn: { x: 1 * 32, y: 6 * 32 } }
     ],
     interactives: [
-      // Key furniture (against left wall)
       { x: 1, y: 6, id: "meuble_couloir", contains: "key", opened: false }
     ],
     layout: [
@@ -36,9 +35,7 @@ export const ROOMS = {
       { x: 6, y: 0, target: "sdb", targetSpawn: { x: 6 * 32, y: 11 * 32 } },
       { x: 10, y: 0, target: "chambre3", targetSpawn: { x: 6 * 32, y: 11 * 32 } }
     ],
-    interactives: [
-      // (Optional) later: add interactives for table/cuisine if needed
-    ],
+    interactives: [],
     layout: [
       "1111112112111",
       "1000000000081",
@@ -62,7 +59,6 @@ export const ROOMS = {
       { x: 6, y: 0, target: "couloir", targetSpawn: { x: 6 * 32, y: 11 * 32 } }
     ],
     interactives: [
-      // Commode (bottom-right)
       { x: 10, y: 10, id: "commode_ch1", contains: null, opened: false }
     ],
     layout: [
@@ -88,7 +84,6 @@ export const ROOMS = {
       { x: 6, y: 12, target: "couloir", targetSpawn: { x: 6 * 32, y: 1 * 32 } }
     ],
     interactives: [
-      // Meuble interactif (right wall)
       { x: 11, y: 6, id: "meuble_ch2", contains: null, opened: false }
     ],
     layout: [
