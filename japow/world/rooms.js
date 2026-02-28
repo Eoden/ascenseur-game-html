@@ -5,20 +5,20 @@ export const ROOMS = {
     exits: [
       { x: 6, y: 0, target: "chambre2", targetSpawn: { x: 6 * 32, y: 11 * 32 } },
       { x: 6, y: 12, target: "chambre1", targetSpawn: { x: 6 * 32, y: 1 * 32 } },
-      { x: 3, y: 1, target: "outside", targetSpawn: { x: 11 * 32, y: 6 * 32 } },
+      { x: 2, y: 2, target: "outside", targetSpawn: { x: 11 * 32, y: 6 * 32 } },
       { x: 9, y: 6, target: "salon", targetSpawn: { x: 1 * 32, y: 6 * 32 } }
     ],
     interactives: [
-      { x: 3, y: 5, id: "meuble_couloir", contains: "key", opened: false }
+      { x: 2, y: 5, id: "meuble_couloir", contains: "key", opened: false }
     ],
     layout: [
       "1111112111111",
-      "1112000000111",
+      "1111000000111",
+      "1120000000111",
       "1110000000111",
       "1110000000111",
-      "1110000000111",
-      "1110300000111",
-      "1110300000211",
+      "1103000000111",
+      "1103000002111",
       "1110000000111",
       "1110000000111",
       "1110000000111",
