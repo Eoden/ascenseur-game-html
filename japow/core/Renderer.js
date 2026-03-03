@@ -50,11 +50,11 @@ export default class Renderer {
       }
     }
 
-    // PASS 2: STATIC BLOCKS EXCEPT SOFA & PLANT
+    // PASS 2: STATIC BLOCKS EXCEPT SOFA (6) & PLANT (10)
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         const tile = map.tiles[y * map.width + x];
-        if (tile === 6 || tile === 8) continue;
+        if (tile === 6 || tile === 10) continue;
 
         if (tile === 1) ctx.fillStyle = '#333';
         else if (tile === 2) ctx.fillStyle = 'gold';
@@ -62,6 +62,7 @@ export default class Renderer {
         else if (tile === 4) ctx.fillStyle = '#1e88e5';
         else if (tile === 5) ctx.fillStyle = '#8b5a2b';
         else if (tile === 7) ctx.fillStyle = '#ff9800';
+        else if (tile === 8) ctx.fillStyle = '#1b5e20'; // cuisine restored
         else if (tile === 9) ctx.fillStyle = '#d2b48c';
         else continue;
 
@@ -69,12 +70,12 @@ export default class Renderer {
       }
     }
 
-    // PASS 3: PLANTS (sprite over floor)
+    // PASS 3: PLANTS (tile 10)
     if (this.plantPierre.complete) {
       for (let y = 0; y < map.height; y++) {
         for (let x = 0; x < map.width; x++) {
           const tile = map.tiles[y * map.width + x];
-          if (tile === 8) {
+          if (tile === 10) {
             ctx.drawImage(this.plantPierre, x * size, y * size, size, size);
           }
         }
