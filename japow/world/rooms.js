@@ -1,15 +1,15 @@
-// Full reconstruction of Pierre apartment level (couloir chambre1/chambre2 swapped)
+// Updated to support internal doors using dir property
 
 export const ROOMS = {
   couloir: {
     layout: [
       "1111112111111",
       "1110000000111",
-      "1110000000111",
+      "1120000000111",
       "1110000000111",
       "1110000000111",
       "1113000000111",
-      "2003000000002",
+      "1113000000211",
       "1110000000111",
       "1110000000111",
       "1110000000111",
@@ -18,10 +18,10 @@ export const ROOMS = {
       "1111112111111"
     ],
     exits: [
-      { x: 6, y: 0, target: "chambre1" },     
-      { x: 6, y: 12, target: "chambre2" },    
-      { x: 0, y: 6, target: "outside" },      
-      { x: 12, y: 6, target: "salon" }        
+      { x: 6, y: 0, target: "chambre1", dir: "up" },
+      { x: 6, y: 12, target: "chambre2", dir: "down" },
+      { x: 2, y: 2, target: "outside", dir: "left" },
+      { x: 10, y: 6, target: "salon", dir: "right" }
     ],
     interactives: [
       { x: 3, y: 5, contains: "key" }
@@ -45,9 +45,9 @@ export const ROOMS = {
       "1111111111111"
     ],
     exits: [
-      { x: 0, y: 2, target: "couloir" },
-      { x: 6, y: 0, target: "sdb" },
-      { x: 12, y: 0, target: "chambre3" }
+      { x: 0, y: 2, target: "couloir", dir: "left" },
+      { x: 6, y: 0, target: "sdb", dir: "up" },
+      { x: 12, y: 0, target: "chambre3", dir: "up" }
     ],
     interactives: []
   },
@@ -69,7 +69,7 @@ export const ROOMS = {
       "1111112111111"
     ],
     exits: [
-      { x: 6, y: 12, target: "couloir" }
+      { x: 6, y: 12, target: "couloir", dir: "down" }
     ],
     interactives: []
   },
@@ -91,7 +91,7 @@ export const ROOMS = {
       "1111111111111"
     ],
     exits: [
-      { x: 6, y: 0, target: "couloir" }
+      { x: 6, y: 0, target: "couloir", dir: "up" }
     ],
     interactives: []
   },
@@ -113,7 +113,7 @@ export const ROOMS = {
       "1111111111111"
     ],
     exits: [
-      { x: 0, y: 6, target: "salon" }
+      { x: 0, y: 6, target: "salon", dir: "left" }
     ],
     interactives: [
       { x: 2, y: 2, contains: "passport" }
@@ -137,7 +137,7 @@ export const ROOMS = {
       "1111112111111"
     ],
     exits: [
-      { x: 6, y: 12, target: "salon" }
+      { x: 6, y: 12, target: "salon", dir: "down" }
     ],
     interactives: []
   },
@@ -159,7 +159,7 @@ export const ROOMS = {
       "1111112111111"
     ],
     exits: [
-      { x: 6, y: 12, target: "couloir" }
+      { x: 6, y: 12, target: "couloir", dir: "down" }
     ],
     interactives: []
   }
