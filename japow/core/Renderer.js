@@ -7,9 +7,13 @@ export default class Renderer {
     this.floorPierre = new Image();
     this.floorPierre.src = 'assets/sprites/levels/appart_pierre/floor.png';
 
-    // Canape sprite (Salon - AppartPierre)
+    // Canape sprite (multi-tile block in salon)
     this.canapePierre = new Image();
     this.canapePierre.src = 'assets/sprites/levels/appart_pierre/canape.png';
+
+    // Dimensions of the canape sprite in tiles (ADJUST if needed)
+    this.canapeTilesWide = 4;
+    this.canapeTilesHigh = 3;
 
     this.appartRooms = new Set([
       'salon',
@@ -33,25 +37,25 @@ export default class Renderer {
     const size = map.tileSize;
     const currentRoom = game.currentRoom;
 
+    // 1️⃣ PASS 1 : FLOOR
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         const tile = map.tiles[y * map.width + x];
 
-        // Floor (tile 0) only for AppartPierre rooms
         if (tile === 0 && this.appartRooms.has(currentRoom)) {
           if (this.floorPierre.complete) {
             ctx.drawImage(this.floorPierre, x * size, y * size, size, size);
           }
-          continue;
         }
+      }
+    }
 
-        // Canape (tile 6) only in salon
-        if (tile === 6 && currentRoom === 'salon') {
-          if (this.canapePierre.complete) {
-            ctx.drawImage(this.canapePierre, x * size, y * size, size, size);
-          }
-          continue;
-        }
+    // 2️⃣ PASS 2 : STATIC BLOCKS (walls, etc.) EXCEPT sofa
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const tile = map.tiles[y * map.width + x];
+
+        if (tile === 6) continue; // handled in pass 3
 
         if (tile === 1) { ctx.fillStyle = '#333'; }
         else if (tile === 2) { ctx.fillStyle = 'gold'; }
@@ -67,6 +71,32 @@ export default class Renderer {
       }
     }
 
+    // 3️⃣ PASS 3 : CANAPE (draw once at top-left tile)
+    if (currentRoom === 'salon' && this.canapePierre.complete) {
+      for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+          const tile = map.tiles[y * map.width + x];
+
+          // detect top-left anchor of sofa block
+          if (tile === 6) {
+            const left = x === 0 || map.tiles[y * map.width + (x - 1)] !== 6;
+            const top = y === 0 || map.tiles[(y - 1) * map.width + x] !== 6;
+
+            if (left && top) {
+              ctx.drawImage(
+                this.canapePierre,
+                x * size,
+                y * size,
+                this.canapeTilesWide * size,
+                this.canapeTilesHigh * size
+              );
+            }
+          }
+        }
+      }
+    }
+
+    // ENEMIES
     if (enemies) {
       for (const enemy of enemies) {
         ctx.fillStyle = 'red';
@@ -74,6 +104,7 @@ export default class Renderer {
       }
     }
 
+    // PLAYER
     const sprite = player.getCurrentSprite();
     if (sprite && sprite.complete) {
       const visualWidth = 48;
@@ -90,6 +121,7 @@ export default class Renderer {
       ctx.fillRect(player.x, player.y, size, size);
     }
 
+    // DIALOG
     if (game.dialog) {
       const canvasW = this.canvas?.width ?? 420;
       const canvasH = this.canvas?.height ?? 420;
