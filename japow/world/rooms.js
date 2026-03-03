@@ -1,4 +1,4 @@
-// Full reconstruction of Pierre apartment level
+// Full reconstruction of Pierre apartment level (corrected couloir exits)
 // Format compatible with japow/core/Game.js
 
 export const ROOMS = {
@@ -19,10 +19,10 @@ export const ROOMS = {
       "1111112111111"
     ],
     exits: [
-      { x: 2, y: 2, target: "chambre2" },
-      { x: 2, y: 12, target: "chambre1" },
-      { x: 6, y: 0, target: "outside" },
-      { x: 10, y: 6, target: "salon" }
+      { x: 2, y: 2, target: "chambre2" },      // haut
+      { x: 2, y: 12, target: "chambre1" },     // bas
+      { x: 0, y: 6, target: "outside" },       // gauche (clé requise)
+      { x: 10, y: 6, target: "salon" }         // droite
     ],
     interactives: [
       { x: 3, y: 5, contains: "key" }
