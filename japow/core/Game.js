@@ -44,6 +44,11 @@ export class Game {
     else if (returnExit.dir === "up") spawnY += 1;
     else if (returnExit.dir === "down") spawnY -= 1;
 
+    // Extra offset to avoid overlap when exiting chambre3 into salon
+    if (this.currentRoom === "salon" && fromRoomName === "chambre3") {
+      spawnY += 1;
+    }
+
     let px = spawnX * tileSize + tileSize / 2 - this.player.width / 2;
     let py = spawnY * tileSize + tileSize / 2 - this.player.height / 2;
 
