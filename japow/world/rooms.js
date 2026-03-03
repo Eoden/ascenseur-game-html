@@ -47,7 +47,8 @@ export const ROOMS = {
     exits: [
       { x: 0, y: 2, target: "couloir", dir: "left" },
       { x: 6, y: 0, target: "sdb", dir: "up" },
-      { x: 12, y: 0, target: "chambre3", dir: "up" }
+      // Chambre 3 uses the top-right door tile in the salon layout (x=9,y=0)
+      { x: 9, y: 0, target: "chambre3", dir: "up" }
     ],
     interactives: []
   },
@@ -110,10 +111,11 @@ export const ROOMS = {
       "1000000000001",
       "1000000000001",
       "1000000000001",
-      "1111111111111"
+      // bottom door aligned with salon (x=9)
+      "1111111112111"
     ],
     exits: [
-      { x: 0, y: 6, target: "salon", dir: "left" }
+      { x: 9, y: 12, target: "salon", dir: "down" }
     ],
     interactives: [
       { x: 2, y: 2, contains: "passport" }
