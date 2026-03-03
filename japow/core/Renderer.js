@@ -10,7 +10,7 @@ export default class Renderer {
     this.canapePierre.src = 'assets/sprites/levels/appart_pierre/canape.png';
 
     this.canapeTilesWide = 4;
-    this.canapeTilesHigh = 4; // adjusted to 4x4
+    this.canapeTilesHigh = 4;
 
     this.appartRooms = new Set([
       'salon',
@@ -34,11 +34,12 @@ export default class Renderer {
     const size = map.tileSize;
     const currentRoom = game.currentRoom;
 
-    // PASS 1: FLOOR
+    // PASS 1: FLOOR (draw everywhere except walls)
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         const tile = map.tiles[y * map.width + x];
-        if (tile === 0 && this.appartRooms.has(currentRoom)) {
+
+        if (tile !== 1 && this.appartRooms.has(currentRoom)) {
           if (this.floorPierre.complete) {
             ctx.drawImage(this.floorPierre, x * size, y * size, size, size);
           }
@@ -66,7 +67,7 @@ export default class Renderer {
       }
     }
 
-    // PASS 3: SOFA (single 4x4 sprite)
+    // PASS 3: SOFA (single 4x4 sprite over floor)
     if (currentRoom === 'salon' && this.canapePierre.complete) {
       for (let y = 0; y < map.height; y++) {
         for (let x = 0; x < map.width; x++) {
