@@ -1,4 +1,4 @@
-// Full reconstruction of Pierre apartment level (couloir matrix corrected)
+// Full reconstruction of Pierre apartment level (couloir chambre1/chambre2 swapped)
 
 export const ROOMS = {
   couloir: {
@@ -18,8 +18,8 @@ export const ROOMS = {
       "1111112111111"
     ],
     exits: [
-      { x: 6, y: 0, target: "chambre2" },     
-      { x: 6, y: 12, target: "chambre1" },    
+      { x: 6, y: 0, target: "chambre1" },     
+      { x: 6, y: 12, target: "chambre2" },    
       { x: 0, y: 6, target: "outside" },      
       { x: 12, y: 6, target: "salon" }        
     ],
