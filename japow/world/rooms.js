@@ -71,7 +71,9 @@ export const ROOMS = {
     exits: [
       { x: 6, y: 12, target: "couloir", dir: "down" }
     ],
-    interactives: []
+    interactives: [
+      { x: 9, y: 11 }
+    ]
   },
 
   chambre2: {
@@ -93,7 +95,9 @@ export const ROOMS = {
     exits: [
       { x: 6, y: 0, target: "couloir", dir: "up" }
     ],
-    interactives: []
+    interactives: [
+      { x: 9, y: 11 }
+    ]
   },
 
   chambre3: {
