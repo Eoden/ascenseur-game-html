@@ -7,6 +7,10 @@ export default class Renderer {
     this.floorPierre = new Image();
     this.floorPierre.src = 'assets/sprites/levels/appart_pierre/floor.png';
 
+    // Canape sprite (Salon - AppartPierre)
+    this.canapePierre = new Image();
+    this.canapePierre.src = 'assets/sprites/levels/appart_pierre/canape.png';
+
     this.appartRooms = new Set([
       'salon',
       'couloir',
@@ -41,12 +45,19 @@ export default class Renderer {
           continue;
         }
 
+        // Canape (tile 6) only in salon
+        if (tile === 6 && currentRoom === 'salon') {
+          if (this.canapePierre.complete) {
+            ctx.drawImage(this.canapePierre, x * size, y * size, size, size);
+          }
+          continue;
+        }
+
         if (tile === 1) { ctx.fillStyle = '#333'; }
         else if (tile === 2) { ctx.fillStyle = 'gold'; }
         else if (tile === 3) { ctx.fillStyle = '#8d8d8d'; }
         else if (tile === 4) { ctx.fillStyle = '#1e88e5'; }
         else if (tile === 5) { ctx.fillStyle = '#8b5a2b'; }
-        else if (tile === 6) { ctx.fillStyle = '#6a0dad'; }
         else if (tile === 7) { ctx.fillStyle = '#ff9800'; }
         else if (tile === 8) { ctx.fillStyle = '#1b5e20'; }
         else if (tile === 9) { ctx.fillStyle = '#d2b48c'; }
