@@ -41,10 +41,8 @@ export class Game {
 
     if (returnExit.dir === "left") spawnX += 1;
     else if (returnExit.dir === "right") spawnX -= 1;
-    else if (returnExit.y === 0) spawnY += 1;
-    else if (returnExit.y === this.map.height - 1) spawnY -= 1;
-    else if (returnExit.x === 0) spawnX += 1;
-    else if (returnExit.x === this.map.width - 1) spawnX -= 1;
+    else if (returnExit.dir === "up") spawnY += 1;
+    else if (returnExit.dir === "down") spawnY -= 1;
 
     let px = spawnX * tileSize + tileSize / 2 - this.player.width / 2;
     let py = spawnY * tileSize + tileSize / 2 - this.player.height / 2;
@@ -128,15 +126,10 @@ export class Game {
 
       let movingTowardDoor = false;
 
-      if (exit.dir === "left") movingTowardDoor = this.input.left;
+      if (exit.dir === "up") movingTowardDoor = this.input.up;
+      else if (exit.dir === "down") movingTowardDoor = this.input.down;
+      else if (exit.dir === "left") movingTowardDoor = this.input.left;
       else if (exit.dir === "right") movingTowardDoor = this.input.right;
-      else {
-        movingTowardDoor =
-          (exit.y === 0 && this.input.up) ||
-          (exit.y === this.map.height - 1 && this.input.down) ||
-          (exit.x === 0 && this.input.left) ||
-          (exit.x === this.map.width - 1 && this.input.right);
-      }
 
       if (!movingTowardDoor) continue;
 
