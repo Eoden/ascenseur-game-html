@@ -2,6 +2,19 @@ export default class Renderer {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
+
+    // Floor sprite for AppartPierre
+    this.floorPierre = new Image();
+    this.floorPierre.src = 'assets/sprites/levels/appart_pierre/floor.png';
+
+    this.appartRooms = new Set([
+      'salon',
+      'couloir',
+      'chambre1',
+      'chambre2',
+      'chambre3',
+      'sdb'
+    ]);
   }
 
   clear() {
@@ -14,10 +27,19 @@ export default class Renderer {
     const { map, player, enemies } = game;
 
     const size = map.tileSize;
+    const currentRoom = game.currentRoom;
 
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         const tile = map.tiles[y * map.width + x];
+
+        // Floor (tile 0) only for AppartPierre rooms
+        if (tile === 0 && this.appartRooms.has(currentRoom)) {
+          if (this.floorPierre.complete) {
+            ctx.drawImage(this.floorPierre, x * size, y * size, size, size);
+          }
+          continue;
+        }
 
         if (tile === 1) { ctx.fillStyle = '#333'; }
         else if (tile === 2) { ctx.fillStyle = 'gold'; }
