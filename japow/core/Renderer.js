@@ -115,9 +115,10 @@ export default class Renderer {
       ctx.drawImage(sprite,player.x+(size-visualWidth)/2,player.y+size-visualHeight,visualWidth,visualHeight);
     }
 
+    // Interaction indicator moved higher and to the right
     if(game.canInteract){
-      const px = player.x + 20;
-      const py = player.y - 10;
+      const px = player.x + size + 10;
+      const py = player.y - 25;
 
       ctx.fillStyle = "rgba(0,0,0,0.7)";
       ctx.beginPath();
