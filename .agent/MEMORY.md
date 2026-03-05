@@ -118,6 +118,58 @@ Suppression partielle de chambres sans synchronisation exits.
 - Passeport : meuble chambre3.
 - Sortie extérieure bloquée sans clé.
 
-### Next Deterministic Step
-Rebuild atomique de japow/world/rooms.js
-Validation navigation avant logique gameplay.
+---
+
+## 2026-03 — Rendering & Tile System Stabilization (Pierre Apartment)
+
+### Rendering Layer Order
+Renderer must follow strict layered drawing order:
+1. FLOOR (tile != 1)
+2. Static tiles (walls, tables, etc.)
+3. Decorative sprites (plants)
+4. Large sprites (sofa 4x4)
+5. Player
+
+Floor must always render under transparent sprites.
+
+### Tile Semantic Mapping
+Current stable tile mapping:
+
+1 = wall
+2 = door
+3 = furniture / interactable
+4 = bed / desk
+5 = plant (sprite)
+6 = sofa (4x4 sprite block)
+7 = table
+8 = kitchen block
+9 = floor variation
+0 = standard floor
+
+### Sofa Rendering Rule
+- Sofa uses a **single sprite rendered over a 4x4 tile area**.
+- Detection is done by finding the **top-left tile** of the sofa block.
+
+### Apartment Level Asset Structure
+Level-specific sprites stored in:
+
+`japow/assets/sprites/levels/appart_pierre/`
+
+Current assets:
+- floor.png
+- canape.png
+- plant.png
+
+### Apartment Level Name
+First level for Pierre is defined as:
+
+`AppartPierre`
+
+It uses the multi-room layout (salon → couloir → chambres → sdb).
+
+### Deterministic Rule for Tiles
+All tiles except walls must first render floor.
+Decor sprites render above floor.
+
+This rule prevents visual holes when sprites use transparency.
+
