@@ -12,6 +12,9 @@ export default class Renderer {
     this.plantPierre = new Image();
     this.plantPierre.src = 'assets/sprites/levels/appart_pierre/plant.png';
 
+    this.bedPierre = new Image();
+    this.bedPierre.src = 'assets/sprites/levels/appart_pierre/bed.png';
+
     this.canapeTilesWide = 4;
     this.canapeTilesHigh = 4;
 
@@ -50,18 +53,17 @@ export default class Renderer {
       }
     }
 
-    // PASS 2: STATIC BLOCKS EXCEPT SOFA (6) & PLANT (5)
+    // PASS 2: STATIC BLOCKS EXCEPT SOFA (6), PLANT (5) & BED (4)
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         const tile = map.tiles[y * map.width + x];
-        if (tile === 6 || tile === 5) continue;
+        if (tile === 6 || tile === 5 || tile === 4) continue;
 
         if (tile === 1) ctx.fillStyle = '#333';
         else if (tile === 2) ctx.fillStyle = 'gold';
         else if (tile === 3) ctx.fillStyle = '#8d8d8d';
-        else if (tile === 4) ctx.fillStyle = '#1e88e5';
         else if (tile === 7) ctx.fillStyle = '#ff9800';
-        else if (tile === 8) ctx.fillStyle = '#1b5e20'; // cuisine
+        else if (tile === 8) ctx.fillStyle = '#1b5e20';
         else if (tile === 9) ctx.fillStyle = '#d2b48c';
         else continue;
 
@@ -69,7 +71,7 @@ export default class Renderer {
       }
     }
 
-    // PASS 3: PLANTS (tile 5)
+    // PASS 3: PLANTS
     if (this.plantPierre.complete) {
       for (let y = 0; y < map.height; y++) {
         for (let x = 0; x < map.width; x++) {
@@ -81,7 +83,19 @@ export default class Renderer {
       }
     }
 
-    // PASS 4: SOFA (single 4x4 sprite)
+    // PASS 4: BEDS
+    if (this.bedPierre.complete) {
+      for (let y = 0; y < map.height; y++) {
+        for (let x = 0; x < map.width; x++) {
+          const tile = map.tiles[y * map.width + x];
+          if (tile === 4) {
+            ctx.drawImage(this.bedPierre, x * size, y * size, size, size);
+          }
+        }
+      }
+    }
+
+    // PASS 5: SOFA (single 4x4 sprite)
     if (currentRoom === 'salon' && this.canapePierre.complete) {
       for (let y = 0; y < map.height; y++) {
         for (let x = 0; x < map.width; x++) {
