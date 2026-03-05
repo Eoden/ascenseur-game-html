@@ -15,11 +15,17 @@ export default class Renderer {
     this.bedPierre = new Image();
     this.bedPierre.src = 'assets/sprites/levels/appart_pierre/bed.png';
 
+    this.commodePierre = new Image();
+    this.commodePierre.src = 'assets/sprites/levels/appart_pierre/commode_horizontal.png';
+
     this.canapeTilesWide = 4;
     this.canapeTilesHigh = 4;
 
     this.bedTilesWide = 4;
     this.bedTilesHigh = 3;
+
+    this.commodeTilesWide = 2;
+    this.commodeTilesHigh = 1;
 
     this.appartRooms = new Set([
       'salon','couloir','chambre1','chambre2','chambre3','sdb'
@@ -33,11 +39,12 @@ export default class Renderer {
 
   render(game) {
     const { ctx } = this;
-    const { map, player, enemies } = game;
+    const { map, player } = game;
 
     const size = map.tileSize;
     const currentRoom = game.currentRoom;
 
+    // FLOOR
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
@@ -49,14 +56,14 @@ export default class Renderer {
       }
     }
 
+    // WALLS + DOORS
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
-        if(tile===6||tile===5||tile===4) continue;
+        if(tile===6||tile===5||tile===4||tile===3) continue;
 
         if(tile===1) ctx.fillStyle='#333';
         else if(tile===2) ctx.fillStyle='gold';
-        else if(tile===3) ctx.fillStyle='#8d8d8d';
         else if(tile===7) ctx.fillStyle='#ff9800';
         else if(tile===8) ctx.fillStyle='#1b5e20';
         else if(tile===9) ctx.fillStyle='#d2b48c';
@@ -66,6 +73,7 @@ export default class Renderer {
       }
     }
 
+    // PLANTS
     if(this.plantPierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -77,6 +85,7 @@ export default class Renderer {
       }
     }
 
+    // BEDS (4x3)
     if(this.bedPierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -92,6 +101,22 @@ export default class Renderer {
       }
     }
 
+    // COMMODES (2x1 horizontal)
+    if(this.commodePierre.complete){
+      for(let y=0;y<map.height;y++){
+        for(let x=0;x<map.width;x++){
+          const tile=map.tiles[y*map.width+x];
+          if(tile===3){
+            const left=x===0||map.tiles[y*map.width+(x-1)]!==3;
+            if(left){
+              ctx.drawImage(this.commodePierre,x*size,y*size,this.commodeTilesWide*size,this.commodeTilesHigh*size);
+            }
+          }
+        }
+      }
+    }
+
+    // SOFA
     if(currentRoom==='salon' && this.canapePierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -115,7 +140,6 @@ export default class Renderer {
       ctx.drawImage(sprite,player.x+(size-visualWidth)/2,player.y+size-visualHeight,visualWidth,visualHeight);
     }
 
-    // Interaction indicator moved higher and to the right
     if(game.canInteract){
       const px = player.x + size + 10;
       const py = player.y - 25;
