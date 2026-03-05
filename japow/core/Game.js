@@ -9,6 +9,7 @@ export class Game {
     this.currentRoom = "salon";
     this.transitionCooldown = 0;
     this.dialog = null;
+    this.canInteract = false;
     this.loadRoom(this.currentRoom);
   }
 
@@ -44,7 +45,6 @@ export class Game {
     else if (returnExit.dir === "up") spawnY += 1;
     else if (returnExit.dir === "down") spawnY -= 1;
 
-    // Extra offset to avoid overlap when exiting chambre3 into salon
     if (this.currentRoom === "salon" && fromRoomName === "chambre3") {
       spawnY += 1;
     }
@@ -59,8 +59,9 @@ export class Game {
     this.player.y = py;
   }
 
-  interact() {
+  getFacingTile() {
     const tileSize = this.map.tileSize;
+
     const px = Math.floor((this.player.x + tileSize/2) / tileSize);
     const py = Math.floor((this.player.y + tileSize/2) / tileSize);
 
@@ -71,6 +72,12 @@ export class Game {
     if (this.player.dir === "down") ty += 1;
     if (this.player.dir === "left") tx -= 1;
     if (this.player.dir === "right") tx += 1;
+
+    return { tx, ty };
+  }
+
+  interact() {
+    const { tx, ty } = this.getFacingTile();
 
     const room = ROOMS[this.currentRoom];
     const interactive = room.interactives?.find(obj => obj.x === tx && obj.y === ty);
@@ -106,16 +113,21 @@ export class Game {
       this.transitionCooldown -= dt;
     }
 
-    if (this.dialog) return;
+    if (!this.dialog) {
+      this.player.update(this.input, this.map, dt);
+    }
 
-    this.player.update(this.input, this.map, dt);
+    const { tx, ty } = this.getFacingTile();
+    const room = ROOMS[this.currentRoom];
+
+    this.canInteract = !!room.interactives?.find(obj => obj.x === tx && obj.y === ty);
+
+    if (this.dialog) return;
 
     if (this.transitionCooldown > 0) return;
 
     const centerX = Math.floor((this.player.x + tileSize/2) / tileSize);
     const centerY = Math.floor((this.player.y + tileSize/2) / tileSize);
-
-    const room = ROOMS[this.currentRoom];
 
     for (const exit of room.exits) {
 
