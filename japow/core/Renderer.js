@@ -24,6 +24,9 @@ export default class Renderer {
     this.tablePierre = new Image();
     this.tablePierre.src = 'assets/sprites/levels/appart_pierre/table.png';
 
+    this.tableBassePierre = new Image();
+    this.tableBassePierre.src = 'assets/sprites/levels/appart_pierre/tableBasse.png';
+
     this.canapeTilesWide = 4;
     this.canapeTilesHigh = 4;
 
@@ -50,6 +53,7 @@ export default class Renderer {
     const size = map.tileSize;
     const currentRoom = game.currentRoom;
 
+    // FLOOR
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
@@ -61,6 +65,7 @@ export default class Renderer {
       }
     }
 
+    // WALLS + DOORS
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
@@ -77,6 +82,7 @@ export default class Renderer {
       }
     }
 
+    // PLANTS
     if(this.plantPierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -87,7 +93,8 @@ export default class Renderer {
       }
     }
 
-    if(this.bedPierre.complete){
+    // BEDS (not in salon)
+    if(this.bedPierre.complete && currentRoom!=='salon'){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
           if(map.tiles[y*map.width+x]===4){
@@ -101,6 +108,7 @@ export default class Renderer {
       }
     }
 
+    // COMMODES
     for(let y=0;y<map.height;y++){
       for(let x=0;x<map.width;x++){
         const tile=map.tiles[y*map.width+x];
@@ -125,20 +133,45 @@ export default class Renderer {
       }
     }
 
-    if(currentRoom==='salon' && this.tablePierre.complete){
+    // TABLE + COFFEE TABLE (tile 9 logic)
+    if(currentRoom==='salon'){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
-          if(map.tiles[y*map.width+x]===7){
-            const left=x===0||map.tiles[y*map.width+(x-1)]!==7;
-            const top=y===0||map.tiles[(y-1)*map.width+x]!==7;
-            if(left&&top){
-              ctx.drawImage(this.tablePierre,x*size,y*size,this.tableTilesWide*size,this.tableTilesHigh*size);
+          if(map.tiles[y*map.width+x]===9){
+
+            const right = map.tiles[y*map.width+(x+1)]===9;
+            const down  = map.tiles[(y+1)*map.width+x]===9;
+
+            const leftEdge = x===0 || map.tiles[y*map.width+(x-1)]!==9;
+            const topEdge  = y===0 || map.tiles[(y-1)*map.width+x]!==9;
+
+            // SALON TABLE (2x3 cluster)
+            if(right && down && leftEdge && topEdge && this.tablePierre.complete){
+              ctx.drawImage(
+                this.tablePierre,
+                x*size,
+                y*size,
+                this.tableTilesWide*size,
+                this.tableTilesHigh*size
+              );
+            }
+
+            // COFFEE TABLE (single 9)
+            else if(!right && !down && this.tableBassePierre.complete){
+              ctx.drawImage(
+                this.tableBassePierre,
+                x*size,
+                y*size,
+                size,
+                size
+              );
             }
           }
         }
       }
     }
 
+    // SOFA
     if(currentRoom==='salon' && this.canapePierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
