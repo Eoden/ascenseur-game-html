@@ -15,17 +15,17 @@ export default class Renderer {
     this.bedPierre = new Image();
     this.bedPierre.src = 'assets/sprites/levels/appart_pierre/bed.png';
 
-    this.commodePierre = new Image();
-    this.commodePierre.src = 'assets/sprites/levels/appart_pierre/commode_horizontal.png';
+    this.commodeHorizontal = new Image();
+    this.commodeHorizontal.src = 'assets/sprites/levels/appart_pierre/commode_horizontal.png';
+
+    this.commodeVertical = new Image();
+    this.commodeVertical.src = 'assets/sprites/levels/appart_pierre/commode_vertical.png';
 
     this.canapeTilesWide = 4;
     this.canapeTilesHigh = 4;
 
     this.bedTilesWide = 4;
     this.bedTilesHigh = 3;
-
-    this.commodeTilesWide = 2;
-    this.commodeTilesHigh = 1;
 
     this.appartRooms = new Set([
       'salon','couloir','chambre1','chambre2','chambre3','sdb'
@@ -101,16 +101,28 @@ export default class Renderer {
       }
     }
 
-    // COMMODES (2x1 horizontal)
-    if(this.commodePierre.complete){
-      for(let y=0;y<map.height;y++){
-        for(let x=0;x<map.width;x++){
-          const tile=map.tiles[y*map.width+x];
-          if(tile===3){
-            const left=x===0||map.tiles[y*map.width+(x-1)]!==3;
-            if(left){
-              ctx.drawImage(this.commodePierre,x*size,y*size,this.commodeTilesWide*size,this.commodeTilesHigh*size);
-            }
+    // COMMODES (horizontal 2x1 or vertical 1x2)
+    for(let y=0;y<map.height;y++){
+      for(let x=0;x<map.width;x++){
+        const tile=map.tiles[y*map.width+x];
+        if(tile!==3) continue;
+
+        const right = map.tiles[y*map.width+(x+1)]===3;
+        const down = map.tiles[(y+1)*map.width+x]===3;
+
+        // horizontal
+        if(right && this.commodeHorizontal.complete){
+          const leftEdge = x===0||map.tiles[y*map.width+(x-1)]!==3;
+          if(leftEdge){
+            ctx.drawImage(this.commodeHorizontal,x*size,y*size,2*size,1*size);
+          }
+        }
+
+        // vertical
+        else if(down && this.commodeVertical.complete){
+          const topEdge = y===0||map.tiles[(y-1)*map.width+x]!==3;
+          if(topEdge){
+            ctx.drawImage(this.commodeVertical,x*size,y*size,1*size,2*size);
           }
         }
       }
