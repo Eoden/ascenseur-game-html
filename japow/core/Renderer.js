@@ -21,11 +21,17 @@ export default class Renderer {
     this.commodeVertical = new Image();
     this.commodeVertical.src = 'assets/sprites/levels/appart_pierre/commode_vertical.png';
 
+    this.tablePierre = new Image();
+    this.tablePierre.src = 'assets/sprites/levels/appart_pierre/table.png';
+
     this.canapeTilesWide = 4;
     this.canapeTilesHigh = 4;
 
     this.bedTilesWide = 4;
     this.bedTilesHigh = 3;
+
+    this.tableTilesWide = 2;
+    this.tableTilesHigh = 3;
 
     this.appartRooms = new Set([
       'salon','couloir','chambre1','chambre2','chambre3','sdb'
@@ -44,7 +50,6 @@ export default class Renderer {
     const size = map.tileSize;
     const currentRoom = game.currentRoom;
 
-    // FLOOR
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
@@ -56,41 +61,36 @@ export default class Renderer {
       }
     }
 
-    // WALLS + DOORS
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
-        if(tile===6||tile===5||tile===4||tile===3) continue;
 
-        if(tile===1) ctx.fillStyle='#333';
-        else if(tile===2) ctx.fillStyle='gold';
-        else if(tile===7) ctx.fillStyle='#ff9800';
-        else if(tile===8) ctx.fillStyle='#1b5e20';
-        else if(tile===9) ctx.fillStyle='#d2b48c';
-        else continue;
+        if(tile===1){
+          ctx.fillStyle='#333';
+          ctx.fillRect(x*size,y*size,size,size);
+        }
 
-        ctx.fillRect(x*size,y*size,size,size);
+        else if(tile===2){
+          ctx.fillStyle='gold';
+          ctx.fillRect(x*size,y*size,size,size);
+        }
       }
     }
 
-    // PLANTS
     if(this.plantPierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
-          const tile=map.tiles[y*map.width+x];
-          if(tile===5){
+          if(map.tiles[y*map.width+x]===5){
             ctx.drawImage(this.plantPierre,x*size,y*size,size,size);
           }
         }
       }
     }
 
-    // BEDS (4x3)
     if(this.bedPierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
-          const tile=map.tiles[y*map.width+x];
-          if(tile===4){
+          if(map.tiles[y*map.width+x]===4){
             const left=x===0||map.tiles[y*map.width+(x-1)]!==4;
             const top=y===0||map.tiles[(y-1)*map.width+x]!==4;
             if(left&&top){
@@ -101,7 +101,6 @@ export default class Renderer {
       }
     }
 
-    // COMMODES (horizontal 2x1 or vertical 1x2)
     for(let y=0;y<map.height;y++){
       for(let x=0;x<map.width;x++){
         const tile=map.tiles[y*map.width+x];
@@ -110,7 +109,6 @@ export default class Renderer {
         const right = map.tiles[y*map.width+(x+1)]===3;
         const down = map.tiles[(y+1)*map.width+x]===3;
 
-        // horizontal
         if(right && this.commodeHorizontal.complete){
           const leftEdge = x===0||map.tiles[y*map.width+(x-1)]!==3;
           if(leftEdge){
@@ -118,7 +116,6 @@ export default class Renderer {
           }
         }
 
-        // vertical
         else if(down && this.commodeVertical.complete){
           const topEdge = y===0||map.tiles[(y-1)*map.width+x]!==3;
           if(topEdge){
@@ -128,12 +125,24 @@ export default class Renderer {
       }
     }
 
-    // SOFA
+    if(currentRoom==='salon' && this.tablePierre.complete){
+      for(let y=0;y<map.height;y++){
+        for(let x=0;x<map.width;x++){
+          if(map.tiles[y*map.width+x]===7){
+            const left=x===0||map.tiles[y*map.width+(x-1)]!==7;
+            const top=y===0||map.tiles[(y-1)*map.width+x]!==7;
+            if(left&&top){
+              ctx.drawImage(this.tablePierre,x*size,y*size,this.tableTilesWide*size,this.tableTilesHigh*size);
+            }
+          }
+        }
+      }
+    }
+
     if(currentRoom==='salon' && this.canapePierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
-          const tile=map.tiles[y*map.width+x];
-          if(tile===6){
+          if(map.tiles[y*map.width+x]===6){
             const left=x===0||map.tiles[y*map.width+(x-1)]!==6;
             const top=y===0||map.tiles[(y-1)*map.width+x]!==6;
             if(left&&top){
