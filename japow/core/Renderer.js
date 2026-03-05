@@ -18,6 +18,9 @@ export default class Renderer {
     this.canapeTilesWide = 4;
     this.canapeTilesHigh = 4;
 
+    this.bedTilesWide = 4;
+    this.bedTilesHigh = 3;
+
     this.appartRooms = new Set([
       'salon',
       'couloir',
@@ -83,13 +86,25 @@ export default class Renderer {
       }
     }
 
-    // PASS 4: BEDS
+    // PASS 4: BEDS (single sprite over 4x3 tiles)
     if (this.bedPierre.complete) {
       for (let y = 0; y < map.height; y++) {
         for (let x = 0; x < map.width; x++) {
           const tile = map.tiles[y * map.width + x];
+
           if (tile === 4) {
-            ctx.drawImage(this.bedPierre, x * size, y * size, size, size);
+            const left = x === 0 || map.tiles[y * map.width + (x - 1)] !== 4;
+            const top = y === 0 || map.tiles[(y - 1) * map.width + x] !== 4;
+
+            if (left && top) {
+              ctx.drawImage(
+                this.bedPierre,
+                x * size,
+                y * size,
+                this.bedTilesWide * size,
+                this.bedTilesHigh * size
+              );
+            }
           }
         }
       }
