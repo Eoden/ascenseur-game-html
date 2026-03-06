@@ -179,20 +179,24 @@ export default class Renderer {
       ctx.drawImage(sprite,player.x+(size-visualWidth)/2,player.y+size-visualHeight,visualWidth,visualHeight);
     }
 
+    // ZELDA STYLE INTERACTION BUBBLE
     if(game.canInteract){
       const px = player.x + size + 10;
-      const py = player.y - 25;
+      const py = player.y - 28;
 
-      ctx.fillStyle = "rgba(0,0,0,0.7)";
+      // white outer bubble
+      ctx.fillStyle = "white";
       ctx.beginPath();
-      ctx.arc(px,py,12,0,Math.PI*2);
+      ctx.arc(px,py,13,0,Math.PI*2);
       ctx.fill();
 
+      // green button center
       ctx.fillStyle = "#2e7d32";
       ctx.beginPath();
       ctx.arc(px,py,10,0,Math.PI*2);
       ctx.fill();
 
+      // A letter
       ctx.fillStyle = "white";
       ctx.font = "12px Arial";
       ctx.textAlign = "center";
