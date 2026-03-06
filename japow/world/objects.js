@@ -1,0 +1,37 @@
+export const OBJECTS = {
+  4: {
+    sprite: "bed.png",
+    width: 4,
+    height: 3,
+    rooms: ["chambre1","chambre2","chambre3"]
+  },
+
+  6: {
+    sprite: "canape.png",
+    width: 4,
+    height: 4,
+    rooms: ["salon"]
+  },
+
+  7: {
+    sprite: "tv-backview.png",
+    width: 2,
+    height: 1,
+    rooms: ["salon"]
+  },
+
+  8: {
+    sprite: "cuisine.png",
+    width: 1,
+    height: "column",
+    trimBottom: 1,
+    rooms: ["salon"]
+  },
+
+  9: {
+    sprite: "table.png",
+    width: 2,
+    height: 3,
+    rooms: ["salon"]
+  }
+};
