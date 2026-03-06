@@ -109,12 +109,12 @@ export const ROOMS = {
   chambre3: {
     layout: [
       "WWWWWWWWWWWWW",
-      "W........CC.W",
+      "W......CCCC.W",
+      "W......CCCC.W",
       "W...........W",
-      "WBBBB.......W",
-      "WBBBB.......W",
-      "WBBBB.......W",
-      "W...........W",
+      "WBBBBBB.....W",
+      "WBBBBBB.....W",
+      "WBBBBBB.....W",
       "W...........W",
       "W...........W",
       "W...........W",
@@ -126,7 +126,7 @@ export const ROOMS = {
       { x: 9, y: 12, target: "salon", dir: "down" }
     ],
     interactives: [
-      { x: 9, y: 1, contains: "passport" }
+      { x: 7, y: 1, contains: "passport" }
     ]
   },
 
