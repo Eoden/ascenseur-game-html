@@ -49,7 +49,11 @@ export const ROOMS = {
       { x: 6, y: 0, target: "sdb", dir: "up" },
       { x: 9, y: 0, target: "chambre3", dir: "up" }
     ],
-    interactives: []
+    interactives: [
+      { x: 1, y: 4 },
+      { x: 2, y: 4 },
+      { x: 3, y: 4 }
+    ]
   },
 
   chambre1: {
