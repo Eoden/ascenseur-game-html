@@ -14,7 +14,7 @@ export default class Renderer {
     this.commodeHorizontal = new Image();
     this.commodeHorizontal.src = 'assets/sprites/levels/appart_pierre/commode_horizontal.png';
 
-    // New sprite for corridor commode
+    // Corridor specific sprite
     this.commodeHorizontalLeft = new Image();
     this.commodeHorizontalLeft.src = 'assets/sprites/levels/appart_pierre/commode_horizontal_left.png';
 
@@ -92,19 +92,28 @@ export default class Renderer {
       }
     }
 
-    // GENERIC OBJECT RENDERER
+    // OBJECTS
     for(let y=0;y<map.height;y++){
       for(let x=0;x<map.width;x++){
 
         const tile = map.tiles[y*map.width+x];
 
-        // Special corridor commode sprite
+        // Special corridor commode (2 tiles vertical)
         if(tile===3 && currentRoom==='couloir'){
-          const left = x>0 && map.tiles[y*map.width+(x-1)]===3;
+
           const up = y>0 && map.tiles[(y-1)*map.width+x]===3;
-          if(!left && !up && this.commodeHorizontalLeft.complete){
-            ctx.drawImage(this.commodeHorizontalLeft,x*size,y*size,2*size,1*size);
+
+          // draw only on the top tile
+          if(!up && this.commodeHorizontalLeft.complete){
+            ctx.drawImage(
+              this.commodeHorizontalLeft,
+              x*size,
+              y*size,
+              size,
+              size*2
+            );
           }
+
           continue;
         }
 
