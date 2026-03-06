@@ -8,13 +8,15 @@ export default class Renderer {
     this.floorPierre = new Image();
     this.floorPierre.src = 'assets/sprites/levels/appart_pierre/floor.png';
 
+    this.floorSdb = new Image();
+    this.floorSdb.src = 'assets/sprites/levels/appart_pierre/carelage.png';
+
     this.plantPierre = new Image();
     this.plantPierre.src = 'assets/sprites/levels/appart_pierre/plant.png';
 
     this.commodeHorizontal = new Image();
     this.commodeHorizontal.src = 'assets/sprites/levels/appart_pierre/commode_horizontal.png';
 
-    // Corridor specific sprite
     this.commodeHorizontalLeft = new Image();
     this.commodeHorizontalLeft.src = 'assets/sprites/levels/appart_pierre/commode_horizontal_left.png';
 
@@ -57,8 +59,13 @@ export default class Renderer {
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
         if(tile!==1 && this.appartRooms.has(currentRoom)){
-          if(this.floorPierre.complete){
-            ctx.drawImage(this.floorPierre,x*size,y*size,size,size);
+
+          const floorImg = currentRoom === 'sdb'
+            ? this.floorSdb
+            : this.floorPierre;
+
+          if(floorImg && floorImg.complete){
+            ctx.drawImage(floorImg,x*size,y*size,size,size);
           }
         }
       }
@@ -98,12 +105,8 @@ export default class Renderer {
 
         const tile = map.tiles[y*map.width+x];
 
-        // Special corridor commode (2 tiles vertical)
         if(tile===3 && currentRoom==='couloir'){
-
           const up = y>0 && map.tiles[(y-1)*map.width+x]===3;
-
-          // draw only on the top tile
           if(!up && this.commodeHorizontalLeft.complete){
             ctx.drawImage(
               this.commodeHorizontalLeft,
@@ -113,18 +116,12 @@ export default class Renderer {
               size*2
             );
           }
-
           continue;
         }
 
         const obj = OBJECTS[tile];
         if(!obj) continue;
         if(obj.rooms && !obj.rooms.includes(currentRoom)) continue;
-
-        const rightSame = map.tiles[y*map.width+(x+1)]===tile;
-        const downSame  = map.tiles[(y+1)*map.width+x]===tile;
-
-        if(tile===9 && !rightSame && !downSame) continue;
 
         const left = x>0 && map.tiles[y*map.width+(x-1)]===tile;
         const up = y>0 && map.tiles[(y-1)*map.width+x]===tile;
@@ -134,43 +131,13 @@ export default class Renderer {
         const sprite = this.sprites[obj.sprite];
         if(!sprite || !sprite.complete) continue;
 
-        let width = obj.width;
-        let height = obj.height;
-
-        if(obj.height === 'column'){
-          height = 0;
-          while(map.tiles[(y+height)*map.width+x] === tile){
-            height++;
-          }
-          if(obj.trimBottom) height -= obj.trimBottom;
-        }
-
         ctx.drawImage(
           sprite,
           x*size,
           y*size,
-          width*size,
-          height*size
+          obj.width*size,
+          obj.height*size
         );
-      }
-    }
-
-    // COFFEE TABLE
-    if(currentRoom==='salon'){
-      for(let y=0;y<map.height;y++){
-        for(let x=0;x<map.width;x++){
-          if(map.tiles[y*map.width+x]===9){
-
-            const right = map.tiles[y*map.width+(x+1)]===9;
-            const down  = map.tiles[(y+1)*map.width+x]===9;
-            const up    = y>0 && map.tiles[(y-1)*map.width+x]===9;
-            const left  = x>0 && map.tiles[y*map.width+(x-1)]===9;
-
-            if(!right && !down && !left && !up && this.tableBassePierre.complete){
-              ctx.drawImage(this.tableBassePierre,x*size,y*size,size,size);
-            }
-          }
-        }
       }
     }
 
@@ -186,20 +153,14 @@ export default class Renderer {
       const px = player.x + size * 0.7;
       const py = player.y - 18;
 
-      const t = Date.now() * 0.005;
-      const pulse = Math.sin(t) * 1.5;
-
-      const outer = 10 + pulse;
-      const inner = 8 + pulse * 0.5;
-
       ctx.fillStyle = "white";
       ctx.beginPath();
-      ctx.arc(px,py,outer,0,Math.PI*2);
+      ctx.arc(px,py,10,0,Math.PI*2);
       ctx.fill();
 
       ctx.fillStyle = "#2e7d32";
       ctx.beginPath();
-      ctx.arc(px,py,inner,0,Math.PI*2);
+      ctx.arc(px,py,8,0,Math.PI*2);
       ctx.fill();
 
       ctx.fillStyle = "white";

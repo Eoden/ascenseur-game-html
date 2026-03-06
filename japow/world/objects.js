@@ -45,22 +45,22 @@ export const OBJECTS = {
 
   10: {
     sprite: "bath.png",
-    width: 1,
-    height: "column",
+    width: 2,
+    height: 6,
     rooms: ["sdb"]
   },
 
   11: {
     sprite: "sink.png",
-    width: 1,
-    height: 1,
+    width: 2,
+    height: 3,
     rooms: ["sdb"]
   },
 
   12: {
     sprite: "washing_machine.png",
-    width: 1,
-    height: 1,
+    width: 2,
+    height: 2,
     rooms: ["sdb"]
   },
 
