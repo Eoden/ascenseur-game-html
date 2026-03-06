@@ -14,6 +14,10 @@ export default class Renderer {
     this.commodeHorizontal = new Image();
     this.commodeHorizontal.src = 'assets/sprites/levels/appart_pierre/commode_horizontal.png';
 
+    // New sprite for corridor commode
+    this.commodeHorizontalLeft = new Image();
+    this.commodeHorizontalLeft.src = 'assets/sprites/levels/appart_pierre/commode_horizontal_left.png';
+
     this.commodeVertical = new Image();
     this.commodeVertical.src = 'assets/sprites/levels/appart_pierre/commode_vertical.png';
 
@@ -48,6 +52,7 @@ export default class Renderer {
     const size = map.tileSize;
     const currentRoom = game.currentRoom;
 
+    // FLOOR
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
@@ -59,6 +64,7 @@ export default class Renderer {
       }
     }
 
+    // WALLS + DOORS
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
@@ -75,6 +81,7 @@ export default class Renderer {
       }
     }
 
+    // PLANTS
     if(this.plantPierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -90,15 +97,24 @@ export default class Renderer {
       for(let x=0;x<map.width;x++){
 
         const tile = map.tiles[y*map.width+x];
-        const obj = OBJECTS[tile];
 
+        // Special corridor commode sprite
+        if(tile===3 && currentRoom==='couloir'){
+          const left = x>0 && map.tiles[y*map.width+(x-1)]===3;
+          const up = y>0 && map.tiles[(y-1)*map.width+x]===3;
+          if(!left && !up && this.commodeHorizontalLeft.complete){
+            ctx.drawImage(this.commodeHorizontalLeft,x*size,y*size,2*size,1*size);
+          }
+          continue;
+        }
+
+        const obj = OBJECTS[tile];
         if(!obj) continue;
         if(obj.rooms && !obj.rooms.includes(currentRoom)) continue;
 
         const rightSame = map.tiles[y*map.width+(x+1)]===tile;
         const downSame  = map.tiles[(y+1)*map.width+x]===tile;
 
-        // Fix: if tile 9 is isolated, it is the coffee table, not the dining table
         if(tile===9 && !rightSame && !downSame) continue;
 
         const left = x>0 && map.tiles[y*map.width+(x-1)]===tile;
@@ -130,7 +146,7 @@ export default class Renderer {
       }
     }
 
-    // COFFEE TABLE (single tile)
+    // COFFEE TABLE
     if(currentRoom==='salon'){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
