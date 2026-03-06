@@ -102,14 +102,13 @@ export class Game {
     });
   }
 
+  // Reduced interaction radius: player must stand on the same tile
   findNearbyInteractive(px, py){
     const room = ROOMS[this.currentRoom];
     if (!room.interactives) return null;
 
     return room.interactives.find(obj => {
-      const dx = Math.abs(obj.x - px);
-      const dy = Math.abs(obj.y - py);
-      return dx <= 1 && dy <= 1;
+      return obj.x === px && obj.y === py;
     });
   }
 
