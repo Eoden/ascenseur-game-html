@@ -59,8 +59,10 @@ export const ROOMS = {
   chambre1: {
     layout: [
       "WWWWWWWWWWWWW",
-      "WTTTT.....C.W",
-      "W.........C.W",
+      "WTTTTTT...CCW",
+      "WTTTTTT...CCW",
+      "W.........CCW",
+      "W.........CCW",
       "W...........W",
       "W...........W",
       "W...........W",
@@ -68,16 +70,20 @@ export const ROOMS = {
       "W...........W",
       "W...........W",
       "W...........W",
-      "W...........W",
-      "W...........W",
-      "WWWWWWDWWWWW"
+      "WWWWWWDWWWWWW"
     ],
     exits: [
       { x: 6, y: 12, target: "couloir", dir: "down" }
     ],
     interactives: [
+      { x: 9, y: 1 },
       { x: 10, y: 1 },
-      { x: 10, y: 2 }
+      { x: 9, y: 2 },
+      { x: 10, y: 2 },
+      { x: 9, y: 3 },
+      { x: 10, y: 3 },
+      { x: 9, y: 4 },
+      { x: 10, y: 4 }
     ]
   },
 
