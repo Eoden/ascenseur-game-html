@@ -80,96 +80,32 @@ Level 3:
 
 ---
 
-## Legacy Session Rule
+## Interaction System Architecture
 
-Any session executed without verified access to agent Actions
-is considered NON-DETERMINISTIC.
+The Japow engine now supports a data-driven interaction system.
 
-No architectural decision, repository assumption, or structural modification
-originating from a legacy session may be considered valid
-without full revalidation through the deterministic cycle:
+Rules:
+- Interactions are defined in `japow/world/objects.js`.
+- Each object may define:
+  - `interactive: true`
+  - `dialog: "text"`
+- The Game engine detects interaction by reading tile values
+  and matching them with OBJECTS metadata.
 
-getRepoTree → targeted file reads → state validation → atomic commit.
-
-Conversation memory is never treated as authoritative system state.
-Only repository reads and STATE.json define operational reality.
-
----
-
-## 2026-02-26 — Recovery: Japow Appartement Multi-Room Refactor
-
-### Context
-Session dérivée partiellement sans persistance fiable.
-Crash runtime observé :
-`Cannot read properties of undefined (reading 'layout')`
-
-### Root Cause
-Exits pointant vers rooms inexistantes dans ROOMS.
-Suppression partielle de chambres sans synchronisation exits.
-
-### Validated Architectural Decision
-- Appartement en multi-room (pas de mega-map).
-- 7 rooms obligatoires :
-  salon, couloir, chambre1, chambre2, chambre3, sdb, outside
-- Portes standardisées sur murs (13x13).
-- Meubles multi-tiles visibles (tile 4).
-- Tous meubles interactifs.
-- Clé : meuble couloir.
-- Passeport : meuble chambre3.
-- Sortie extérieure bloquée sans clé.
+Benefits:
+- Removes hardcoded room interaction logic
+- Supports multi-tile furniture
+- Simplifies quest and puzzle systems
 
 ---
 
-## 2026-03 — Rendering & Tile System Stabilization (Pierre Apartment)
+## Rendering & Tile System Stabilization (Pierre Apartment)
 
-### Rendering Layer Order
 Renderer must follow strict layered drawing order:
-1. FLOOR (tile != 1)
-2. Static tiles (walls, tables, etc.)
-3. Decorative sprites (plants)
-4. Large sprites (sofa 4x4)
+1. FLOOR
+2. Static tiles
+3. Decorative sprites
+4. Large sprites
 5. Player
 
 Floor must always render under transparent sprites.
-
-### Tile Semantic Mapping
-Current stable tile mapping:
-
-1 = wall
-2 = door
-3 = furniture / interactable
-4 = bed / desk
-5 = plant (sprite)
-6 = sofa (4x4 sprite block)
-7 = table
-8 = kitchen block
-9 = floor variation
-0 = standard floor
-
-### Sofa Rendering Rule
-- Sofa uses a **single sprite rendered over a 4x4 tile area**.
-- Detection is done by finding the **top-left tile** of the sofa block.
-
-### Apartment Level Asset Structure
-Level-specific sprites stored in:
-
-`japow/assets/sprites/levels/appart_pierre/`
-
-Current assets:
-- floor.png
-- canape.png
-- plant.png
-
-### Apartment Level Name
-First level for Pierre is defined as:
-
-`AppartPierre`
-
-It uses the multi-room layout (salon → couloir → chambres → sdb).
-
-### Deterministic Rule for Tiles
-All tiles except walls must first render floor.
-Decor sprites render above floor.
-
-This rule prevents visual holes when sprites use transparency.
-

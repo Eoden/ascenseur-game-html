@@ -32,4 +32,22 @@ All write operations now require:
 - Explicit user GO before sendAgentCommand
 
 ### Reversible
-Yes (via architecture revision)
+Yes
+
+---
+
+## [OBJECTS Driven Interaction System]
+### Decision
+Adopt OBJECTS configuration as the single source of truth for interactable furniture.
+
+### Context
+Previous interaction logic relied on room-specific coordinates and
+was incompatible with multi-tile furniture.
+
+### Impact
+- Furniture interactions defined in `japow/world/objects.js`
+- Game logic reads interaction metadata directly from OBJECTS
+- Renderer and Game engine separated cleanly
+
+### Reversible
+Yes

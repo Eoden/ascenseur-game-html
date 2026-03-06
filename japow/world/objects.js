@@ -1,4 +1,12 @@
 export const OBJECTS = {
+  3: {
+    sprite: "commode_horizontal.png",
+    width: 2,
+    height: 1,
+    interactive: true,
+    dialog: "Rien à part des chaussettes sales."
+  },
+
   4: {
     sprite: "bed.png",
     width: 4,
