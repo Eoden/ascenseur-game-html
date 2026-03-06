@@ -188,7 +188,7 @@ export default class Renderer {
       ctx.arc(px,py,12,0,Math.PI*2);
       ctx.fill();
 
-      ctx.fillStyle = "#00ff00";
+      ctx.fillStyle = "#2e7d32";
       ctx.beginPath();
       ctx.arc(px,py,10,0,Math.PI*2);
       ctx.fill();
