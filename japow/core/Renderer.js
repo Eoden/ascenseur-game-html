@@ -30,6 +30,9 @@ export default class Renderer {
     this.cuisinePierre = new Image();
     this.cuisinePierre.src = 'assets/sprites/levels/appart_pierre/cuisine.png';
 
+    this.tvPierre = new Image();
+    this.tvPierre.src = 'assets/sprites/levels/appart_pierre/tv-backview.png';
+
     this.canapeTilesWide = 4;
     this.canapeTilesHigh = 4;
 
@@ -96,7 +99,7 @@ export default class Renderer {
       }
     }
 
-    // CUISINE (single sprite column reduced by one tile)
+    // CUISINE
     if(currentRoom==='salon' && this.cuisinePierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -126,6 +129,31 @@ export default class Renderer {
                 height*size
               );
 
+            }
+
+          }
+
+        }
+      }
+    }
+
+    // TV (tile 7)
+    if(currentRoom==='salon' && this.tvPierre.complete){
+      for(let y=0;y<map.height;y++){
+        for(let x=0;x<map.width;x++){
+
+          if(map.tiles[y*map.width+x]===7){
+
+            const left = x>0 && map.tiles[y*map.width+(x-1)]===7;
+
+            if(!left){
+              ctx.drawImage(
+                this.tvPierre,
+                x*size,
+                y*size,
+                2*size,
+                size
+              );
             }
 
           }
