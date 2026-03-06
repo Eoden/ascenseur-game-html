@@ -9,7 +9,7 @@ export const TILEMAP = {
   "S":6,
   "V":7,
   "K":8,
-  "T":9,
+  "T":13,
 
   "H":10,
   "L":11,
