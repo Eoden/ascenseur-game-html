@@ -46,7 +46,7 @@ export const OBJECTS = {
   10: {
     sprite: "bath.png",
     width: 1,
-    height: 3,
+    height: "column",
     rooms: ["sdb"]
   },
 
