@@ -84,13 +84,6 @@ export class Game {
     return { tx, ty };
   }
 
-  getPlayerTile(){
-    const tileSize = this.map.tileSize;
-    const px = Math.floor((this.player.x + tileSize/2) / tileSize);
-    const py = Math.floor((this.player.y + tileSize/2) / tileSize);
-    return { px, py };
-  }
-
   findInteractive(tx, ty) {
     const room = ROOMS[this.currentRoom];
     if (!room.interactives) return null;
@@ -99,16 +92,6 @@ export class Game {
       const dx = Math.abs(obj.x - tx);
       const dy = Math.abs(obj.y - ty);
       return dx <= 1 && dy <= 1;
-    });
-  }
-
-  // Reduced interaction radius: player must stand on the same tile
-  findNearbyInteractive(px, py){
-    const room = ROOMS[this.currentRoom];
-    if (!room.interactives) return null;
-
-    return room.interactives.find(obj => {
-      return obj.x === px && obj.y === py;
     });
   }
 
@@ -152,8 +135,9 @@ export class Game {
       this.player.update(this.input, this.map, dt);
     }
 
-    const { px, py } = this.getPlayerTile();
-    this.canInteract = !!this.findNearbyInteractive(px, py);
+    // A button now appears when player faces an interactive object
+    const { tx, ty } = this.getFacingTile();
+    this.canInteract = !!this.findInteractive(tx, ty);
 
     if (this.dialog) return;
 
