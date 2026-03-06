@@ -41,5 +41,19 @@ export const OBJECTS = {
     width: 2,
     height: 3,
     rooms: ["salon"]
+  },
+
+  10: {
+    sprite: "bath.png",
+    width: 1,
+    height: 3,
+    rooms: ["sdb"]
+  },
+
+  11: {
+    sprite: "sink.png",
+    width: 1,
+    height: 1,
+    rooms: ["sdb"]
   }
 };
