@@ -76,11 +76,21 @@ export class Game {
     return { tx, ty };
   }
 
+  findInteractive(tx, ty) {
+    const room = ROOMS[this.currentRoom];
+    if (!room.interactives) return null;
+
+    return room.interactives.find(obj => {
+      const dx = Math.abs(obj.x - tx);
+      const dy = Math.abs(obj.y - ty);
+      return dx <= 1 && dy <= 1;
+    });
+  }
+
   interact() {
     const { tx, ty } = this.getFacingTile();
 
-    const room = ROOMS[this.currentRoom];
-    const interactive = room.interactives?.find(obj => obj.x === tx && obj.y === ty);
+    const interactive = this.findInteractive(tx, ty);
     if (!interactive) return;
 
     if (interactive.contains === "passport") {
@@ -118,9 +128,8 @@ export class Game {
     }
 
     const { tx, ty } = this.getFacingTile();
-    const room = ROOMS[this.currentRoom];
 
-    this.canInteract = !!room.interactives?.find(obj => obj.x === tx && obj.y === ty);
+    this.canInteract = !!this.findInteractive(tx, ty);
 
     if (this.dialog) return;
 
@@ -128,6 +137,8 @@ export class Game {
 
     const centerX = Math.floor((this.player.x + tileSize/2) / tileSize);
     const centerY = Math.floor((this.player.y + tileSize/2) / tileSize);
+
+    const room = ROOMS[this.currentRoom];
 
     for (const exit of room.exits) {
 
