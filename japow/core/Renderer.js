@@ -96,13 +96,40 @@ export default class Renderer {
       }
     }
 
-    // CUISINE
+    // CUISINE (single sprite column reduced by one tile)
     if(currentRoom==='salon' && this.cuisinePierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
+
           if(map.tiles[y*map.width+x]===8){
-            ctx.drawImage(this.cuisinePierre,x*size,y*size,size,size);
+
+            const above = y>0 && map.tiles[(y-1)*map.width+x]===8;
+
+            if(!above){
+
+              let height = 0;
+
+              while(
+                y+height < map.height &&
+                map.tiles[(y+height)*map.width+x]===8
+              ){
+                height++;
+              }
+
+              height = Math.max(1, height-1);
+
+              ctx.drawImage(
+                this.cuisinePierre,
+                x*size,
+                y*size,
+                size,
+                height*size
+              );
+
+            }
+
           }
+
         }
       }
     }
@@ -147,7 +174,7 @@ export default class Renderer {
       }
     }
 
-    // TABLE + COFFEE TABLE (tile 9 logic)
+    // TABLE + COFFEE TABLE
     if(currentRoom==='salon'){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -156,13 +183,11 @@ export default class Renderer {
             const right = map.tiles[y*map.width+(x+1)]===9;
             const down  = map.tiles[(y+1)*map.width+x]===9;
             const up    = y>0 && map.tiles[(y-1)*map.width+x]===9;
-
             const left  = x>0 && map.tiles[y*map.width+(x-1)]===9;
 
             const leftEdge = !left;
             const topEdge  = !up;
 
-            // SALON TABLE (draw once)
             if(right && down && leftEdge && topEdge && this.tablePierre.complete){
               ctx.drawImage(
                 this.tablePierre,
@@ -173,12 +198,6 @@ export default class Renderer {
               );
             }
 
-            // skip bottom tile of table cluster
-            else if(up && !down){
-              continue;
-            }
-
-            // COFFEE TABLE (single 9)
             else if(!right && !down && !left && !up && this.tableBassePierre.complete){
               ctx.drawImage(
                 this.tableBassePierre,
