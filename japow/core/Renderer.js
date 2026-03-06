@@ -155,14 +155,14 @@ export default class Renderer {
 
             const right = map.tiles[y*map.width+(x+1)]===9;
             const down  = map.tiles[(y+1)*map.width+x]===9;
+            const up    = y>0 && map.tiles[(y-1)*map.width+x]===9;
 
             const left  = x>0 && map.tiles[y*map.width+(x-1)]===9;
-            const up    = y>0 && map.tiles[(y-1)*map.width+x]===9;
 
             const leftEdge = !left;
             const topEdge  = !up;
 
-            // SALON TABLE (2x3 cluster)
+            // SALON TABLE (draw once)
             if(right && down && leftEdge && topEdge && this.tablePierre.complete){
               ctx.drawImage(
                 this.tablePierre,
@@ -171,6 +171,11 @@ export default class Renderer {
                 this.tableTilesWide*size,
                 this.tableTilesHigh*size
               );
+            }
+
+            // skip bottom tile of table cluster
+            else if(up && !down){
+              continue;
             }
 
             // COFFEE TABLE (single 9)
