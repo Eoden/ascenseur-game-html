@@ -27,6 +27,9 @@ export default class Renderer {
     this.tableBassePierre = new Image();
     this.tableBassePierre.src = 'assets/sprites/levels/appart_pierre/tableBasse.png';
 
+    this.cuisinePierre = new Image();
+    this.cuisinePierre.src = 'assets/sprites/levels/appart_pierre/cuisine.png';
+
     this.canapeTilesWide = 4;
     this.canapeTilesHigh = 4;
 
@@ -93,6 +96,17 @@ export default class Renderer {
       }
     }
 
+    // CUISINE
+    if(currentRoom==='salon' && this.cuisinePierre.complete){
+      for(let y=0;y<map.height;y++){
+        for(let x=0;x<map.width;x++){
+          if(map.tiles[y*map.width+x]===8){
+            ctx.drawImage(this.cuisinePierre,x*size,y*size,size,size);
+          }
+        }
+      }
+    }
+
     // BEDS (not in salon)
     if(this.bedPierre.complete && currentRoom!=='salon'){
       for(let y=0;y<map.height;y++){
@@ -142,8 +156,11 @@ export default class Renderer {
             const right = map.tiles[y*map.width+(x+1)]===9;
             const down  = map.tiles[(y+1)*map.width+x]===9;
 
-            const leftEdge = x===0 || map.tiles[y*map.width+(x-1)]!==9;
-            const topEdge  = y===0 || map.tiles[(y-1)*map.width+x]!==9;
+            const left  = x>0 && map.tiles[y*map.width+(x-1)]===9;
+            const up    = y>0 && map.tiles[(y-1)*map.width+x]===9;
+
+            const leftEdge = !left;
+            const topEdge  = !up;
 
             // SALON TABLE (2x3 cluster)
             if(right && down && leftEdge && topEdge && this.tablePierre.complete){
@@ -157,7 +174,7 @@ export default class Renderer {
             }
 
             // COFFEE TABLE (single 9)
-            else if(!right && !down && this.tableBassePierre.complete){
+            else if(!right && !down && !left && !up && this.tableBassePierre.complete){
               ctx.drawImage(
                 this.tableBassePierre,
                 x*size,
