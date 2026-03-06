@@ -48,7 +48,6 @@ export default class Renderer {
     const size = map.tileSize;
     const currentRoom = game.currentRoom;
 
-    // FLOOR
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
@@ -60,7 +59,6 @@ export default class Renderer {
       }
     }
 
-    // WALLS + DOORS
     for (let y=0;y<map.height;y++){
       for (let x=0;x<map.width;x++){
         const tile = map.tiles[y*map.width+x];
@@ -77,7 +75,6 @@ export default class Renderer {
       }
     }
 
-    // PLANTS
     if(this.plantPierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -88,7 +85,6 @@ export default class Renderer {
       }
     }
 
-    // GENERIC OBJECT RENDERER
     for(let y=0;y<map.height;y++){
       for(let x=0;x<map.width;x++){
 
@@ -127,7 +123,6 @@ export default class Renderer {
       }
     }
 
-    // COMMODES
     for(let y=0;y<map.height;y++){
       for(let x=0;x<map.width;x++){
         const tile=map.tiles[y*map.width+x];
@@ -152,7 +147,6 @@ export default class Renderer {
       }
     }
 
-    // COFFEE TABLE
     if(currentRoom==='salon'){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -179,16 +173,15 @@ export default class Renderer {
       ctx.drawImage(sprite,player.x+(size-visualWidth)/2,player.y+size-visualHeight,visualWidth,visualHeight);
     }
 
-    // PULSING ZELDA STYLE INTERACTION BUBBLE
     if(game.canInteract){
-      const px = player.x + size + 10;
-      const py = player.y - 28;
+      const px = player.x + size * 0.7;
+      const py = player.y - 18;
 
       const t = Date.now() * 0.005;
       const pulse = Math.sin(t) * 1.5;
 
-      const outer = 13 + pulse;
-      const inner = 10 + pulse * 0.5;
+      const outer = 10 + pulse;
+      const inner = 8 + pulse * 0.5;
 
       ctx.fillStyle = "white";
       ctx.beginPath();
@@ -201,7 +194,7 @@ export default class Renderer {
       ctx.fill();
 
       ctx.fillStyle = "white";
-      ctx.font = "12px Arial";
+      ctx.font = "11px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("A",px,py);
@@ -212,18 +205,19 @@ export default class Renderer {
       const canvasH=this.canvas?.height??420;
       const pad=16;
       const boxH=80;
-      const x=pad;
-      const y=canvasH-boxH-pad;
       const w=canvasW-pad*2;
       const h=boxH;
+      const x=pad;
+      const y=canvasH-boxH-pad;
 
       ctx.fillStyle='rgba(0,0,0,0.8)';
       ctx.fillRect(x,y,w,h);
 
       ctx.fillStyle='white';
       ctx.font='16px Arial';
+      ctx.textAlign='center';
       ctx.textBaseline='middle';
-      ctx.fillText(game.dialog,x+16,y+h/2);
+      ctx.fillText(game.dialog,canvasW/2,y+h/2);
     }
   }
 }
