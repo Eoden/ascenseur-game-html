@@ -18,94 +18,21 @@
   5. Read TASKS.md
   6. Run lightweight integrity validation
 
-## Invariants
-- getRepoTree is the structural source of truth.
-- STATE.json is the single machine-readable state entry point.
-- Context.md defines operational and architectural ground rules.
+## Tile Symbol System
 
-## Integrity Model (Level C - Auto-Healing Enabled)
-Two-level integrity validation:
+Room layouts may now use symbolic tiles for readability.
 
-### Lightweight (Every Session Start)
-- Validate repository structure via getRepoTree.
-- Ensure critical files exist:
-  - Context.md
-  - .agent/STATE.json
-  - .agent/MEMORY.md
-- If mismatch → Level 1 divergence.
-
-### Extended (Checkpoint Only)
-- Validate consistency of:
-  - TASKS.md
-  - DECISIONS.md
-  - ARCHITECTURE.md
-- Snapshot metadata stored in CHECKPOINTS/.
-
-## Divergence Classification
-- Level 1 → Minor (force re-read + recalc state)
-- Level 2 → Major (enable safe_mode)
-- Level 3 → Critical (recommend revertRepo + freeze operations)
-
-## Safe Mode Policy
-When safe_mode.enabled = true:
-- Writes are restricted to `.agent/` folder only.
-- No modification allowed outside persistent memory layer.
-- Full critical file re-read mandatory before exit.
-
-## Auto-Repair Protocol
-Level 1:
-- Re-read affected files
-- Update STATE
-- Log operation
-
-Level 2:
-- Activate safe_mode
-- Create emergency checkpoint
-- Await validation
-
-Level 3:
-- Recommend revertRepo
-- Generate divergence report in SESSIONS/
-
-## Standards
-- One logical operation cycle = one commit.
-- Update STATE.json before critical operations.
-- Every 5 major operations → create checkpoint.
-- All major operations logged in OPERATIONS_LOG.json.
-
-## PNG Policy
-- Agent may generate valid PNG placeholders.
-- Agent may accept externally provided base64 PNG.
-- Valid file write = deterministic operation.
-
----
-
-## Interaction System Architecture
-
-The Japow engine now supports a data-driven interaction system.
-
-Rules:
-- Interactions are defined in `japow/world/objects.js`.
-- Each object may define:
-  - `interactive: true`
-  - `dialog: "text"`
-- The Game engine detects interaction by reading tile values
-  and matching them with OBJECTS metadata.
-
-Benefits:
-- Removes hardcoded room interaction logic
-- Supports multi-tile furniture
-- Simplifies quest and puzzle systems
-
----
-
-## Rendering & Tile System Stabilization (Pierre Apartment)
-
-Renderer must follow strict layered drawing order:
-1. FLOOR
-2. Static tiles
-3. Decorative sprites
-4. Large sprites
-5. Player
-
-Floor must always render under transparent sprites.
+Mapping:
+W = wall
+D = door
+. = floor
+C = commode
+B = bed
+P = plant
+S = sofa
+V = tv
+K = kitchen
+T = table
+H = bathtub
+L = sink
+M = washing_machine

@@ -1,5 +1,6 @@
 import Player from '../entities/Player.js';
 import { ROOMS } from '../world/rooms.js';
+import { TILEMAP } from '../world/tilemap.js';
 
 export class Game {
   constructor() {
@@ -15,6 +16,7 @@ export class Game {
 
   loadRoom(roomName) {
     const room = ROOMS[roomName];
+
     this.map = {
       tileSize: 32,
       width: 13,
@@ -24,7 +26,13 @@ export class Game {
 
     for (let y = 0; y < 13; y++) {
       for (let x = 0; x < 13; x++) {
-        this.map.tiles.push(parseInt(room.layout[y][x]));
+        const symbol = room.layout[y][x];
+
+        if (TILEMAP[symbol] !== undefined) {
+          this.map.tiles.push(TILEMAP[symbol]);
+        } else {
+          this.map.tiles.push(parseInt(symbol));
+        }
       }
     }
 
