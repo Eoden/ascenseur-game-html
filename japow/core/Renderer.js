@@ -85,6 +85,7 @@ export default class Renderer {
       }
     }
 
+    // GENERIC OBJECT RENDERER
     for(let y=0;y<map.height;y++){
       for(let x=0;x<map.width;x++){
 
@@ -93,6 +94,12 @@ export default class Renderer {
 
         if(!obj) continue;
         if(obj.rooms && !obj.rooms.includes(currentRoom)) continue;
+
+        const rightSame = map.tiles[y*map.width+(x+1)]===tile;
+        const downSame  = map.tiles[(y+1)*map.width+x]===tile;
+
+        // Fix: if tile 9 is isolated, it is the coffee table, not the dining table
+        if(tile===9 && !rightSame && !downSame) continue;
 
         const left = x>0 && map.tiles[y*map.width+(x-1)]===tile;
         const up = y>0 && map.tiles[(y-1)*map.width+x]===tile;
@@ -123,30 +130,7 @@ export default class Renderer {
       }
     }
 
-    for(let y=0;y<map.height;y++){
-      for(let x=0;x<map.width;x++){
-        const tile=map.tiles[y*map.width+x];
-        if(tile!==3) continue;
-
-        const right = map.tiles[y*map.width+(x+1)]===3;
-        const down = map.tiles[(y+1)*map.width+x]===3;
-
-        if(right && this.commodeHorizontal.complete){
-          const leftEdge = x===0||map.tiles[y*map.width+(x-1)]!==3;
-          if(leftEdge){
-            ctx.drawImage(this.commodeHorizontal,x*size,y*size,2*size,1*size);
-          }
-        }
-
-        else if(down && this.commodeVertical.complete){
-          const topEdge = y===0||map.tiles[(y-1)*map.width+x]!==3;
-          if(topEdge){
-            ctx.drawImage(this.commodeVertical,x*size,y*size,1*size,2*size);
-          }
-        }
-      }
-    }
-
+    // COFFEE TABLE (single tile)
     if(currentRoom==='salon'){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
