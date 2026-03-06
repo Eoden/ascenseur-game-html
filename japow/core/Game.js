@@ -84,6 +84,13 @@ export class Game {
     return { tx, ty };
   }
 
+  getPlayerTile(){
+    const tileSize = this.map.tileSize;
+    const px = Math.floor((this.player.x + tileSize/2) / tileSize);
+    const py = Math.floor((this.player.y + tileSize/2) / tileSize);
+    return { px, py };
+  }
+
   findInteractive(tx, ty) {
     const room = ROOMS[this.currentRoom];
     if (!room.interactives) return null;
@@ -91,6 +98,17 @@ export class Game {
     return room.interactives.find(obj => {
       const dx = Math.abs(obj.x - tx);
       const dy = Math.abs(obj.y - ty);
+      return dx <= 1 && dy <= 1;
+    });
+  }
+
+  findNearbyInteractive(px, py){
+    const room = ROOMS[this.currentRoom];
+    if (!room.interactives) return null;
+
+    return room.interactives.find(obj => {
+      const dx = Math.abs(obj.x - px);
+      const dy = Math.abs(obj.y - py);
       return dx <= 1 && dy <= 1;
     });
   }
@@ -135,9 +153,8 @@ export class Game {
       this.player.update(this.input, this.map, dt);
     }
 
-    const { tx, ty } = this.getFacingTile();
-
-    this.canInteract = !!this.findInteractive(tx, ty);
+    const { px, py } = this.getPlayerTile();
+    this.canInteract = !!this.findNearbyInteractive(px, py);
 
     if (this.dialog) return;
 
