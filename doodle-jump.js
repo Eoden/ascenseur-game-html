@@ -16,10 +16,12 @@ let running=false;
 
 function createPlatforms(){
 platforms=[];
-for(let i=0;i<10;i++){
+
+// more platforms at the start to avoid instant fall
+for(let i=0;i<16;i++){
 platforms.push({
 x:Math.random()*360,
-y:i*60
+y:i*40
 });
 }
 }
@@ -66,15 +68,18 @@ if(player.x<0) player.x=400;
 if(player.x>400) player.x=0;
 
 platforms.forEach(p=>{
+
+// more forgiving hitbox
 if(
 player.vy>0 &&
-player.x+player.w>p.x &&
-player.x<p.x+60 &&
+player.x+player.w>p.x-10 &&
+player.x<p.x+70 &&
 player.y+player.h>p.y &&
-player.y+player.h<p.y+10
+player.y+player.h<p.y+20
 ){
 player.vy=-12;
 }
+
 });
 
 if(player.y<250){
