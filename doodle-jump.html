@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doodle Jump</title>
+<link rel="stylesheet" href="style.css">
+<style>
+canvas{
+background:#111;
+display:block;
+margin:20px auto;
+border-radius:12px;
+}
+
+.controls{
+display:flex;
+justify-content:space-between;
+max-width:420px;
+margin:auto;
+}
+
+.dpad{
+display:grid;
+grid-template-columns:60px 60px 60px;
+grid-template-rows:60px 60px 60px;
+gap:6px;
+}
+
+.dpad button{
+font-size:22px;
+border-radius:10px;
+}
+
+.ab{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.ab button{
+width:70px;
+height:70px;
+border-radius:50%;
+font-size:20px;
+font-weight:bold;
+}
+
+.a{background:#16a34a;color:white;}
+.b{background:#dc2626;color:white;}
+</style>
+</head>
+
+<body class="game">
+
+<a href="index.html" class="btn-return">← Retour</a>
+<h1>🟢 Doodle Jump</h1>
+
+<canvas id="game" width="400" height="600"></canvas>
+
+<div class="controls">
+
+<div class="dpad">
+<div></div>
+<button onclick="moveLeft()">⬅️</button>
+<div></div>
+
+<div></div>
+<div></div>
+<div></div>
+
+<div></div>
+<button onclick="moveRight()">➡️</button>
+<div></div>
+</div>
+
+<div class="ab">
+<button class="a" onclick="startGame()">A</button>
+<button class="b" onclick="pauseGame()">B</button>
+</div>
+
+</div>
+
+<script src="doodle-jump.js"></script>
+</body>
+</html>
