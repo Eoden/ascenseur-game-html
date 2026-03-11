@@ -147,7 +147,7 @@ export default class Renderer {
       }
     }
 
-    // TABLE + COFFEE TABLE (tile 9 logic)
+    // TABLE + COFFEE TABLE
     if(currentRoom==='salon'){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -156,13 +156,11 @@ export default class Renderer {
             const right = map.tiles[y*map.width+(x+1)]===9;
             const down  = map.tiles[(y+1)*map.width+x]===9;
             const up    = y>0 && map.tiles[(y-1)*map.width+x]===9;
-
             const left  = x>0 && map.tiles[y*map.width+(x-1)]===9;
 
             const leftEdge = !left;
             const topEdge  = !up;
 
-            // SALON TABLE (draw once)
             if(right && down && leftEdge && topEdge && this.tablePierre.complete){
               ctx.drawImage(
                 this.tablePierre,
@@ -173,12 +171,6 @@ export default class Renderer {
               );
             }
 
-            // skip bottom tile of table cluster
-            else if(up && !down){
-              continue;
-            }
-
-            // COFFEE TABLE (single 9)
             else if(!right && !down && !left && !up && this.tableBassePierre.complete){
               ctx.drawImage(
                 this.tableBassePierre,
@@ -252,8 +244,10 @@ export default class Renderer {
 
       ctx.fillStyle='white';
       ctx.font='16px Arial';
+      ctx.textAlign='center';
       ctx.textBaseline='middle';
-      ctx.fillText(game.dialog,x+16,y+h/2);
+
+      ctx.fillText(game.dialog, x + w/2, y + h/2);
     }
   }
 }
