@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Doodle Jump</title>
 <link rel="stylesheet" href="style.css">
 <style>
@@ -21,15 +21,17 @@ margin:auto;
 }
 
 .dpad{
-display:grid;
-grid-template-columns:60px 60px 60px;
-grid-template-rows:60px 60px 60px;
-gap:6px;
+display:flex;
+gap:20px;
+align-items:center;
 }
 
 .dpad button{
-font-size:22px;
-border-radius:10px;
+width:70px;
+height:70px;
+font-size:26px;
+border-radius:12px;
+touch-action:manipulation;
 }
 
 .ab{
@@ -44,6 +46,7 @@ height:70px;
 border-radius:50%;
 font-size:20px;
 font-weight:bold;
+touch-action:manipulation;
 }
 
 .a{background:#16a34a;color:white;}
@@ -61,17 +64,8 @@ font-weight:bold;
 <div class="controls">
 
 <div class="dpad">
-<div></div>
 <button onclick="moveLeft()">⬅️</button>
-<div></div>
-
-<div></div>
-<div></div>
-<div></div>
-
-<div></div>
 <button onclick="moveRight()">➡️</button>
-<div></div>
 </div>
 
 <div class="ab">
