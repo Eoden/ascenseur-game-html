@@ -121,7 +121,7 @@ export const ROOMS = {
       "WBBBBBB.....W",
       "WBBBBBB.....W",
       "WBBBBBB.....W",
-      "W...........W",
+      "WBBBBBB.....W",
       "W...........W",
       "W...........W",
       "W...........W",
