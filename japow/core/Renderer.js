@@ -96,13 +96,32 @@ export default class Renderer {
       }
     }
 
-    // CUISINE
+    // CUISINE (render once for vertical block of tile 8)
     if(currentRoom==='salon' && this.cuisinePierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
-          if(map.tiles[y*map.width+x]===8){
-            ctx.drawImage(this.cuisinePierre,x*size,y*size,size,size);
+
+          if(map.tiles[y*map.width+x]!==8) continue;
+
+          const top = y===0 || map.tiles[(y-1)*map.width+x]!==8;
+
+          if(!top) continue;
+
+          let heightTiles = 1;
+          let yy = y+1;
+
+          while(yy < map.height && map.tiles[yy*map.width+x]===8){
+            heightTiles++;
+            yy++;
           }
+
+          ctx.drawImage(
+            this.cuisinePierre,
+            x*size,
+            y*size,
+            size,
+            heightTiles*size
+          );
         }
       }
     }
