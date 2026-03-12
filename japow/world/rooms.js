@@ -115,8 +115,8 @@ export const ROOMS = {
   chambre3: {
     layout: [
       "WWWWWWWWWWWWW",
-      "W......CCCC.W",
-      "W......CCCC.W",
+      "W......33...W",
+      "W...........W",
       "W...........W",
       "WBBBBBB.....W",
       "WBBBBBB.....W",
