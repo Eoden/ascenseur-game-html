@@ -33,9 +33,6 @@ export default class Renderer {
     this.canapeTilesWide = 4;
     this.canapeTilesHigh = 4;
 
-    this.bedTilesWide = 4;
-    this.bedTilesHigh = 3;
-
     this.tableTilesWide = 2;
     this.tableTilesHigh = 3;
 
@@ -96,7 +93,7 @@ export default class Renderer {
       }
     }
 
-    // CUISINE (render once for vertical block of tile 8)
+    // CUISINE (single sprite for vertical block of 8)
     if(currentRoom==='salon' && this.cuisinePierre.complete){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
@@ -104,7 +101,6 @@ export default class Renderer {
           if(map.tiles[y*map.width+x]!==8) continue;
 
           const top = y===0 || map.tiles[(y-1)*map.width+x]!==8;
-
           if(!top) continue;
 
           let heightTiles = 1;
@@ -126,17 +122,37 @@ export default class Renderer {
       }
     }
 
-    // BEDS (not in salon)
+    // BEDS (generic multi-tile detection)
     if(this.bedPierre.complete && currentRoom!=='salon'){
       for(let y=0;y<map.height;y++){
         for(let x=0;x<map.width;x++){
-          if(map.tiles[y*map.width+x]===4){
-            const left=x===0||map.tiles[y*map.width+(x-1)]!==4;
-            const top=y===0||map.tiles[(y-1)*map.width+x]!==4;
-            if(left&&top){
-              ctx.drawImage(this.bedPierre,x*size,y*size,this.bedTilesWide*size,this.bedTilesHigh*size);
-            }
+
+          if(map.tiles[y*map.width+x]!==4) continue;
+
+          const left = x===0 || map.tiles[y*map.width+(x-1)]!==4;
+          const top  = y===0 || map.tiles[(y-1)*map.width+x]!==4;
+
+          if(!(left && top)) continue;
+
+          // detect width
+          let width=1;
+          while(x+width < map.width && map.tiles[y*map.width+(x+width)]===4){
+            width++;
           }
+
+          // detect height
+          let height=1;
+          while(y+height < map.height && map.tiles[(y+height)*map.width+x]===4){
+            height++;
+          }
+
+          ctx.drawImage(
+            this.bedPierre,
+            x*size,
+            y*size,
+            width*size,
+            height*size
+          );
         }
       }
     }
