@@ -1,0 +1,91 @@
+name: Draft poller and auto-merge
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  poll-and-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Poll PRs and handle them
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            console.log(`Scanning open PRs in ${owner}/${repo}`);
+
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner, repo, state: 'open', per_page: 100
+            });
+
+            const isCopilotAuthor = (login) => {
+              if (!login) return false;
+              const l = login.toLowerCase();
+              return l.includes('copilot') || l.includes('copilot-swe-agent') || l.includes('github-actions');
+            };
+
+            for (const pr of prs) {
+              try {
+                console.log(`PR #${pr.number}: "${pr.title}" by ${pr.user.login} draft=${pr.draft}`);
+                if (pr.head.repo.full_name !== `${owner}/${repo}`) {
+                  console.log(`  - skipping (head repo != base repo): ${pr.head.repo.full_name}`);
+                  continue;
+                }
+                if (!isCopilotAuthor(pr.user.login)) {
+                  console.log('  - skipping (not copilot)');
+                  continue;
+                }
+
+                if (pr.draft) {
+                  console.log(`  - converting draft #${pr.number} to ready`);
+                  await github.rest.pulls.update({ owner, repo, pull_number: pr.number, draft: false });
+                  console.log('  - converted');
+                  continue;
+                }
+
+                const sha = pr.head.sha;
+                const combined = await github.rest.repos.getCombinedStatusForRef({ owner, repo, ref: sha });
+                const state = combined.data.state;
+                console.log(`  - combined status for ${sha}: ${state}`);
+
+                const checkRunsResp = await github.rest.checks.listForRef({ owner, repo, ref: sha });
+                const runs = checkRunsResp.data.check_runs || [];
+                const anyFailed = runs.some(r => r.conclusion === 'failure' || r.conclusion === 'cancelled' || r.conclusion === 'timed_out');
+                const anyPending = runs.some(r => r.status !== 'completed');
+                console.log(`  - check runs: total=${runs.length} failed=${anyFailed} pending=${anyPending}`);
+
+                if (state !== 'success' || anyFailed || anyPending) {
+                  console.log(`  - not ready to merge (status=${state}, failed=${anyFailed}, pending=${anyPending})`);
+                  continue;
+                }
+
+                try {
+                  await github.rest.pulls.createReview({ owner, repo, pull_number: pr.number, event: 'APPROVE', body: 'Auto-approve (poller)'});
+                } catch(e) { console.log('  - approve failed:', e.message); }
+
+                try {
+                  console.log(`  - merging PR #${pr.number} (squash)`);
+                  await github.rest.pulls.merge({ owner, repo, pull_number: pr.number, merge_method: 'squash' });
+                  console.log(`  - merged PR #${pr.number}`);
+                } catch (mergeErr) {
+                  console.log(`  - merge failed for PR #${pr.number}:`, mergeErr.message);
+                }
+
+              } catch (err) {
+                console.log(`Error processing PR #${pr.number}:`, err.message);
+              }
+            }
